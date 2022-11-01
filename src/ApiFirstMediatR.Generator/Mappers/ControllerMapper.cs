@@ -14,7 +14,11 @@ internal static class ControllerMapper
             var paths = GetOpenApiPaths(controllerSpec);
             var endpoints = EndpointMapper.Map(paths);
 
-            yield return new Controller(controllerSpec.Key, endpoints);
+            yield return new Controller
+            {
+                Name = $"{controllerSpec.Key}Controller".ToPascalCase(),
+                Endpoints = endpoints
+            };
         }
     }
 

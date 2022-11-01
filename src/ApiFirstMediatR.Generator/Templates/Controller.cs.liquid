@@ -17,7 +17,10 @@ namespace Test // TODO: set the namespace to generated project's namespace
         {%- for endpoint in endpoints %}
 
         [Http{{ endpoint.operation_name }}("{{ endpoint.path }}")]
-        public async Task<ActionResult> {{ endpoint.name }}() // TODO: Set the parameters
+        public async Task<ActionResult> {{ endpoint.name }}(
+            {%- for parameter in endpoint.all_request_parameters -%}
+                {{ parameter.attribute }}{{ parameter.data_type }} {{ parameter.parameter_name }}{%- unless forloop.last  %}, {% endunless -%}
+            {%- endfor -%})
         {
             return Ok(); // TODO: send mediatr and respond
         }

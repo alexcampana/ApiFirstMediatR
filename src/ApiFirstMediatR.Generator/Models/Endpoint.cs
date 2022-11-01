@@ -2,16 +2,32 @@ namespace ApiFirstMediatR.Generator.Models;
 
 internal sealed class Endpoint
 {
-    public Endpoint(string name, string path, OperationType operationType)
+    public string? Name { get; set; }
+    public string? Path { get; set; }
+    public string? OperationName { get; set; }
+    public IEnumerable<Parameter>? QueryParameters { get; set; }
+    public string? RequestBodyType { get; set; }
+    public IEnumerable<Parameter>? PathParameters { get; set; }
+    public IEnumerable<Parameter> AllRequestParameters
     {
-        Name = name.ToPascalCase();
-        Path = path;
-        OperationType = operationType;
+        get
+        {
+            var props = new List<Parameter>();
+            props.AddRange(QueryParameters ?? Enumerable.Empty<Parameter>());
+            props.AddRange(PathParameters ?? Enumerable.Empty<Parameter>());
+
+            if (RequestBodyType is not null)
+            {
+                props.Add(new Parameter
+                {
+                    ParameterName = "body", // TODO: Make this configurable by end user
+                    Name = "Body",
+                    DataType = $"{RequestBodyType}",
+                    Attribute = "[FromBody]"
+                });
+            }
+
+            return props;
+        }
     }
-
-    public string Name { get; }
-    public string Path { get; }
-    public OperationType OperationType { get; }
-
-    public string OperationName => OperationType.GetDisplayName().ToPascalCase();
 }
