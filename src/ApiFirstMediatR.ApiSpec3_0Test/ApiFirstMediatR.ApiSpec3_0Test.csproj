@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>ApiFirstMediatR.ApiSpec3_0Test</RootNamespace>
+    </PropertyGroup>
+
+    <!-- Begin VSCode Compatibility -->
+    <PropertyGroup>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
+    </ItemGroup>
+
+    <Target Name="CleanSourceGeneratedFiles" BeforeTargets="BeforeRebuild" DependsOnTargets="$(BeforeBuildDependsOn)">
+        <RemoveDir Directories="$(CompilerGeneratedFilesOutputPath)" />
+    </Target>
+    <!-- End VSCode Compatibility -->
+
+    <ItemGroup>
+        <ProjectReference Include="..\ApiFirstMediatR.Generator\ApiFirstMediatR.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <AdditionalFiles Include="api_spec.yaml" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    </ItemGroup>
+
+</Project>

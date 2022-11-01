@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Debug 3.0 Spec Generator": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\ApiFirstMediatR.ApiSpec3_0Test\\ApiFirstMediatR.ApiSpec3_0Test.csproj"
+    },
+    "Debug 2.0 Spec Generator": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\ApiFirstMediatR.ApiSpec2_0Test\\ApiFirstMediatR.ApiSpec2_0Test.csproj"
+    }
+  }
+}
