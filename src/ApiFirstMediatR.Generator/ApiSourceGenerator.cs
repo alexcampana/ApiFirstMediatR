@@ -14,6 +14,9 @@ public class ApiSourceGenerator : ISourceGenerator
         if (specFiles.Count == 0)
             return; // TODO: Throw a diagnostic here
 
+        var projectConfig = new ScriptObject();
+        projectConfig.Add("namespace", context.Compilation.AssemblyName);
+
         foreach (var specFile in specFiles)
         {
             var fileContent = specFile.GetText(context.CancellationToken);
@@ -38,7 +41,7 @@ public class ApiSourceGenerator : ISourceGenerator
 
             foreach (var dto in dtos)
             {
-                var dtoSourceText = ApiTemplate.DataTransferObject.Generate(dto);
+                var dtoSourceText = ApiTemplate.DataTransferObject.Generate(dto, projectConfig);
                 context.AddSource($"Dtos_{dto.Name}.g.cs", dtoSourceText);
             }
 
@@ -50,12 +53,12 @@ public class ApiSourceGenerator : ISourceGenerator
                 {
                     foreach (var endpoint in controller.Endpoints)
                     {
-                        var endpointSourceText = ApiTemplate.MediatorRequest.Generate(endpoint);
+                        var endpointSourceText = ApiTemplate.MediatorRequest.Generate(endpoint, projectConfig);
                         context.AddSource($"MediatorRequests_{endpoint.MediatorRequestName}.g.cs", endpointSourceText);
                     }
                 }
 
-                var controllerSourceText = ApiTemplate.Controller.Generate(controller);
+                var controllerSourceText = ApiTemplate.Controller.Generate(controller, projectConfig);
                 context.AddSource($"Controllers_{controller.Name}.g.cs", controllerSourceText);
             }
         }

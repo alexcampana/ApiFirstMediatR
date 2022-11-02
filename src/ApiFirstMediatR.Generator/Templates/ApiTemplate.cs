@@ -17,8 +17,15 @@ internal class ApiTemplate<T>
         _template = Template.ParseLiquid(indexTemplateFile);
     }
     
-    public string Generate(T contextObject)
+    public string Generate(T contextObject, ScriptObject projectConfig)
     {
-        return _template.Render(contextObject);
+        var scriptObject = new ScriptObject();
+        scriptObject.Import(contextObject);
+        
+        var context = new LiquidTemplateContext();
+        context.PushGlobal(projectConfig);
+        context.PushGlobal(scriptObject);
+        
+        return _template.Render(context);
     }
 }
