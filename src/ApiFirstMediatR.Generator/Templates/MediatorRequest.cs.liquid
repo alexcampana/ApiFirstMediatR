@@ -8,7 +8,7 @@ namespace {{ namespace }}.Requests
     public sealed class {{ mediator_request_name }} : IRequest<{{ response_body_type }}>
     {
         {%- for property in all_request_parameters %}
-        public {{ property.data_type }}{% if property.is_nullable %}?{% endif %} {{ property.name }} { get; set; } // TODO: Set the JsonProperty Attributes
+        public {{ property.data_type }}{% if property.is_nullable %}?{% endif %} {{ property.name }} { get; set; }
         {%- endfor %}
     }
 }

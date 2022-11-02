@@ -1,4 +1,7 @@
-﻿namespace ApiFirstMediatR.Generator;
+﻿using ApiFirstMediatR.Generator.Extensions;
+using Microsoft.CodeAnalysis.Text;
+
+namespace ApiFirstMediatR.Generator;
 
 [Generator]
 public class ApiSourceGenerator : ISourceGenerator
@@ -12,7 +15,10 @@ public class ApiSourceGenerator : ISourceGenerator
             .ToList();
 
         if (specFiles.Count == 0)
-            return; // TODO: Throw a diagnostic here
+        {
+            context.ReportDiagnostic(DiagnosticCatalog.ApiSpecFileNotFound());
+            return;
+        }
 
         var projectConfig = new ScriptObject();
         projectConfig.Add("namespace", context.Compilation.AssemblyName);
@@ -21,21 +27,21 @@ public class ApiSourceGenerator : ISourceGenerator
         {
             var fileContent = specFile.GetText(context.CancellationToken);
 
-            if (fileContent is null)
-                continue; // TODO: Throw a diagnostic here
-
-            var stream = new MemoryStream();
-            using (var writer = new StreamWriter(stream, Encoding.UTF8, 1024, true))
+            if (fileContent is null || fileContent.Length == 0)
             {
-                fileContent.Write(writer);
+                var diagnostic = DiagnosticCatalog.ApiSpecFileEmpty(specFile.GetLocation());
+                context.ReportDiagnostic(diagnostic);
+                continue;
             }
 
-            stream.Position = 0;
+            var apiSpec = new OpenApiStringReader().Read(fileContent.ToString(), out var apiDiagnostic);
 
-            var apiSpec = new OpenApiStreamReader().Read(stream, out var diagnostic);
-
-            if (diagnostic.Errors.Any())
-                continue; // TODO: Throw a diagnostic here
+            if (apiDiagnostic.Errors.Any())
+            {
+                var diagnostic = DiagnosticCatalog.ApiSpecFileParsingError(specFile.GetLocation(), apiDiagnostic.Errors.First().Message);
+                context.ReportDiagnostic(diagnostic);
+                continue;
+            }
 
             var dtos = DataTransferObjectMapper.Map(apiSpec);
 
