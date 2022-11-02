@@ -19,6 +19,7 @@ internal static class EndpointMapper
                     Name = endpointName.ToPascalCase(),
                     Path = path.Key,
                     OperationName = operation.Key.GetDisplayName().ToPascalCase(),
+                    MediatorRequestName = endpointName.ToPascalCase() + (operation.Key == OperationType.Get ? "Query" : "Command"),
                     QueryParameters = queryParams,
                     PathParameters = pathParams
                 };

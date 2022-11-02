@@ -34,20 +34,29 @@ public class ApiSourceGenerator : ISourceGenerator
             if (diagnostic.Errors.Any())
                 continue; // TODO: Throw a diagnostic here
 
-            var controllers = ControllerMapper.Map(apiSpec);
-
-            foreach (var controller in controllers)
-            {
-                var sourceText = ApiTemplate.Controller.Generate(controller);
-                context.AddSource($"Controllers_{controller.Name}.g.cs", sourceText);
-            }
-
             var dtos = DataTransferObjectMapper.Map(apiSpec);
 
             foreach (var dto in dtos)
             {
-                var sourceText = ApiTemplate.DataTransferObject.Generate(dto);
-                context.AddSource($"Dtos_{dto.Name}.g.cs", sourceText);
+                var dtoSourceText = ApiTemplate.DataTransferObject.Generate(dto);
+                context.AddSource($"Dtos_{dto.Name}.g.cs", dtoSourceText);
+            }
+
+            var controllers = ControllerMapper.Map(apiSpec);
+
+            foreach (var controller in controllers)
+            {
+                if (controller.Endpoints != null)
+                {
+                    foreach (var endpoint in controller.Endpoints)
+                    {
+                        var endpointSourceText = ApiTemplate.MediatorRequest.Generate(endpoint);
+                        context.AddSource($"MediatorRequests_{endpoint.MediatorRequestName}.g.cs", endpointSourceText);
+                    }
+                }
+
+                var controllerSourceText = ApiTemplate.Controller.Generate(controller);
+                context.AddSource($"Controllers_{controller.Name}.g.cs", controllerSourceText);
             }
         }
     }

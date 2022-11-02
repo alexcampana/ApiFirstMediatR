@@ -22,7 +22,9 @@ namespace Test // TODO: set the namespace to generated project's namespace
                 {{ parameter.attribute }}{{ parameter.data_type }} {{ parameter.parameter_name }}{%- unless forloop.last  %}, {% endunless -%}
             {%- endfor -%})
         {
-            return Ok(); // TODO: send mediatr and respond
+            var request = new {{ endpoint.mediator_request_name }}();
+            var response = await _mediator.Send(request); // TODO: optionally use a CancellationToken
+            return Ok(response); // TODO: send mediatr and respond
         }
         {%- endfor %}
     }
