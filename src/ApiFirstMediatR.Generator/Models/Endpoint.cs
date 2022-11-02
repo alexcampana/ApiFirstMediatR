@@ -6,8 +6,9 @@ internal sealed class Endpoint
     public string? Path { get; set; }
     public string? OperationName { get; set; }
     public string? MediatorRequestName { get; set; }
-    public IEnumerable<Parameter>? QueryParameters { get; set; }
+    public string? ResponseBodyType { get; set; }
     public string? RequestBodyType { get; set; }
+    public IEnumerable<Parameter>? QueryParameters { get; set; }
     public IEnumerable<Parameter>? PathParameters { get; set; }
     public IEnumerable<Parameter> AllRequestParameters
     {

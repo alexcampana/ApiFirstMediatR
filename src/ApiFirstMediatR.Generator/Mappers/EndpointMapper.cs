@@ -20,6 +20,7 @@ internal static class EndpointMapper
                     Path = path.Key,
                     OperationName = operation.Key.GetDisplayName().ToPascalCase(),
                     MediatorRequestName = endpointName.ToPascalCase() + (operation.Key == OperationType.Get ? "Query" : "Command"),
+                    ResponseBodyType = "Unit",
                     QueryParameters = queryParams,
                     PathParameters = pathParams
                 };
@@ -28,6 +29,26 @@ internal static class EndpointMapper
                     operation.Value.RequestBody.Content.TryGetValue("application/json", out var requestBody))
                 {
                     endpoint.RequestBodyType = TypeMapper.Map(requestBody.Schema);
+                }
+                else
+                {
+                    // TODO: Throw unsupported diagnostic
+                }
+
+                if (operation.Value.Responses.TryGetValue("200", out var successResponse))
+                {
+                    if (successResponse.Content.TryGetValue("application/json", out var responseBody))
+                    {
+                        endpoint.ResponseBodyType = TypeMapper.Map(responseBody.Schema);
+                    }
+                    else
+                    {
+                        // TODO: Throw unsupported diagnostic
+                    }
+                }
+                else
+                {
+                    // TODO: Throw unsupported diagnostic
                 }
 
                 yield return endpoint;
