@@ -8,6 +8,7 @@ global using ApiFirstMediatR.Generator.Templates;
 global using ApiFirstMediatR.Generator.Utils;
 global using CaseExtensions;
 global using Microsoft.CodeAnalysis;
+global using Microsoft.CodeAnalysis.Diagnostics;
 global using Microsoft.OpenApi.Extensions;
 global using Microsoft.OpenApi.Models;
 global using Microsoft.OpenApi.Readers;

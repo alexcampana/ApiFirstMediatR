@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace ApiFirstMediatR.Generator;
 
 [Generator]
-public class ApiSourceGenerator : ISourceGenerator
+public sealed class ApiSourceGenerator : ISourceGenerator
 {
     public void Execute(GeneratorExecutionContext context)
     {
