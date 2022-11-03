@@ -37,7 +37,8 @@ public sealed class ApiAnalyzer : DiagnosticAnalyzer
 
             foreach (var endpoint in endpoints)
             {
-                endpointBag.Add(new RequestLocation(endpoint.MediatorRequestName!, fileContext.AdditionalFile.GetLocation()));
+                var implementation = $"{endpoint.MediatorRequestName}Handler : IRequestHandler<{endpoint.MediatorRequestName}, {endpoint.ResponseBodyType}>";
+                endpointBag.Add(new RequestLocation(endpoint.MediatorRequestName!, fileContext.AdditionalFile.GetLocation(), implementation));
             }
         });
 
@@ -61,20 +62,22 @@ public sealed class ApiAnalyzer : DiagnosticAnalyzer
             foreach (var endpoint in endpointBag)
             {
                 if (!handlerBag.Contains(endpoint.Name))
-                    endContext.ReportDiagnostic(DiagnosticCatalog.ApiMissingImplementation(endpoint.Location, endpoint.Name));
+                    endContext.ReportDiagnostic(DiagnosticCatalog.ApiMissingImplementation(endpoint.Location, endpoint.Implementation));
             }
         });
     }
 
     private sealed class RequestLocation
     {
-        public RequestLocation(string name, Location location)
+        public RequestLocation(string name, Location location, string implementation)
         {
             Name = name;
             Location = location;
+            Implementation = implementation;
         }
 
         public string Name { get; }
         public Location Location { get; }
+        public string Implementation { get; }
     }
 }
