@@ -8,7 +8,16 @@
         <IsRoslynComponent>true</IsRoslynComponent>
         <DevelopmentDependency>true</DevelopmentDependency>
         <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
+        <PackageVersion>1.0.0-alpha-1</PackageVersion>
+        <Authors>Alex Campana</Authors>
+        <Description>Generates Controllers, DTOs and MediatR Requests from a given OpenAPI Spec file to support API First development.</Description>
+        <PackageTags>MediatR;APIFirst;AspNetCore;OpenAPI</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
+    
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="" Visible="" />
+    </ItemGroup>
     
     <ItemGroup>
         <PackageReference Include="CaseExtensions" Version="1.1.0" GeneratePathProperty="true" PrivateAssets="all" />
