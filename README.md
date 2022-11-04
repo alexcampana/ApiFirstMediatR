@@ -1,5 +1,4 @@
 # ApiFirstMediatR
-=======
 
 ![CI](https://github.com/alexcampana/ApiFirstMediatR/workflows/CI/badge.svg)
 [![NuGet](https://img.shields.io/nuget/vpre/ApiFirstMediatR.Generator.svg)](https://www.nuget.org/packages/ApiFirstMediatR.Generator)
