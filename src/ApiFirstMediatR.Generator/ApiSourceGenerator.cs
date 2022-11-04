@@ -11,6 +11,7 @@ public sealed class ApiSourceGenerator : ISourceGenerator
         var specFiles = context
             .AdditionalFiles
             .Where(f => f.Path.EndsWith(".yaml", StringComparison.InvariantCultureIgnoreCase) ||
+                        f.Path.EndsWith(".yml", StringComparison.InvariantCultureIgnoreCase) ||
                         f.Path.EndsWith(".json", StringComparison.InvariantCultureIgnoreCase))
             .ToList();
 
