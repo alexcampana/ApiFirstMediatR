@@ -1,4 +1,9 @@
 # ApiFirstMediatR
+=======
+
+![CI](https://github.com/alexcampana/ApiFirstMediatR/workflows/CI/badge.svg)
+[![NuGet](https://img.shields.io/nuget/vpre/ApiFirstMediatR.Generator.svg)](https://www.nuget.org/packages/ApiFirstMediatR.Generator)
+
 Generates Controllers, DTOs and MediatR Requests from a given OpenAPI Spec file to support API First development.
 Business logic implementation is handled by MediatR handlers that implement the generated MediatR Requests.
 
