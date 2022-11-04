@@ -8,11 +8,17 @@
         <IsRoslynComponent>true</IsRoslynComponent>
         <DevelopmentDependency>true</DevelopmentDependency>
         <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
-        <PackageVersion>1.0.0-alpha-1</PackageVersion>
+        <MinVerTagPrefix>v</MinVerTagPrefix>
         <Authors>Alex Campana</Authors>
         <Description>Generates Controllers, DTOs and MediatR Requests from a given OpenAPI Spec file to support API First development.</Description>
         <PackageTags>MediatR;APIFirst;AspNetCore;OpenAPI</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Deterministic>true</Deterministic>
+        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
     </PropertyGroup>
     
     <ItemGroup>
@@ -29,6 +35,7 @@
         <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
         <PackageReference Include="Microsoft.OpenApi" Version="1.4.3" GeneratePathProperty="true" PrivateAssets="all" />
         <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.4.1" GeneratePathProperty="true" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
         <PackageReference Include="Scriban" Version="3.4.1" GeneratePathProperty="true" PrivateAssets="all" IncludeAssets="Build" />
         <PackageReference Include="SharpYaml" Version="2.1.0" GeneratePathProperty="true" PrivateAssets="all" />
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
