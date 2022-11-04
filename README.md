@@ -6,14 +6,13 @@ Code is generated using a Roslyn based Source Generator. To find out more about 
 
 Currently supports ASP.NET Core 6.0 and OpenAPI Spec version 3 and 2 in both yaml and json formats.
 
-## How to use it
-Add the following to your `.csproj`:
-```xml
-    <ItemGroup>
-        <!-- Registers the source generator -->
-        <PackageReference Include="ApiFirstMediatR.Generator" Version="1.0.0-alpha-1" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    </ItemGroup>
+## Installation
+```sh
+dotnet add package ApiFirstMediatR.Generator
+```
 
+Register your OpenAPI spec file by adding the following to your `.csproj`:
+```xml
     <ItemGroup>
         <!-- Registers the OpenAPI spec -->
         <AdditionalFiles Include="api_spec.json" />
