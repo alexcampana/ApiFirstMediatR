@@ -3,7 +3,7 @@ namespace ApiFirstMediatR.Generator.Tests;
 public class GeneratorTests : TestBase
 {
     [Fact]
-    public async Task ValidAPISpec_GeneratesValidCode()
+    public void ValidAPISpec_GeneratesValidCode()
     {
         var code = "namespace Test;";
         var inputCompilation = CreateCompilation(code);

@@ -3,7 +3,7 @@ namespace ApiFirstMediatR.Generator.Tests;
 public class GeneratorDiagnosticTests : TestBase
 {
     [Fact]
-    public async Task MissingAPISpecFile_ThrowsDiagnostic()
+    public void MissingAPISpecFile_ThrowsDiagnostic()
     {
         var code = "namespace Test;";
         var inputCompilation = CreateCompilation(code);
@@ -19,7 +19,7 @@ public class GeneratorDiagnosticTests : TestBase
     }
  
     [Fact]
-    public async Task EmptyAPISpecFile_ThrowsDiagnostic()
+    public void EmptyAPISpecFile_ThrowsDiagnostic()
     {
         var code = "namespace Test;";
         var inputCompilation = CreateCompilation(code);
@@ -38,7 +38,7 @@ public class GeneratorDiagnosticTests : TestBase
     }
  
     [Fact]
-    public async Task BadAPISpecFile_ThrowsDiagnostic()
+    public void BadAPISpecFile_ThrowsDiagnostic()
     {
         var code = "namespace Test;";
         var inputCompilation = CreateCompilation(code);
