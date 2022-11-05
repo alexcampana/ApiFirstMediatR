@@ -22,7 +22,8 @@ namespace {{ namespace }}.Controllers
         public async Task<ActionResult> {{ endpoint.name }}(
             {%- for parameter in endpoint.all_request_parameters -%}
                 {{ parameter.attribute }}{{ parameter.data_type }} {{ parameter.parameter_name }}{%- unless forloop.last  %}, {% endunless -%}
-            {%- endfor -%})
+            {%- endfor -%}
+            {%- if endpoint.all_request_parameters.size != 0 -%}, {% endif -%}CancellationToken cancellationToken)
         {
             var request = new {{ endpoint.mediator_request_name }}
             {
@@ -31,7 +32,7 @@ namespace {{ namespace }}.Controllers
                 {% endfor %}
             };
 
-            var response = await _mediator.Send(request); // TODO: optionally use a CancellationToken
+            var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
         }
         {%- endfor %}

@@ -11,6 +11,7 @@ internal static class PropertyMapper
             yield return new Property
             {
                 Name = property.Key.ToPascalCase(),
+                JsonName = property.Key,
                 DataType = TypeMapper.Map(property.Value),
                 IsNullable = property.Value.Nullable
             };

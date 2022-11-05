@@ -1,5 +1,4 @@
 ﻿using ApiFirstMediatR.Generator.Extensions;
-using Microsoft.CodeAnalysis.Text;
 
 namespace ApiFirstMediatR.Generator;
 
