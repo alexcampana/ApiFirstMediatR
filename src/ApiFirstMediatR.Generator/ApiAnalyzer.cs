@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
-using ApiFirstMediatR.Generator.Extensions;
 
 namespace ApiFirstMediatR.Generator;
 

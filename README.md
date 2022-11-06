@@ -91,7 +91,7 @@ using HelloWorld.Requests;
 
 namespace HelloWorld.Controllers
 {
-    [Route(""[controller]"")]
+    [Route("[controller]")]
     public sealed class ApiController : Controller
     {
         private readonly IMediator _mediator;
@@ -101,7 +101,7 @@ namespace HelloWorld.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet(""/api/HelloWorld"")]
+        [HttpGet("/api/HelloWorld")]
         public async Task<ActionResult> GetHelloWorld(CancellationToken cancellationToken)
         {
             var request = new GetHelloWorldQuery

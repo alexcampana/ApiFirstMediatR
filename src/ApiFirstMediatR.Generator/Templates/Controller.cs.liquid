@@ -17,7 +17,16 @@ namespace {{ namespace }}.Controllers
         }
 
         {%- for endpoint in endpoints %}
-
+        
+        /// <summary>
+        {%- for description_line in endpoint.description %}
+        /// {% unless forloop.first %}<br/>{% endunless %}{{ description_line }}
+        {%- endfor %}
+        /// </summary>
+        {%- for parameter in endpoint.all_request_parameters %}
+        /// <param name="{{ parameter.parameter_name }}">{{ parameter.description | join: "<br/>" }}</param>
+        {%- endfor %}
+        /// <returns>{{ endpoint.response_description | join: "<br/>" }}</returns>
         [Http{{ endpoint.operation_name }}("{{ endpoint.path }}")]
         public async Task<ActionResult> {{ endpoint.name }}(
             {%- for parameter in endpoint.all_request_parameters -%}

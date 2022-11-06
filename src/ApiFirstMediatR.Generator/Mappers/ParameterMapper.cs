@@ -10,7 +10,10 @@ internal static class ParameterMapper
             {
                 ParameterName = parameter.Name.ToCamelCase(),
                 Name = parameter.Name.ToPascalCase(),
-                DataType = TypeMapper.Map(parameter.Schema)
+                JsonName = parameter.Name,
+                Description = parameter.Description.SplitOnNewLine(),
+                DataType = TypeMapper.Map(parameter.Schema),
+                IsNullable = !parameter.Required
             };
         }
     }

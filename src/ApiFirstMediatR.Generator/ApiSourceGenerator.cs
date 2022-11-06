@@ -1,6 +1,4 @@
-﻿using ApiFirstMediatR.Generator.Extensions;
-
-namespace ApiFirstMediatR.Generator;
+﻿namespace ApiFirstMediatR.Generator;
 
 [Generator]
 public sealed class ApiSourceGenerator : ISourceGenerator
