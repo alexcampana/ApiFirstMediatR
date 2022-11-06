@@ -29,7 +29,16 @@ internal static class EndpointMapper
                 if (operation.Value.RequestBody is not null &&
                     operation.Value.RequestBody.Content.TryGetValue("application/json", out var requestBody))
                 {
-                    endpoint.RequestBodyType = TypeMapper.Map(requestBody.Schema);
+                    endpoint.RequestBody = new Parameter
+                    {
+                        ParameterName = "body", // TODO: Make this configurable by end user
+                        Name = "Body",
+                        JsonName = "body",
+                        Description = operation.Value.RequestBody.Description?.SplitOnNewLine(),
+                        DataType = TypeMapper.Map(requestBody.Schema),
+                        IsNullable = !operation.Value.RequestBody.Required,
+                        Attribute = "[FromBody]"
+                    };
                 }
                 else
                 {
