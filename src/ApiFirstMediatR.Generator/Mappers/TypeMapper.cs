@@ -16,10 +16,10 @@ internal static class TypeMapper
             ("number", "float") => "float",
             ("number", "double") => "double",
             ("number", _) => "decimal",
-            ("string", "date") => "DateOnly",
-            ("string", "date-time") => "DateTimeOffset",
+            ("string", "date") => "System.DateOnly",
+            ("string", "date-time") => "System.DateTimeOffset",
             ("string", _) => "string",
-            ("array", _) => $"List<{MapArrayItem(schema)}>",
+            ("array", _) => $"System.Collections.Generic.IEnumerable<{MapArrayItem(schema)}>",
             (_, _) => schema.Type
         };
     }
