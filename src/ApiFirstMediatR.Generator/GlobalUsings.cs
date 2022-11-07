@@ -2,6 +2,7 @@
 
 global using System.Text;
 global using ApiFirstMediatR.Generator.Diagnostics;
+global using ApiFirstMediatR.Generator.Extensions;
 global using ApiFirstMediatR.Generator.Mappers;
 global using ApiFirstMediatR.Generator.Models;
 global using ApiFirstMediatR.Generator.Templates;

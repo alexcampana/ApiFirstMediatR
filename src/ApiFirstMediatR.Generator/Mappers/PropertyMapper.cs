@@ -12,6 +12,7 @@ internal static class PropertyMapper
             {
                 Name = property.Key.ToPascalCase(),
                 JsonName = property.Key,
+                Description = property.Value.Description?.SplitOnNewLine(),
                 DataType = TypeMapper.Map(property.Value),
                 IsNullable = property.Value.Nullable
             };

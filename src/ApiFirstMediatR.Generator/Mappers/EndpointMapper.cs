@@ -20,6 +20,7 @@ internal static class EndpointMapper
                     Path = path.Key,
                     OperationName = operation.Key.GetDisplayName().ToPascalCase(),
                     MediatorRequestName = endpointName.ToPascalCase() + (operation.Key == OperationType.Get ? "Query" : "Command"),
+                    Description = operation.Value.Description?.SplitOnNewLine(),
                     ResponseBodyType = "Unit",
                     QueryParameters = queryParams,
                     PathParameters = pathParams
@@ -28,7 +29,16 @@ internal static class EndpointMapper
                 if (operation.Value.RequestBody is not null &&
                     operation.Value.RequestBody.Content.TryGetValue("application/json", out var requestBody))
                 {
-                    endpoint.RequestBodyType = TypeMapper.Map(requestBody.Schema);
+                    endpoint.RequestBody = new Parameter
+                    {
+                        ParameterName = "body", // TODO: Make this configurable by end user
+                        Name = "Body",
+                        JsonName = "body",
+                        Description = operation.Value.RequestBody.Description?.SplitOnNewLine(),
+                        DataType = TypeMapper.Map(requestBody.Schema),
+                        IsNullable = !operation.Value.RequestBody.Required,
+                        Attribute = "[FromBody]"
+                    };
                 }
                 else
                 {
@@ -40,6 +50,7 @@ internal static class EndpointMapper
                     if (successResponse.Content.TryGetValue("application/json", out var responseBody))
                     {
                         endpoint.ResponseBodyType = TypeMapper.Map(responseBody.Schema);
+                        endpoint.ResponseDescription = successResponse.Description.SplitOnNewLine();
                     }
                     else
                     {

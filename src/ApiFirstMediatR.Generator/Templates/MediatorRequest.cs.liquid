@@ -5,10 +5,28 @@ using {{ namespace }}.Dtos;
 
 namespace {{ namespace }}.Requests
 {
+    /// <summary>
+    {%- for description_line in description %}
+    /// {% unless forloop.first %}<br/>{% endunless %}{{ description_line }}
+    {%- endfor %}
+    /// </summary>
+    /// <returns>{{ response_description | join: "<br/>" }}</returns>
     public sealed class {{ mediator_request_name }} : IRequest<{{ response_body_type }}>
     {
+        public {{ mediator_request_name }}({%- for property in all_request_parameters -%}{{ property.data_type }}{% if property.is_nullable %}?{% endif %} {{ property.parameter_name }}{%- unless forloop.last  %}, {% endunless -%}{%- endfor -%})
+        {
         {%- for property in all_request_parameters %}
-        public {{ property.data_type }}{% if property.is_nullable %}?{% endif %} {{ property.name }} { get; set; }
+            {{ property.name }} = {{ property.parameter_name }};
         {%- endfor %}
+        }
+    {%- for property in all_request_parameters %}
+    
+        /// <summary>
+        {%- for description_line in property.description %}
+        /// {% unless forloop.first %}<br/>{%   endunless %}{{ description_line }}
+        {%- endfor %}
+        /// </summary>
+        public {{ property.data_type }}{% if property.is_nullable %}?{% endif %} {{ property.name }} { get; }
+    {%- endfor %}
     }
 }

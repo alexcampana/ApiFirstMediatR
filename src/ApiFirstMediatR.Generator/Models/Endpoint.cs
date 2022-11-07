@@ -6,8 +6,10 @@ internal sealed class Endpoint
     public string? Path { get; set; }
     public string? OperationName { get; set; }
     public string? MediatorRequestName { get; set; }
+    public IEnumerable<string>? Description { get; set; }
+    public IEnumerable<string>? ResponseDescription { get; set; }
     public string? ResponseBodyType { get; set; }
-    public string? RequestBodyType { get; set; }
+    public Parameter? RequestBody { get; set; }
     public IEnumerable<Parameter>? QueryParameters { get; set; }
     public IEnumerable<Parameter>? PathParameters { get; set; }
     public IEnumerable<Parameter> AllRequestParameters
@@ -18,16 +20,8 @@ internal sealed class Endpoint
             props.AddRange(QueryParameters ?? Enumerable.Empty<Parameter>());
             props.AddRange(PathParameters ?? Enumerable.Empty<Parameter>());
 
-            if (RequestBodyType is not null)
-            {
-                props.Add(new Parameter
-                {
-                    ParameterName = "body", // TODO: Make this configurable by end user
-                    Name = "Body",
-                    DataType = $"{RequestBodyType}",
-                    Attribute = "[FromBody]"
-                });
-            }
+            if (RequestBody is not null)
+                props.Add(RequestBody);
 
             return props;
         }
