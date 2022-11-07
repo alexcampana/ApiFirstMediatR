@@ -37,7 +37,7 @@ internal static class EndpointMapper
                         Description = operation.Value.RequestBody.Description?.SplitOnNewLine(),
                         DataType = TypeMapper.Map(requestBody.Schema),
                         IsNullable = !operation.Value.RequestBody.Required,
-                        Attribute = "[FromBody]"
+                        Attribute = "[Microsoft.AspNetCore.Mvc.FromBody]"
                     };
                 }
                 else

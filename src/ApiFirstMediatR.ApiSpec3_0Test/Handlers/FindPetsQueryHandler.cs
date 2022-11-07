@@ -1,8 +1,8 @@
 namespace ApiFirstMediatR.ApiSpec3_0Test.Handlers;
 
-public sealed class FindPetsQueryHandler : IRequestHandler<FindPetsQuery, List<Pet>>
+public sealed class FindPetsQueryHandler : IRequestHandler<FindPetsQuery, IEnumerable<Pet>>
 {
-    public Task<List<Pet>> Handle(FindPetsQuery request, CancellationToken cancellationToken)
+    public Task<IEnumerable<Pet>> Handle(FindPetsQuery request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
