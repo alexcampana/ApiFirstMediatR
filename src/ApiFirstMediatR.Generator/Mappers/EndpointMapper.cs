@@ -40,9 +40,9 @@ internal static class EndpointMapper
                         Attribute = "[Microsoft.AspNetCore.Mvc.FromBody]"
                     };
                 }
-                else
+                else if (operation.Value.RequestBody is not null)
                 {
-                    // TODO: Throw unsupported diagnostic
+                    throw new NotImplementedException($"Only application/json request body supported. Endpoint: {operation.Key.GetDisplayName()} {path.Key}");
                 }
 
                 if (operation.Value.Responses.TryGetValue("200", out var successResponse))
@@ -51,15 +51,22 @@ internal static class EndpointMapper
                     {
                         endpoint.ResponseBodyType = TypeMapper.Map(responseBody.Schema);
                         endpoint.ResponseDescription = successResponse.Description.SplitOnNewLine();
+                        endpoint.MainHttpResponseType = HttpStatusCodes.Status200;
                     }
                     else
                     {
-                        // TODO: Throw unsupported diagnostic
+                        throw new NotImplementedException($"Only application/json response body supported. Endpoint: {operation.Key.GetDisplayName()} {path.Key}");
                     }
+                }
+                else if (operation.Value.Responses.TryGetValue("204", out successResponse))
+                {
+                    endpoint.ResponseBodyType = null;
+                    endpoint.ResponseDescription = successResponse.Description.SplitOnNewLine();
+                    endpoint.MainHttpResponseType = HttpStatusCodes.Status204;
                 }
                 else
                 {
-                    // TODO: Throw unsupported diagnostic
+                    throw new NotImplementedException($"Response Status not supported. Endpoint: {operation.Key.GetDisplayName()} {path.Key}");
                 }
 
                 yield return endpoint;

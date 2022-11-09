@@ -9,6 +9,7 @@ internal sealed class Endpoint
     public IEnumerable<string>? Description { get; set; }
     public IEnumerable<string>? ResponseDescription { get; set; }
     public string? ResponseBodyType { get; set; }
+    public HttpStatusCode? MainHttpResponseType { get; set; }
     public Parameter? RequestBody { get; set; }
     public IEnumerable<Parameter>? QueryParameters { get; set; }
     public IEnumerable<Parameter>? PathParameters { get; set; }

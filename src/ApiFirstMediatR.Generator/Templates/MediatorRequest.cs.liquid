@@ -10,7 +10,7 @@ namespace {{ namespace }}.Requests
     {%- endfor %}
     /// </summary>
     /// <returns>{{ response_description | join: "<br/>" }}</returns>
-    public sealed class {{ mediator_request_name }} : MediatR.IRequest<{{ response_body_type }}>
+    public sealed class {{ mediator_request_name }} : MediatR.IRequest{% if response_body_type != null %}<{{ response_body_type }}>{% endif %}
     {
         public {{ mediator_request_name }}({%- for property in all_request_parameters -%}{{ property.data_type }}{% if property.is_nullable %}?{% endif %} {{ property.parameter_name }}{%- unless forloop.last %}, {% endunless -%}{%- endfor -%})
         {

@@ -36,6 +36,7 @@ internal static class ControllerMapper
 
     private static string GetControllerName(this string path)
     {
+        // TODO: Make this configurable
         return path
             .Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
             .FirstOrDefault() ?? "Default";

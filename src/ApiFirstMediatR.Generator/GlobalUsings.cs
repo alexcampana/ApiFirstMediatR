@@ -1,6 +1,7 @@
 // Global using directives
 
 global using System.Text;
+global using ApiFirstMediatR.Generator.Constants;
 global using ApiFirstMediatR.Generator.Diagnostics;
 global using ApiFirstMediatR.Generator.Extensions;
 global using ApiFirstMediatR.Generator.Mappers;
