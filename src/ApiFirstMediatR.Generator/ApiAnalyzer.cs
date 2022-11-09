@@ -36,7 +36,7 @@ public sealed class ApiAnalyzer : DiagnosticAnalyzer
 
             foreach (var endpoint in endpoints)
             {
-                var implementationResponse = endpoint.ResponseBodyType is not null ? $", {endpoint.ResponseBodyType}>" : ">";
+                var implementationResponse = endpoint.Response?.BodyType is not null ? $", {endpoint.Response.BodyType}>" : ">";
                 var implementation = $"{endpoint.MediatorRequestName}Handler : IRequestHandler<{endpoint.MediatorRequestName}{implementationResponse}";
                 endpointBag.Add(new RequestLocation(endpoint.MediatorRequestName!, fileContext.AdditionalFile.GetLocation(), implementation));
             }

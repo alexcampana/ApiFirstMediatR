@@ -21,7 +21,6 @@ internal static class EndpointMapper
                     OperationName = operation.Key.GetDisplayName().ToPascalCase(),
                     MediatorRequestName = endpointName.ToPascalCase() + (operation.Key == OperationType.Get ? "Query" : "Command"),
                     Description = operation.Value.Description?.SplitOnNewLine(),
-                    ResponseBodyType = "Unit",
                     QueryParameters = queryParams,
                     PathParameters = pathParams
                 };
@@ -45,29 +44,8 @@ internal static class EndpointMapper
                     throw new NotImplementedException($"Only application/json request body supported. Endpoint: {operation.Key.GetDisplayName()} {path.Key}");
                 }
 
-                if (operation.Value.Responses.TryGetValue("200", out var successResponse))
-                {
-                    if (successResponse.Content.TryGetValue("application/json", out var responseBody))
-                    {
-                        endpoint.ResponseBodyType = TypeMapper.Map(responseBody.Schema);
-                        endpoint.ResponseDescription = successResponse.Description.SplitOnNewLine();
-                        endpoint.MainHttpResponseType = HttpStatusCodes.Status200;
-                    }
-                    else
-                    {
-                        throw new NotImplementedException($"Only application/json response body supported. Endpoint: {operation.Key.GetDisplayName()} {path.Key}");
-                    }
-                }
-                else if (operation.Value.Responses.TryGetValue("204", out successResponse))
-                {
-                    endpoint.ResponseBodyType = null;
-                    endpoint.ResponseDescription = successResponse.Description.SplitOnNewLine();
-                    endpoint.MainHttpResponseType = HttpStatusCodes.Status204;
-                }
-                else
-                {
-                    throw new NotImplementedException($"Response Status not supported. Endpoint: {operation.Key.GetDisplayName()} {path.Key}");
-                }
+                // TODO: Throw Unsupported Diagnostic if more than one success response is registered
+                endpoint.Response = ResponseMapper.Map(operation.Value.Responses);
 
                 yield return endpoint;
             }

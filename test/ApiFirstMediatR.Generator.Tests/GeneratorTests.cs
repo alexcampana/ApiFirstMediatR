@@ -113,7 +113,6 @@ using compilation.Requests;
 
 namespace compilation.Controllers
 {
-    [Microsoft.AspNetCore.Mvc.Route(""[controller]"")]
     public sealed class ApiController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly MediatR.IMediator _mediator;
@@ -128,7 +127,8 @@ namespace compilation.Controllers
         /// </summary>
         /// <returns>Hello world!</returns>
         [Microsoft.AspNetCore.Mvc.HttpGet(""/api/HelloWorld"")]
-        public async System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult> GetHelloWorld(System.Threading.CancellationToken cancellationToken)
+        [Microsoft.AspNetCore.Mvc.ProducesResponseType(typeof(HelloWorldDto), Microsoft.AspNetCore.Http.StatusCodes.Status200OK)]
+        public async System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult<HelloWorldDto>> GetHelloWorld(System.Threading.CancellationToken cancellationToken)
         {
             var request = new GetHelloWorldQuery();
             var response = await _mediator.Send(request, cancellationToken);

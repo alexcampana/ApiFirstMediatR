@@ -24,10 +24,10 @@ namespace {{ namespace }}.Controllers
         {%- for parameter in endpoint.all_request_parameters %}
         /// <param name="{{ parameter.parameter_name }}">{{ parameter.description | join: "<br/>" }}</param>
         {%- endfor %}
-        /// <returns>{{ endpoint.response_description | join: "<br/>" }}</returns>
+        /// <returns>{{ endpoint.response.description | join: "<br/>" }}</returns>
         [Microsoft.AspNetCore.Mvc.Http{{ endpoint.operation_name }}("{{ endpoint.path }}")]
-        [Microsoft.AspNetCore.Mvc.ProducesResponseType({% if endpoint.response_body_type != null %}typeof({{ endpoint.response_body_type }}), {% endif %}Microsoft.AspNetCore.Http.StatusCodes.{{ endpoint.main_http_response_type.status_code_reference }})]
-        public async System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult{% if endpoint.response_body_type != null %}<{{ endpoint.response_body_type }}>{% endif %}> {{ endpoint.name }}(
+        [Microsoft.AspNetCore.Mvc.ProducesResponseType({% if endpoint.response.body_type != null %}typeof({{ endpoint.response.body_type }}), {% endif %}Microsoft.AspNetCore.Http.StatusCodes.{{ endpoint.response.http_status_code.status_code_reference }})]
+        public async System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult{% if endpoint.response.body_type != null %}<{{ endpoint.response.body_type }}>{% endif %}> {{ endpoint.name }}(
             {%- for parameter in endpoint.all_request_parameters -%}
                 {{ parameter.attribute }}{{ parameter.data_type }}{%- if parameter.is_nullable -%}?{%- endif %} {{ parameter.parameter_name }}
             {%- unless forloop.last  %}, {% endunless -%}
@@ -40,7 +40,7 @@ namespace {{ namespace }}.Controllers
                 {%- unless forloop.last  %}, {% endunless -%}
                 {% endfor %});
             var response = await _mediator.Send(request, cancellationToken);
-            return {{ endpoint.main_http_response_type.response_method }}({% if endpoint.response_body_type != null %}response{% endif %});
+            return {{ endpoint.response.http_status_code.response_method }}({% if endpoint.response.body_type != null %}response{% endif %});
         }
         {%- endfor %}
     }
