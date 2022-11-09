@@ -14,7 +14,7 @@ internal static class PropertyMapper
                 JsonName = property.Key,
                 Description = property.Value.Description?.SplitOnNewLine(),
                 DataType = TypeMapper.Map(property.Value),
-                IsNullable = property.Value.Nullable
+                IsNullable = property.Value.Nullable || !schema.Required.Contains(property.Key) // TODO: Switch logic here based on spec version (version 3 checks nullable, version 2 checks required
             };
         }
     }

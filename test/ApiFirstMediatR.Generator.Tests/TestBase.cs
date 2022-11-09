@@ -3,7 +3,10 @@ namespace ApiFirstMediatR.Generator.Tests;
 public abstract class TestBase
 {
     protected static Compilation CreateCompilation(string source)
-        => CSharpCompilation.Create("compilation",
+        => CreateCompilation("compilation", source);
+    
+    protected static Compilation CreateCompilation(string assemblyName, string source)
+        => CSharpCompilation.Create(assemblyName,
             new[] { CSharpSyntaxTree.ParseText(source) },
             new[] { MetadataReference.CreateFromFile(typeof(Binder).GetTypeInfo().Assembly.Location) },
             new CSharpCompilationOptions(OutputKind.ConsoleApplication));

@@ -19,7 +19,8 @@ internal static class DataTransferObjectMapper
                 var inheritedSchemas = schema
                     .Value
                     .AllOf
-                    .Where(s => s.Reference?.Id is not null);
+                    .Where(s => s.Reference?.Id is not null)
+                    .ToList();
 
                 if (inheritedSchemas.Count() > 1)
                     throw new NotImplementedException("Only allowing one inherited schema for now");
@@ -33,7 +34,7 @@ internal static class DataTransferObjectMapper
                     .Value
                     .AllOf
                     .Where(s => s.Type == "object" && s.Reference is null)
-                    .SelectMany(s => PropertyMapper.Map(s));
+                    .SelectMany(PropertyMapper.Map);
 
                 dto.Properties = dto.Properties.Union(allOfProperties);
             }

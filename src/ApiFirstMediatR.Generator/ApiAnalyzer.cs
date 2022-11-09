@@ -36,7 +36,8 @@ public sealed class ApiAnalyzer : DiagnosticAnalyzer
 
             foreach (var endpoint in endpoints)
             {
-                var implementation = $"{endpoint.MediatorRequestName}Handler : IRequestHandler<{endpoint.MediatorRequestName}, {endpoint.ResponseBodyType}>";
+                var implementationResponse = endpoint.Response?.BodyType is not null ? $", {endpoint.Response.BodyType}>" : ">";
+                var implementation = $"{endpoint.MediatorRequestName}Handler : IRequestHandler<{endpoint.MediatorRequestName}{implementationResponse}";
                 endpointBag.Add(new RequestLocation(endpoint.MediatorRequestName!, fileContext.AdditionalFile.GetLocation(), implementation));
             }
         });
@@ -48,7 +49,7 @@ public sealed class ApiAnalyzer : DiagnosticAnalyzer
             if (type.TypeKind != TypeKind.Class || type.IsAbstract || type.IsStatic)
                 return;
 
-            if (type.Interfaces.Any(x => x.Name == "IRequestHandler" && x.TypeArguments.Length == 2))
+            if (type.Interfaces.Any(x => x.Name == "IRequestHandler" && x.TypeArguments.Length >= 1))
             {
                 var typeInterface = type.Interfaces.First(x => x.Name == "IRequestHandler");
                 var requestType = typeInterface.TypeArguments.First().Name;
