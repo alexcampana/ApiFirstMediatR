@@ -8,7 +8,7 @@ public class Response204Tests : TestBase
         var inputCompilation = CreateCompilation("With201Response", "");
 
         var additionalText = new AdditionalTextYml("api_spec.yml", ApiSpec) as AdditionalText;
-        var generator = new ApiSourceGenerator();
+        var generator = new SourceGenerator();
         var driver = CSharpGeneratorDriver
           .Create(generator)
           .AddAdditionalTexts(ImmutableArray.Create(additionalText))

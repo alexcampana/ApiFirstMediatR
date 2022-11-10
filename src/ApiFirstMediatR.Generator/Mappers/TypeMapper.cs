@@ -1,8 +1,8 @@
 namespace ApiFirstMediatR.Generator.Mappers;
 
-internal static class TypeMapper
+internal sealed class TypeMapper : ITypeMapper
 {
-    public static string Map(OpenApiSchema schema)
+    public string Map(OpenApiSchema schema)
     {
         // TODO: Add validation that this is the proper mapper for this schema
         if (schema.Reference is not null)

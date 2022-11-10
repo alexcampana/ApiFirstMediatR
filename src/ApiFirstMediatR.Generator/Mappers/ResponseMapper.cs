@@ -1,8 +1,15 @@
 namespace ApiFirstMediatR.Generator.Mappers;
 
-internal static class ResponseMapper
+internal sealed class ResponseMapper : IResponseMapper
 {
-    public static Response Map(OpenApiResponses responses)
+    private readonly ITypeMapper _typeMapper;
+
+    public ResponseMapper(ITypeMapper typeMapper)
+    {
+        _typeMapper = typeMapper;
+    }
+
+    public Response Map(OpenApiResponses responses)
     {
         if (responses.TryGetValue("200", out var successResponse))
         {
@@ -10,7 +17,7 @@ internal static class ResponseMapper
             {
                 return new Response
                 {
-                    BodyType = TypeMapper.Map(responseBody.Schema),
+                    BodyType = _typeMapper.Map(responseBody.Schema),
                     Description = successResponse.Description.SplitOnNewLine(),
                     HttpStatusCode = HttpStatusCodes.Status200
                 };

@@ -1,8 +1,19 @@
 namespace ApiFirstMediatR.Generator.Mappers;
 
-internal static class EndpointMapper
+internal sealed class EndpointMapper : IEndpointMapper
 {
-    public static IEnumerable<Endpoint> Map(OpenApiPaths paths)
+    private readonly IParameterMapper _parameterMapper;
+    private readonly IResponseMapper _responseMapper;
+    private readonly ITypeMapper _typeMapper;
+
+    public EndpointMapper(IParameterMapper parameterMapper, IResponseMapper responseMapper, ITypeMapper typeMapper)
+    {
+        _parameterMapper = parameterMapper;
+        _responseMapper = responseMapper;
+        _typeMapper = typeMapper;
+    }
+
+    public IEnumerable<Endpoint> Map(OpenApiPaths paths)
     {
         foreach (var path in paths)
         {
@@ -10,8 +21,8 @@ internal static class EndpointMapper
             {
                 var endpointName = operation.Value.OperationId ?? $"{operation.Key.GetDisplayName()}{PathToEndpointName(path.Key)}";
 
-                var queryParams = ParameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Query));
-                var pathParams = ParameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Path));
+                var queryParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Query));
+                var pathParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Path));
                 // TODO: Add support for Cookie, Header params
                 
                 var endpoint = new Endpoint
@@ -34,7 +45,7 @@ internal static class EndpointMapper
                         Name = "Body",
                         JsonName = "body",
                         Description = operation.Value.RequestBody.Description?.SplitOnNewLine(),
-                        DataType = TypeMapper.Map(requestBody.Schema),
+                        DataType = _typeMapper.Map(requestBody.Schema),
                         IsNullable = !operation.Value.RequestBody.Required,
                         Attribute = "[Microsoft.AspNetCore.Mvc.FromBody]"
                     };
@@ -45,14 +56,14 @@ internal static class EndpointMapper
                 }
 
                 // TODO: Throw Unsupported Diagnostic if more than one success response is registered
-                endpoint.Response = ResponseMapper.Map(operation.Value.Responses);
+                endpoint.Response = _responseMapper.Map(operation.Value.Responses);
 
                 yield return endpoint;
             }
         }
     }
 
-    private static string PathToEndpointName(this string path)
+    private static string PathToEndpointName(string path)
     {
         var pathParts  = path
             .Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)

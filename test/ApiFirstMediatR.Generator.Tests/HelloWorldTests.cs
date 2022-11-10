@@ -35,7 +35,7 @@ public class HelloWorldTests : TestBase
         var code = "namespace HelloWorld;";
         var inputCompilation = CreateCompilation("HelloWorld", code);
 
-        var generator = new ApiSourceGenerator();
+        var generator = new SourceGenerator();
         var driver = CSharpGeneratorDriver
             .Create(generator)
             .AddAdditionalTexts(ImmutableArray.Create(additionalText))

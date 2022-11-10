@@ -8,7 +8,7 @@ public class GeneratorDiagnosticTests : TestBase
         var code = "namespace Test;";
         var inputCompilation = CreateCompilation(code);
 
-        var generator = new ApiSourceGenerator();
+        var generator = new SourceGenerator();
         GeneratorDriver driver = CSharpGeneratorDriver
             .Create(generator)
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
@@ -26,7 +26,7 @@ public class GeneratorDiagnosticTests : TestBase
         
         var additionalTexts = new AdditionalTextYml("api_spec.yml", "") as AdditionalText;
 
-        var generator = new ApiSourceGenerator();
+        var generator = new SourceGenerator();
         GeneratorDriver driver = CSharpGeneratorDriver
             .Create(generator)
             .AddAdditionalTexts(ImmutableArray.Create(additionalTexts))
@@ -57,7 +57,7 @@ paths:
       responses:
         200:") as AdditionalText;
 
-        var generator = new ApiSourceGenerator();
+        var generator = new SourceGenerator();
         GeneratorDriver driver = CSharpGeneratorDriver
             .Create(generator)
             .AddAdditionalTexts(ImmutableArray.Create(additionalTexts))

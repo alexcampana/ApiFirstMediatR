@@ -1,8 +1,15 @@
 namespace ApiFirstMediatR.Generator.Mappers;
 
-internal static class ParameterMapper
+internal sealed class ParameterMapper : IParameterMapper
 {
-    public static IEnumerable<Parameter> Map(IEnumerable<OpenApiParameter> openApiParameters)
+    private readonly ITypeMapper _typeMapper;
+
+    public ParameterMapper(ITypeMapper typeMapper)
+    {
+        _typeMapper = typeMapper;
+    }
+
+    public IEnumerable<Parameter> Map(IEnumerable<OpenApiParameter> openApiParameters)
     {
         foreach (var parameter in openApiParameters)
         {
@@ -12,7 +19,7 @@ internal static class ParameterMapper
                 Name = parameter.Name.ToPascalCase(),
                 JsonName = parameter.Name,
                 Description = parameter.Description.SplitOnNewLine(),
-                DataType = TypeMapper.Map(parameter.Schema),
+                DataType = _typeMapper.Map(parameter.Schema),
                 IsNullable = !parameter.Required
             };
         }

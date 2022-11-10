@@ -6,6 +6,7 @@ namespace ApiFirstMediatR.Generator;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class ApiAnalyzer : DiagnosticAnalyzer
 {
+    private static readonly IMutableContainer GeneratorContainer = Container.Create().Using<Glue>();
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(DiagnosticCatalog.ApiMissingImplementationDescriptor);
     
     public override void Initialize(AnalysisContext context)
@@ -20,6 +21,11 @@ public sealed class ApiAnalyzer : DiagnosticAnalyzer
         var handlerBag = new ConcurrentBag<string>();
         var endpointBag = new ConcurrentBag<RequestLocation>();
 
+        using var container = GeneratorContainer
+            .Create();
+
+        var endpointMapper = container.Resolve<IEndpointMapper>();
+
         context.RegisterAdditionalFileAction(fileContext =>
         {
             var fileContent = fileContext.AdditionalFile.GetText(fileContext.CancellationToken);
@@ -32,7 +38,7 @@ public sealed class ApiAnalyzer : DiagnosticAnalyzer
             if (diagnostic.Errors.Any() || apiSpec is null)
                 return;
 
-            var endpoints = EndpointMapper.Map(apiSpec.Paths);
+            var endpoints = endpointMapper.Map(apiSpec.Paths);
 
             foreach (var endpoint in endpoints)
             {

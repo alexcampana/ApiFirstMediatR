@@ -1,12 +1,19 @@
 namespace ApiFirstMediatR.Generator.Mappers;
 
-internal static class DataTransferObjectMapper
+internal sealed class DataTransferObjectMapper : IDataTransferObjectMapper, IOpenApiDocumentMapper<DataTransferObject>
 {
-    public static IEnumerable<DataTransferObject> Map(OpenApiDocument apiSpec)
+    private readonly IPropertyMapper _propertyMapper;
+
+    public DataTransferObjectMapper(IPropertyMapper propertyMapper)
+    {
+        _propertyMapper = propertyMapper;
+    }
+
+    public IEnumerable<DataTransferObject> Map(OpenApiDocument apiSpec)
     {
         foreach (var schema in apiSpec.Components.Schemas)
         {
-            var properties = PropertyMapper.Map(schema.Value);
+            var properties = _propertyMapper.Map(schema.Value);
 
             var dto = new DataTransferObject
             {
@@ -34,7 +41,7 @@ internal static class DataTransferObjectMapper
                     .Value
                     .AllOf
                     .Where(s => s.Type == "object" && s.Reference is null)
-                    .SelectMany(PropertyMapper.Map);
+                    .SelectMany(_propertyMapper.Map);
 
                 dto.Properties = dto.Properties.Union(allOfProperties);
             }
