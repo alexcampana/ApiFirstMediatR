@@ -4,30 +4,27 @@ internal sealed class ModelRepository<T> : IRepository<T>
 {
     private readonly IApiSpecRepository _apiSpecRepository;
     private readonly IOpenApiDocumentMapper<T> _mapper;
-    private readonly object _lock = new ();
-    private IEnumerable<T>? _controllers;
+    private Lazy<IEnumerable<T>> _controllers;
 
     public ModelRepository(IApiSpecRepository apiSpecRepository, IOpenApiDocumentMapper<T> mapper)
     {
         _apiSpecRepository = apiSpecRepository;
         _mapper = mapper;
+        _controllers = new Lazy<IEnumerable<T>>(LazyGet);
     }
 
     public IEnumerable<T> Get()
     {
-        lock (_lock)
-        {
-            if (_controllers is null)
-            {
-                var apiSpec = _apiSpecRepository.Get();
+        return _controllers.Value;
+    }
 
-                if (apiSpec is not null)
-                    _controllers = _mapper.Map(apiSpec);
-                else
-                    _controllers = Enumerable.Empty<T>();
-            }
-        }
+    private IEnumerable<T> LazyGet()
+    {
+        var apiSpec = _apiSpecRepository.Get();
 
-        return _controllers;
+        if (apiSpec is not null)
+            return _mapper.Map(apiSpec);
+        
+        return Enumerable.Empty<T>();
     }
 }
