@@ -7,7 +7,7 @@ internal static class ApiTemplate
     public static readonly ApiTemplate<Endpoint> MediatorRequest = new("Templates/MediatorRequest.cs.liquid");
 }
 
-internal class ApiTemplate<T>
+internal sealed class ApiTemplate<T>
 {
     private readonly Template _template;
     

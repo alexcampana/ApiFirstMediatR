@@ -4,30 +4,24 @@ internal sealed class ControllerGenerator : IApiGenerator
 {
     private readonly GeneratorExecutionContext _context;
     private readonly IRepository<Controller> _controllerRepository;
+    private readonly IApiConfigRepository _apiConfigRepository;
 
-    public ControllerGenerator(GeneratorExecutionContext context, IRepository<Controller> controllerRepository)
+    public ControllerGenerator(GeneratorExecutionContext context, IRepository<Controller> controllerRepository, IApiConfigRepository apiConfigRepository)
     {
         _context = context;
         _controllerRepository = controllerRepository;
+        _apiConfigRepository = apiConfigRepository;
     }
 
     public void Generate()
     {
-        var projectConfig = new ScriptObject();
-        projectConfig.Add("namespace", _context.Compilation.AssemblyName);
-
+        var projectConfig = _apiConfigRepository.Get();
         var controllers = _controllerRepository.Get();
-
+        
         foreach (var controller in controllers)
         {
-            if (controller.Endpoints != null)
-            {
-                foreach (var endpoint in controller.Endpoints)
-                {
-                    var endpointSourceText = ApiTemplate.MediatorRequest.Generate(endpoint, projectConfig);
-                    _context.AddSource($"MediatorRequests_{endpoint.MediatorRequestName}.g.cs", endpointSourceText);
-                }
-            }
+            var controllerSourceText = ApiTemplate.Controller.Generate(controller, projectConfig);
+            _context.AddSource($"Controllers_{controller.Name}.g.cs", controllerSourceText);
         }
     }
 }

@@ -4,7 +4,7 @@ internal sealed class ModelRepository<T> : IRepository<T>
 {
     private readonly IApiSpecRepository _apiSpecRepository;
     private readonly IOpenApiDocumentMapper<T> _mapper;
-    private Lazy<IEnumerable<T>> _controllers;
+    private readonly Lazy<IEnumerable<T>> _controllers;
 
     public ModelRepository(IApiSpecRepository apiSpecRepository, IOpenApiDocumentMapper<T> mapper)
     {

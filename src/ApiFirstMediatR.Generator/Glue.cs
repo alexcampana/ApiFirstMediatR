@@ -12,6 +12,7 @@ public class Glue : IConfiguration
             
         // Repositories
         yield return container
+            .Bind<IApiConfigRepository>().As(Lifetime.ContainerSingleton).To<ApiConfigRepository>()
             .Bind<IApiSpecRepository>().As(Lifetime.ContainerSingleton).To<ApiSpecRepository>()
             .Bind<IRepository<DataTransferObject>>().As(Lifetime.ContainerSingleton).To<ModelRepository<DataTransferObject>>()
             .Bind<IRepository<Controller>>().As(Lifetime.ContainerSingleton).To<ModelRepository<Controller>>();
