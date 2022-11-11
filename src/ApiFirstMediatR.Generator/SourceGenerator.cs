@@ -13,7 +13,11 @@ public sealed class SourceGenerator : ISourceGenerator
             .Create();
 
         // Entrypoint
-        container.Resolve<IApiGenerator>().Generate();
+        var generators = container.Resolve<IEnumerable<IApiGenerator>>();
+        
+        foreach (var generator in generators)
+            generator.Generate();
+        
         container.Dispose();
     }
     

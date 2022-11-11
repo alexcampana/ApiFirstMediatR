@@ -3,11 +3,11 @@
 global using ApiFirstMediatR.Generator.Constants;
 global using ApiFirstMediatR.Generator.Diagnostics;
 global using ApiFirstMediatR.Generator.Extensions;
+global using ApiFirstMediatR.Generator.Generators;
 global using ApiFirstMediatR.Generator.Interfaces;
 global using ApiFirstMediatR.Generator.Mappers;
 global using ApiFirstMediatR.Generator.Models;
 global using ApiFirstMediatR.Generator.Repositories;
-global using ApiFirstMediatR.Generator.Services;
 global using ApiFirstMediatR.Generator.Templates;
 global using ApiFirstMediatR.Generator.Utils;
 global using CaseExtensions;
