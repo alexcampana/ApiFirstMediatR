@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ApiFirstMediatR.Generator\ApiFirstMediatR.Generator.csproj" PrivateAssets="all" IncludeAssets="Build" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Specs\github_api.yaml" />
+    <EmbeddedResource Include="Specs\sendgrid_api.yaml" />
+    <EmbeddedResource Include="Specs\petstore_api.yaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
+    <PackageReference Include="CaseExtensions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="Microsoft.OpenApi" Version="1.4.3" />
+    <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.4.1" />
+    <PackageReference Include="IoC.Container" Version="1.3.7" />
+    <PackageReference Include="SharpYaml" Version="2.1.0" />
+  </ItemGroup>
+
+</Project>

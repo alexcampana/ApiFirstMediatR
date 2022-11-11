@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E6F30EF9-6
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiFirstMediatR.Generator.Tests", "test\ApiFirstMediatR.Generator.Tests\ApiFirstMediatR.Generator.Tests.csproj", "{4F51A222-041D-4309-ADFE-B443FE24D64A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiFirstMediatR.Generator.Benchmarks", "test\ApiFirstMediatR.Generator.Benchmarks\ApiFirstMediatR.Generator.Benchmarks.csproj", "{D3E1981C-AF0B-43B6-A525-8F1EF5AA70A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,8 +40,13 @@ Global
 		{4F51A222-041D-4309-ADFE-B443FE24D64A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F51A222-041D-4309-ADFE-B443FE24D64A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F51A222-041D-4309-ADFE-B443FE24D64A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3E1981C-AF0B-43B6-A525-8F1EF5AA70A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3E1981C-AF0B-43B6-A525-8F1EF5AA70A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3E1981C-AF0B-43B6-A525-8F1EF5AA70A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3E1981C-AF0B-43B6-A525-8F1EF5AA70A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4F51A222-041D-4309-ADFE-B443FE24D64A} = {E6F30EF9-68DD-45DE-B5B5-C900E8924C8E}
+		{D3E1981C-AF0B-43B6-A525-8F1EF5AA70A5} = {E6F30EF9-68DD-45DE-B5B5-C900E8924C8E}
 	EndGlobalSection
 EndGlobal

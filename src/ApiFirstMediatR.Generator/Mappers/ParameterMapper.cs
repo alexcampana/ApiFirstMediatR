@@ -1,18 +1,33 @@
 namespace ApiFirstMediatR.Generator.Mappers;
 
-internal static class ParameterMapper
+internal sealed class ParameterMapper : IParameterMapper
 {
-    public static IEnumerable<Parameter> Map(IEnumerable<OpenApiParameter> openApiParameters)
+    private readonly ITypeMapper _typeMapper;
+
+    public ParameterMapper(ITypeMapper typeMapper)
+    {
+        _typeMapper = typeMapper;
+    }
+
+    public IEnumerable<Parameter> Map(IEnumerable<OpenApiParameter> openApiParameters)
     {
         foreach (var parameter in openApiParameters)
         {
+            string? dataType = null;
+
+            if (parameter.Schema.OneOf.Any())
+            {
+                dataType = _typeMapper.Map(parameter.Schema.OneOf.First());
+                // TODO: Throw warning diagnostic here
+            }
+            
             yield return new Parameter
             {
-                ParameterName = parameter.Name.ToCamelCase(),
+                ParameterName = parameter.Name.ToKeywordSafeName().ToCamelCase(),
                 Name = parameter.Name.ToPascalCase(),
                 JsonName = parameter.Name,
                 Description = parameter.Description.SplitOnNewLine(),
-                DataType = TypeMapper.Map(parameter.Schema),
+                DataType = dataType ?? _typeMapper.Map(parameter.Schema),
                 IsNullable = !parameter.Required
             };
         }

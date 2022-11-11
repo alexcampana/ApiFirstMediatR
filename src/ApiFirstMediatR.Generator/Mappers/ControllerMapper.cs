@@ -1,18 +1,25 @@
 namespace ApiFirstMediatR.Generator.Mappers;
 
-internal static class ControllerMapper
+internal sealed class ControllerMapper : IControllerMapper, IOpenApiDocumentMapper<Controller>
 {
-    public static IEnumerable<Controller> Map(OpenApiDocument apiSpec)
+    private readonly IEndpointMapper _endpointMapper;
+
+    public ControllerMapper(IEndpointMapper endpointMapper)
+    {
+        _endpointMapper = endpointMapper;
+    }
+
+    public IEnumerable<Controller> Map(OpenApiDocument apiSpec)
     {
         var controllerSpecs = apiSpec
             .Paths
-            .GroupBy(p => p.Key.GetControllerName())
+            .GroupBy(p => GetControllerName(p.Key))
             .ToList();
 
         foreach (var controllerSpec in controllerSpecs)
         {
             var paths = GetOpenApiPaths(controllerSpec);
-            var endpoints = EndpointMapper.Map(paths);
+            var endpoints = _endpointMapper.Map(paths);
 
             yield return new Controller
             {
@@ -34,7 +41,7 @@ internal static class ControllerMapper
         return paths;
     }
 
-    private static string GetControllerName(this string path)
+    private static string GetControllerName(string path)
     {
         // TODO: Make this configurable
         return path
