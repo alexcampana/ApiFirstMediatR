@@ -17,7 +17,7 @@ internal sealed class DataTransferObjectMapper : IDataTransferObjectMapper, IOpe
 
             var dto = new DataTransferObject
             {
-                Name = schema.Key,
+                Name = schema.Key.ToCleanName().ToPascalCase(),
                 Properties = properties
             };
 

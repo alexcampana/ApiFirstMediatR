@@ -12,12 +12,21 @@ internal sealed class PropertyMapper : IPropertyMapper
     public IEnumerable<Property> Map(OpenApiSchema schema)
     {
         // TODO: Add validation that this is the proper mapper for this schema
+        var referenceName = schema.Reference?.Id?.ToCleanName().ToPascalCase();
         
         foreach (var property in schema.Properties)
         {
+            var name = property.Key.ToCleanName().ToPascalCase();
+
+            // Member names can't be the same as their enclosing type, so switching to camelcase
+            if (name == referenceName)
+            {
+                name = name.ToCleanName().ToCamelCase();
+            }
+
             yield return new Property
             {
-                Name = property.Key.ToPascalCase(),
+                Name = name,
                 JsonName = property.Key,
                 Description = property.Value.Description?.SplitOnNewLine(),
                 DataType = _typeMapper.Map(property.Value),

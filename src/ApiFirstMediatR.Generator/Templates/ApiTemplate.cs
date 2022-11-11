@@ -17,13 +17,13 @@ internal sealed class ApiTemplate<T>
         _template = Template.ParseLiquid(indexTemplateFile);
     }
     
-    public string Generate(T contextObject, ScriptObject projectConfig)
+    public string Generate(T contextObject, ApiConfig apiConfig)
     {
         var scriptObject = new ScriptObject();
+        scriptObject.Import(apiConfig);
         scriptObject.Import(contextObject);
-        
+
         var context = new LiquidTemplateContext();
-        context.PushGlobal(projectConfig);
         context.PushGlobal(scriptObject);
         
         return _template.Render(context);

@@ -3,24 +3,24 @@ namespace ApiFirstMediatR.Generator.Repositories;
 internal sealed class ApiConfigRepository : IApiConfigRepository
 {
     private readonly GeneratorExecutionContext _context;
-    private readonly Lazy<ScriptObject> _scriptObject;
+    private readonly Lazy<ApiConfig> _scriptObject;
 
     public ApiConfigRepository(GeneratorExecutionContext context)
     {
         _context = context;
-        _scriptObject = new Lazy<ScriptObject>(GetLazyConfig);
+        _scriptObject = new Lazy<ApiConfig>(GetLazyConfig);
     }
 
-    public ScriptObject Get()
+    public ApiConfig Get()
     {
         return _scriptObject.Value;
     }
 
-    private ScriptObject GetLazyConfig()
+    private ApiConfig GetLazyConfig()
     {
-        var projectConfig = new ScriptObject();
-        projectConfig.Add("namespace", _context.Compilation.AssemblyName);
-
-        return projectConfig;
+        return new ApiConfig
+        {
+            Namespace = _context.Compilation.AssemblyName,
+        };
     }
 }
