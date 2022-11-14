@@ -16,6 +16,9 @@
     <EmbeddedResource Include="Specs\github_api.yaml" />
     <EmbeddedResource Include="Specs\sendgrid_api.yaml" />
     <EmbeddedResource Include="Specs\petstore_api.yaml" />
+    <EmbeddedResource Include="Specs\github_api.json" />
+    <EmbeddedResource Include="Specs\sendgrid_api.json" />
+    <EmbeddedResource Include="Specs\petstore_api.json" />
   </ItemGroup>
 
   <ItemGroup>

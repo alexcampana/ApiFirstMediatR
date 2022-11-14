@@ -1,3 +1,7 @@
+using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Readers;
+using SharpYaml.Serialization;
+
 namespace ApiFirstMediatR.Generator.Benchmarks.Benchmarks;
 
 [MemoryDiagnoser]
@@ -5,15 +9,19 @@ public class ApiBenchmark : BaseBenchmark
 {
     private GeneratorDriver? _generatorDriver;
     private Compilation? _compilation;
+    private string? _apiSpecRaw;
     
-    [Params("github_api.yaml", "sendgrid_api.yaml", "petstore_api.yaml")]
+    [Params("github_api", "sendgrid_api", "petstore_api")]
     public string? ApiSpecFile { get; set; }
     
+    [Params("json", "yaml")]
+    public string? ApiSpecFormat { get; set; }
+    
     [GlobalSetup]
-    public void GithubSetup()
+    public void BenchmarkSetup()
     {
-        var apiSpec = EmbeddedResource.GetContent($"Specs/{ApiSpecFile}");
-        var additionalText = new AdditionalTextYml("github_api.yaml", apiSpec) as AdditionalText;
+        _apiSpecRaw = EmbeddedResource.GetContent($"Specs/{ApiSpecFile}.{ApiSpecFormat}");
+        var additionalText = new AdditionalTextYml("github_api.yaml", _apiSpecRaw) as AdditionalText;
         _compilation = CreateCompilation("Github", "");
 
         var generator = new SourceGenerator();
@@ -25,51 +33,19 @@ public class ApiBenchmark : BaseBenchmark
     [Benchmark]
     public GeneratorDriver GenerateApi() => _generatorDriver!.RunGenerators(_compilation!);
 
-    // [GlobalSetup(Target = nameof(GenerateGithub))]
-    // public void GithubSetup()
-    // {
-    //     var apiSpec = EmbeddedResource.GetContent("Specs/github_api.yaml");
-    //     var additionalText = new AdditionalTextYml("github_api.yaml", apiSpec) as AdditionalText;
-    //     _compilation = CreateCompilation("Github", "");
-    //
-    //     var generator = new SourceGenerator();
-    //     _generatorDriver = CSharpGeneratorDriver
-    //         .Create(generator)
-    //         .AddAdditionalTexts(ImmutableArray.Create(additionalText));
-    // }
+    [Benchmark]
+    public OpenApiDocument? ParseApiSpec() => new OpenApiStringReader().Read(_apiSpecRaw, out _);
 
-    // [Benchmark]
-    // public GeneratorDriver GenerateGithub() => _generatorDriver!.RunGenerators(_compilation!);
-    //
-    // [GlobalSetup(Target = nameof(GenerateSendGrid))]
-    // public void SendGridSetup()
-    // {
-    //     var apiSpec = EmbeddedResource.GetContent("Specs/sendgrid_api.yaml");
-    //     var additionalText = new AdditionalTextYml("sendgrid_api.yaml", apiSpec) as AdditionalText;
-    //     _compilation = CreateCompilation("SendGrid", "");
-    //
-    //     var generator = new SourceGenerator();
-    //     _generatorDriver = CSharpGeneratorDriver
-    //         .Create(generator)
-    //         .AddAdditionalTexts(ImmutableArray.Create(additionalText));
-    // }
-    //
-    // [Benchmark]
-    // public GeneratorDriver GenerateSendGrid() => _generatorDriver!.RunGenerators(_compilation!);
-    //
-    // [GlobalSetup(Target = nameof(GeneratePetStore))]
-    // public void PetStoreSetup()
-    // {
-    //     var apiSpec = EmbeddedResource.GetContent("Specs/petstore_api.yaml");
-    //     var additionalText = new AdditionalTextYml("petstore_api.yaml", apiSpec) as AdditionalText;
-    //     _compilation = CreateCompilation("PetStore", "");
-    //
-    //     var generator = new SourceGenerator();
-    //     _generatorDriver = CSharpGeneratorDriver
-    //         .Create(generator)
-    //         .AddAdditionalTexts(ImmutableArray.Create(additionalText));
-    // }
-    //
-    // [Benchmark]
-    // public GeneratorDriver GeneratePetStore() => _generatorDriver!.RunGenerators(_compilation!);
+    [Benchmark]
+    public YamlDocument DeserializeApiSpec() => ParseYamlString(_apiSpecRaw!);
+
+    private static YamlDocument ParseYamlString(string yamlString)
+    {
+        var reader = new StringReader(yamlString);
+        var yamlStream = new YamlStream();
+        yamlStream.Load(reader);
+
+        var yamlDocument = yamlStream.Documents.First();
+        return yamlDocument;
+    }
 }
