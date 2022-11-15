@@ -28,6 +28,6 @@ exec { & dotnet clean -c Release }
 
 exec { & dotnet build -c Release }
 
-exec { & dotnet test -c Release -r $artifacts --no-build -l trx --verbosity=normal }
+exec { & dotnet test -c Release --results-directory $artifacts --no-build -l trx --verbosity=normal }
 
 exec { & dotnet pack .\src\ApiFirstMediatR.Generator\ApiFirstMediatR.Generator.csproj -c Release -o $artifacts --no-build }
