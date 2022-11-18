@@ -1,4 +1,4 @@
-namespace ApiFirstMediatR.Generator.Tests;
+namespace ApiFirstMediatR.Generator.Tests.SourceGenerators;
 
 public class Response204Tests : TestBase
 {

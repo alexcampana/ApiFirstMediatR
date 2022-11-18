@@ -1,4 +1,4 @@
-namespace ApiFirstMediatR.Generator.Tests;
+namespace ApiFirstMediatR.Generator.Tests.SourceGenerators;
 
 public class Response201Tests : TestBase
 {
@@ -6,8 +6,7 @@ public class Response201Tests : TestBase
     public void ValidAPISpec_With201Response_GeneratesValidCode()
     {
         var inputCompilation = CreateCompilation("With201Response", "");
-
-        var additionalText = new AdditionalTextYml("api_spec.yml", ApiSpecOperationId) as AdditionalText;
+        var additionalText = new AdditionalTextYml("api_spec.yml", ApiSpec) as AdditionalText;
         var generator = new SourceGenerator();
         var driver = CSharpGeneratorDriver
             .Create(generator)
@@ -29,7 +28,22 @@ public class Response201Tests : TestBase
         Assert.True(controllerExpectedResult.IsEquivalentTo(generatedController.SyntaxTree));
     }
 
-    private const string ApiSpecOperationId = @"openapi: 3.0.1
+    [Fact]
+    public void ValidAPISpec_WithUnsupportedLink_ThrowsDiagnostic()
+    {
+        var inputCompilation = CreateCompilation("With201Response", "");
+        var additionalText = new AdditionalTextYml("api_spec.yml", ApiSpecInvalidLink) as AdditionalText;
+        var generator = new SourceGenerator();
+        CSharpGeneratorDriver
+            .Create(generator)
+            .AddAdditionalTexts(ImmutableArray.Create(additionalText))
+            .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
+
+        Assert.Single(diagnostics);
+        Assert.Equal(DiagnosticIdentifiers.ApiSpecFeatureNotSupported, diagnostics.First().Id);
+    }
+
+    private const string ApiSpec = @"openapi: 3.0.1
 info:
   title: HelloWorld API
   version: v1
@@ -76,6 +90,74 @@ paths:
             Created HelloWorld:
               description: New HelloWorld Message
               operationId: GetHelloWorld
+              parameters:
+                helloWorldId: '$response.body#/id'
+components:
+  schemas:
+    HelloWorldDto:
+      type: object
+      properties:
+        message:
+          nullable: true
+          type: string
+    HelloWorldCreated:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: ID of the created Hello World.
+security: []";
+    
+    
+
+    private const string ApiSpecInvalidLink = @"openapi: 3.0.1
+info:
+  title: HelloWorld API
+  version: v1
+paths:
+  /api/HelloWorld/{helloWorldId}:
+    get:
+      tags:
+        - HelloWorld
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HelloWorldDto'
+          description: Hello world!
+      operationId: GetHelloWorld
+      description: Gets a HelloWorld Message
+      parameters:
+        - in: path
+          name: helloWorldId
+          required: true
+          schema:
+            type: integer
+            format: int32
+  /api/HelloWorld:
+    post:
+      description: Posts a HelloWorld Message
+      operationId: PostHelloWorld
+      requestBody:
+        description: HelloWorld Post Response
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HelloWorldDto'
+      responses:
+        '201':
+          description: POST HelloWorld Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HelloWorldCreated'
+          links:
+            Created HelloWorld:
+              description: New HelloWorld Message
+              operationRef: '#/paths/~1api~1HelloWorld~1{helloWorldId}/get'
               parameters:
                 helloWorldId: '$response.body#/id'
 components:

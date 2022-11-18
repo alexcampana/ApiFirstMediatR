@@ -44,6 +44,26 @@ internal static class DiagnosticCatalog
         isEnabledByDefault: true
     );
 
+    private static readonly DiagnosticDescriptor ApiSpecFeatureNotSupportedDescriptor = new
+    (
+        id: DiagnosticIdentifiers.ApiSpecFeatureNotSupported,
+        title: "API spec feature not supported",
+        messageFormat: "API spec feature not supported: {0}",
+        category: Category,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+    
+    private static readonly DiagnosticDescriptor ApiFirstMediatRUnexpectedErrorDescriptor = new
+    (
+        id: DiagnosticIdentifiers.ApiFirstMediatRUnexpectedError,
+        title: "Unexpected error occured while generating API interface",
+        messageFormat: "Unexpected error occured while generating API interface: {0}",
+        category: Category,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
     public static Diagnostic ApiSpecFileNotFound()
         => Diagnostic.Create(ApiSpecFileNotFoundDescriptor, Location.None);
     
@@ -55,4 +75,10 @@ internal static class DiagnosticCatalog
 
     public static Diagnostic ApiMissingImplementation(Location location, string implementation)
         => Diagnostic.Create(ApiMissingImplementationDescriptor, location, implementation);
+
+    public static Diagnostic ApiSpecFeatureNotSupported(Location location, string errorMessage)
+        => Diagnostic.Create(ApiSpecFeatureNotSupportedDescriptor, location, errorMessage);
+
+    public static Diagnostic ApiFirstMediatRUnexpectedError(Location location, string errorMessage)
+        => Diagnostic.Create(ApiFirstMediatRUnexpectedErrorDescriptor, location, errorMessage);
 }
