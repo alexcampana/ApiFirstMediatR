@@ -9,7 +9,7 @@ public sealed class SourceGenerator : ISourceGenerator
     {
         using var container = GeneratorContainer
             .Create()
-            .Bind<GeneratorExecutionContext>().As(Lifetime.ScopeRoot).To(ctx => context)
+            .Bind<GeneratorExecutionContextWrapper, ISources, IDiagnosticReporter>().As(Lifetime.ScopeRoot).To(ctx => new GeneratorExecutionContextWrapper(context))
             .Create();
 
         // Entrypoint
