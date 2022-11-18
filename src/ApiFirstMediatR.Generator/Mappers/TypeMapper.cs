@@ -21,7 +21,7 @@ internal sealed class TypeMapper : ITypeMapper
         if (schema.Reference is not null)
             return $"{apiConfig.DtoNamespace}.{schema.Reference.Id.ToPascalCase()}";
         
-        return (schema.Type.ToLower(), schema.Format?.ToLower()) switch
+        return (schema.Type?.ToLower(), schema.Format?.ToLower()) switch
         {
             ("boolean", _) => "bool",
             ("integer", "int64") => "long",
