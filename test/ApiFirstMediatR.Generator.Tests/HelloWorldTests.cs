@@ -2,38 +2,16 @@ namespace ApiFirstMediatR.Generator.Tests;
 
 public class HelloWorldTests : TestBase
 {
-    [Fact]
-    public void ValidYaml3APISpec_GeneratesValidCode()
-    {
-        var additionalText = new AdditionalTextYml("api_spec.yml", Yaml3ApiSpec) as AdditionalText;
-        ValidateSpec(additionalText);
-    }
-    
-    [Fact]
-    public void ValidJson3APISpec_GeneratesValidCode()
-    {
-        var additionalText = new AdditionalTextYml("api_spec.json", Json3ApiSpec) as AdditionalText;
-        ValidateSpec(additionalText);
-    }
-    
-    [Fact]
-    public void ValidYaml2APISpec_GeneratesValidCode()
-    {
-        var additionalText = new AdditionalTextYml("api_spec.yml", Yaml2ApiSpec) as AdditionalText;
-        ValidateSpec(additionalText);
-    }
-
-    [Fact]
-    public void ValidJson2APISpec_GeneratesValidCode()
-    {
-        var additionalText = new AdditionalTextYml("api_spec.json", Json2ApiSpec) as AdditionalText;
-        ValidateSpec(additionalText);
-    }
-
-    private void ValidateSpec(AdditionalText additionalText)
+    [Theory]
+    [InlineData("api_spec3.yml", Yaml3ApiSpec)]
+    [InlineData("api_spec3.json", Json3ApiSpec)]
+    [InlineData("api_spec2.yml", Yaml2ApiSpec)]
+    [InlineData("api_spec3.json", Json2ApiSpec)]
+    public void ValidateSpec(string fileName, string fileContents)
     {
         var code = "namespace HelloWorld;";
         var inputCompilation = CreateCompilation("HelloWorld", code);
+        var additionalText = new AdditionalTextYml(fileName, fileContents) as AdditionalText;
 
         var generator = new SourceGenerator();
         var driver = CSharpGeneratorDriver

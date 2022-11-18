@@ -13,12 +13,15 @@ internal sealed class TypeMapper : ITypeMapper
     public string Map(OpenApiSchema schema)
     {
         var apiConfig = _apiConfigRepository.Get();
+        // TODO: Support non schema objects (through custom response objects)
+        //       This will required parsing all responses and requests to ensure all dto
+        //       are created for all endpoints
         
         // TODO: Add validation that this is the proper mapper for this schema
         if (schema.Reference is not null)
             return $"{apiConfig.DtoNamespace}.{schema.Reference.Id.ToPascalCase()}";
         
-        return (schema.Type, schema.Format) switch
+        return (schema.Type.ToLower(), schema.Format?.ToLower()) switch
         {
             ("boolean", _) => "bool",
             ("integer", "int64") => "long",

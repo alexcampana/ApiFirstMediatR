@@ -1,6 +1,6 @@
 namespace ApiFirstMediatR.Generator.Models;
 
-internal sealed class Response
+internal class Response
 {
     public string? BodyType { get; set; }
     public HttpStatusCode? HttpStatusCode { get; set; }

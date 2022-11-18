@@ -10,9 +10,9 @@ public class Response204Tests : TestBase
         var additionalText = new AdditionalTextYml("api_spec.yml", ApiSpec) as AdditionalText;
         var generator = new SourceGenerator();
         var driver = CSharpGeneratorDriver
-          .Create(generator)
-          .AddAdditionalTexts(ImmutableArray.Create(additionalText))
-          .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
+            .Create(generator)
+            .AddAdditionalTexts(ImmutableArray.Create(additionalText))
+            .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
         
         Assert.Empty(diagnostics);
 

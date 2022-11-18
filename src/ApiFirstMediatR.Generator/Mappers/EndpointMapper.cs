@@ -5,12 +5,14 @@ internal sealed class EndpointMapper : IEndpointMapper
     private readonly IParameterMapper _parameterMapper;
     private readonly IResponseMapper _responseMapper;
     private readonly ITypeMapper _typeMapper;
+    private readonly IOperationNamingRepository _operationNamingRepository;
 
-    public EndpointMapper(IParameterMapper parameterMapper, IResponseMapper responseMapper, ITypeMapper typeMapper)
+    public EndpointMapper(IParameterMapper parameterMapper, IResponseMapper responseMapper, ITypeMapper typeMapper, IOperationNamingRepository operationNamingRepository)
     {
         _parameterMapper = parameterMapper;
         _responseMapper = responseMapper;
         _typeMapper = typeMapper;
+        _operationNamingRepository = operationNamingRepository;
     }
 
     public IEnumerable<Endpoint> Map(OpenApiPaths paths)
@@ -22,7 +24,7 @@ internal sealed class EndpointMapper : IEndpointMapper
             {
                 try
                 {
-                    var endpointName = operation.Value.OperationId ?? $"{operation.Key.GetDisplayName()}{PathToEndpointName(path.Key)}";
+                    var endpointName = _operationNamingRepository.GetOperationNameByPathAndOperationType(path.Key, operation.Key);
 
                     var queryParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Query));
                     var pathParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Path));
@@ -30,10 +32,10 @@ internal sealed class EndpointMapper : IEndpointMapper
                     
                     var endpoint = new Endpoint
                     {
-                        Name = endpointName.ToCleanName().ToPascalCase(),
+                        Name = endpointName,
                         Path = path.Key,
                         OperationName = operation.Key.GetDisplayName().ToPascalCase(),
-                        MediatorRequestName = endpointName.ToCleanName().ToPascalCase() + (operation.Key == OperationType.Get ? "Query" : "Command"),
+                        MediatorRequestName = $"{endpointName}{(operation.Key == OperationType.Get ? "Query" : "Command")}",
                         Description = operation.Value.Description?.SplitOnNewLine(),
                         QueryParameters = queryParams,
                         PathParameters = pathParams

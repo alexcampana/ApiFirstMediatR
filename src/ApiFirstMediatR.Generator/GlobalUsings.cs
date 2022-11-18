@@ -19,3 +19,8 @@ global using Microsoft.OpenApi.Models;
 global using Microsoft.OpenApi.Readers;
 global using Scriban;
 global using Scriban.Runtime;
+
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("ApiFirstMediatR.Generator.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
