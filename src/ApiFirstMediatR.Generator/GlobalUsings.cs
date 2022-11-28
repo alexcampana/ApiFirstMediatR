@@ -1,5 +1,6 @@
 // Global using directives
 
+global using System.Collections.Immutable;
 global using ApiFirstMediatR.Generator.Constants;
 global using ApiFirstMediatR.Generator.Diagnostics;
 global using ApiFirstMediatR.Generator.Extensions;

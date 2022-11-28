@@ -2,13 +2,13 @@ namespace ApiFirstMediatR.Generator.Repositories;
 
 internal sealed class ApiSpecRepository : IApiSpecRepository
 {
-    private readonly ISources _sources;
+    private readonly ICompilation _compilation;
     private readonly IDiagnosticReporter _diagnosticReporter;
     private readonly Lazy<OpenApiDocument?> _openApiDocument;
 
-    public ApiSpecRepository(ISources sources, IDiagnosticReporter diagnosticReporter)
+    public ApiSpecRepository(ICompilation compilation, IDiagnosticReporter diagnosticReporter)
     {
-        _sources = sources;
+        _compilation = compilation;
         _diagnosticReporter = diagnosticReporter;
         _openApiDocument = new Lazy<OpenApiDocument?>(Parse);
     }
@@ -20,7 +20,7 @@ internal sealed class ApiSpecRepository : IApiSpecRepository
 
     private OpenApiDocument? Parse()
     {
-        var specFiles = _sources
+        var specFiles = _compilation
             .AdditionalFiles
             .Where(f => f.Path.EndsWith(".yaml", StringComparison.InvariantCultureIgnoreCase) ||
                         f.Path.EndsWith(".yml", StringComparison.InvariantCultureIgnoreCase) ||
@@ -35,7 +35,7 @@ internal sealed class ApiSpecRepository : IApiSpecRepository
 
         foreach (var specFile in specFiles)
         {
-            var fileContent = specFile.GetText(_sources.CancellationToken);
+            var fileContent = specFile.GetText(_compilation.CancellationToken);
 
             if (fileContent is null || fileContent.Length == 0)
             {

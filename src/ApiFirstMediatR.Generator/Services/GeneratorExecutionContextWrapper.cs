@@ -1,8 +1,6 @@
-using System.Collections.Immutable;
+namespace ApiFirstMediatR.Generator.Services;
 
-namespace ApiFirstMediatR.Generator.Diagnostics;
-
-internal sealed class GeneratorExecutionContextWrapper : IDiagnosticReporter, ISources
+internal sealed class GeneratorExecutionContextWrapper : IDiagnosticReporter, ISources, ICompilation
 {
     private readonly GeneratorExecutionContext _context;
 
