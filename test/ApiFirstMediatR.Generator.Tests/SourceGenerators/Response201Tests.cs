@@ -39,8 +39,8 @@ public class Response201Tests : TestBase
             .AddAdditionalTexts(ImmutableArray.Create(additionalText))
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
 
-        Assert.Single(diagnostics);
-        Assert.Equal(DiagnosticIdentifiers.ApiSpecFeatureNotSupported, diagnostics.First().Id);
+        var diagnostic = Assert.Single(diagnostics);
+        Assert.Equal(DiagnosticIdentifiers.ApiSpecFeatureNotSupported, diagnostic.Id);
     }
 
     private const string ApiSpec = @"openapi: 3.0.1

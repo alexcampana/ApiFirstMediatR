@@ -6,15 +6,9 @@ public class TypeMapperTests
     
     public TypeMapperTests()
     {
-        var mockApiConfigRepo = new Mock<IApiConfigRepository>();
-        mockApiConfigRepo
-            .Setup(mock => mock.Get())
-            .Returns(new ApiConfig
-            {
-                Namespace = "Test"
-            });
+        var mockApiConfigRepo = MockApiConfig.Create();
         
-        _typeMapper = new TypeMapper(mockApiConfigRepo.Object);
+        _typeMapper = new TypeMapper(mockApiConfigRepo);
     }
 
     [Fact]

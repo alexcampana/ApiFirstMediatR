@@ -29,22 +29,22 @@ public class HelloWorldTests : TestBase
         Assert.Equal(3, generatedSources.Length);
 
         var dtos = generatedSources.Where(g => g.HintName == "Dtos_HelloWorldDto.g.cs").ToList();
-        Assert.Single(dtos);
+        var dto = Assert.Single(dtos);
 
         var mediatrRequests = generatedSources.Where(g => g.HintName == "MediatorRequests_GetHelloWorldQuery.g.cs").ToList();
-        Assert.Single(mediatrRequests);
+        var mediatrRequest = Assert.Single(mediatrRequests);
 
         var controllers = generatedSources.Where(g => g.HintName == "Controllers_ApiController.g.cs").ToList();
-        Assert.Single(controllers);
+        var controller = Assert.Single(controllers);
 
         var dtoExpectedResult = CSharpSyntaxTree.ParseText(ExpectedDto);
-        Assert.True(dtoExpectedResult.IsEquivalentTo(dtos.First().SyntaxTree));
+        Assert.True(dtoExpectedResult.IsEquivalentTo(dto.SyntaxTree));
 
         var mediatrExpectedResult = CSharpSyntaxTree.ParseText(ExpectedMediatorRequest);
-        Assert.True(mediatrExpectedResult.IsEquivalentTo(mediatrRequests.First().SyntaxTree));
+        Assert.True(mediatrExpectedResult.IsEquivalentTo(mediatrRequest.SyntaxTree));
 
         var controllerExpectedResult = CSharpSyntaxTree.ParseText(ExpectedController);
-        Assert.True(controllerExpectedResult.IsEquivalentTo(controllers.First().SyntaxTree));
+        Assert.True(controllerExpectedResult.IsEquivalentTo(controller.SyntaxTree));
     }
     
     private const string Yaml3ApiSpec = @"openapi: 3.0.1

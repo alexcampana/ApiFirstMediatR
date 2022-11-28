@@ -6,6 +6,7 @@ global using ApiFirstMediatR.Generator.Interfaces;
 global using ApiFirstMediatR.Generator.Mappers;
 global using ApiFirstMediatR.Generator.Models;
 global using ApiFirstMediatR.Generator.Repositories;
+global using ApiFirstMediatR.Generator.Tests.Utils;
 global using Microsoft.CodeAnalysis;
 global using Microsoft.CodeAnalysis.CSharp;
 global using Microsoft.CodeAnalysis.Text;

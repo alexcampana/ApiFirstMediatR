@@ -14,8 +14,8 @@ public class ApiSpecDiagnosticTests : TestBase
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
                 out var diagnostics);
         
-        Assert.Single(diagnostics);
-        Assert.Equal("AFM001", diagnostics.First().Id);
+        var diagnostic = Assert.Single(diagnostics);
+        Assert.Equal("AFM001", diagnostic.Id);
     }
  
     [Fact]
@@ -33,8 +33,8 @@ public class ApiSpecDiagnosticTests : TestBase
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
                 out var diagnostics);
         
-        Assert.Single(diagnostics);
-        Assert.Equal("AFM002", diagnostics.First().Id);
+        var diagnostic = Assert.Single(diagnostics);
+        Assert.Equal("AFM002", diagnostic.Id);
     }
  
     [Fact]
@@ -64,7 +64,7 @@ paths:
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
                 out var diagnostics);
         
-        Assert.Single(diagnostics);
-        Assert.Equal("AFM003", diagnostics.First().Id);
+        var diagnostic = Assert.Single(diagnostics);
+        Assert.Equal("AFM003", diagnostic.Id);
     }
 }

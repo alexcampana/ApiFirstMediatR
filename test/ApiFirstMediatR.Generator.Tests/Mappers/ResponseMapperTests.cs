@@ -8,14 +8,7 @@ public class ResponseMapperTests
     
     public ResponseMapperTests()
     {
-        var mockApiConfigRepo = new Mock<IApiConfigRepository>();
-        mockApiConfigRepo
-            .Setup(mock => mock.Get())
-            .Returns(new ApiConfig
-            {
-                Namespace = "Test"
-            });
-
+        var mockApiConfigRepo = MockApiConfig.Create();
         var mockOperationNamingRepository = new Mock<IOperationNamingRepository>();
         mockOperationNamingRepository
             .Setup(mock => mock.GetControllerNameByOperationId("TestOperation"))
@@ -25,7 +18,7 @@ public class ResponseMapperTests
             .Setup(mock => mock.GetOperationNameByOperationId("TestOperation"))
             .Returns("TestOperation");
 
-        _typeMapper = new TypeMapper(mockApiConfigRepo.Object);
+        _typeMapper = new TypeMapper(mockApiConfigRepo);
         _operationNamingRepository = mockOperationNamingRepository.Object;
         _responseMapper = new ResponseMapper(_typeMapper, _operationNamingRepository);
     }
