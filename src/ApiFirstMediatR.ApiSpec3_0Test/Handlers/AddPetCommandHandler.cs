@@ -4,6 +4,13 @@ public sealed class AddPetCommandHandler : IRequestHandler<AddPetCommand, Pet>
 {
     public Task<Pet> Handle(AddPetCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var pet = new Pet
+        {
+            Id = 1,
+            Name = request.Body.Name,
+            Tag = request.Body.Tag
+        };
+
+        return Task.FromResult(pet);
     }
 }

@@ -4,6 +4,6 @@ public sealed class DeletePetCommandHandler : IRequestHandler<DeletePetCommand, 
 {
     public Task<Unit> Handle(DeletePetCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(Unit.Value);
     }
 }

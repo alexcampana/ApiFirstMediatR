@@ -4,6 +4,21 @@ public sealed class FindPetsQueryHandler : IRequestHandler<FindPetsQuery, IEnume
 {
     public Task<IEnumerable<Pet>> Handle(FindPetsQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var pets = new List<Pet>
+        {
+            new Pet
+            {
+                Id = 1,
+                Name = "Pet1",
+                Tag = "PetTag1"
+            },
+            new Pet
+            {
+                Id = 2,
+                Name = "Pet2"
+            }
+        };
+        
+        return Task.FromResult(pets as IEnumerable<Pet>);
     }
 }
