@@ -45,10 +45,14 @@ public class ResponseMapperTests
         };
 
         var result = _responseMapper.Map(responses);
-        
-        Assert.NotNull(result);
-        Assert.Equal("bool", result.BodyType);
-        Assert.Equal(HttpStatusCodes.Status200, result.HttpStatusCode);
+
+        result.Should().NotBeNull()
+            .And.BeEquivalentTo(new
+            {
+
+                BodyType = "bool",
+                HttpStatusCode = HttpStatusCodes.Status200
+            });
     }
 
     [Fact]
@@ -87,16 +91,24 @@ public class ResponseMapperTests
         };
 
         var result = _responseMapper.Map(responses);
-        
-        Assert.NotNull(result);
-        Assert.Equal("int", result.BodyType);
-        Assert.Equal(HttpStatusCodes.Status201, result.HttpStatusCode);
-        Assert.IsType<CreatedResponse>(result);
-        var createdResponse = result as CreatedResponse;
-        Assert.Equal("TestOperation", createdResponse!.EndpointName);
-        Assert.Equal("TestController", createdResponse.ControllerName);
-        Assert.Contains("createdId", createdResponse.RouteMaps as IDictionary<string, string>);
-        Assert.Equal("response.Id", createdResponse.RouteMaps["createdId"]);
+
+        result.Should().NotBeNull()
+            .And.BeOfType<CreatedResponse>()
+            .And.BeEquivalentTo(new
+            {
+                BodyType = "int",
+                HttpStatusCode = HttpStatusCodes.Status201,
+                EndpointName = "TestOperation",
+                ControllerName = "TestController",
+                RouteMaps = new[]
+                {
+                    new
+                    {
+                        Key = "createdId",
+                        Value = "response.Id"
+                    }
+                }
+            });
     }
     
     [Fact]
@@ -111,17 +123,18 @@ public class ResponseMapperTests
         };
 
         var result = _responseMapper.Map(responses);
-        
-        Assert.NotNull(result);
-        Assert.Null(result.BodyType);
-        Assert.Equal(HttpStatusCodes.Status204, result.HttpStatusCode);
+
+        result.Should().NotBeNull();
+        result.BodyType.Should().BeNull();
+        result.HttpStatusCode.Should().Be(HttpStatusCodes.Status204);
     }
 
     [Fact]
     public void NoResponses_ThrowsNotSupported()
     {
         var responses = new OpenApiResponses();
-        Assert.Throws<NotSupportedException>(() => _responseMapper.Map(responses));
+        _responseMapper.Invoking(m => m.Map(responses))
+            .Should().Throw<NotSupportedException>();
     }
 
     [Fact]
@@ -134,7 +147,8 @@ public class ResponseMapperTests
                 Description = "I'm a little teapot"
             }
         };
-        Assert.Throws<NotSupportedException>(() => _responseMapper.Map(responses));
+        _responseMapper.Invoking(m => m.Map(responses))
+            .Should().Throw<NotSupportedException>();
     }
 
     [Fact]
@@ -183,7 +197,8 @@ public class ResponseMapperTests
             }
         };
 
-        Assert.Throws<NotSupportedException>(() => _responseMapper.Map(responses));
+        _responseMapper.Invoking(m => m.Map(responses))
+            .Should().Throw<NotSupportedException>();
     }
     
     [Fact]
@@ -208,7 +223,8 @@ public class ResponseMapperTests
             }
         };
 
-        Assert.Throws<NotSupportedException>(() => _responseMapper.Map(responses));
+        _responseMapper.Invoking(m => m.Map(responses))
+            .Should().Throw<NotSupportedException>();
     }
 
     [Fact]
@@ -232,6 +248,7 @@ public class ResponseMapperTests
             }
         };
 
-        Assert.Throws<NotSupportedException>(() => _responseMapper.Map(responses));
+        _responseMapper.Invoking(m => m.Map(responses))
+            .Should().Throw<NotSupportedException>();
     }
 }

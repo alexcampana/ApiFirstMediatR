@@ -13,19 +13,12 @@ public class Response201Tests : TestBase
             .AddAdditionalTexts(ImmutableArray.Create(additionalText))
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
         
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
 
-        var runResult = driver.GetRunResult();
-        Assert.Single(runResult.Results);
-
-        var generatedController = runResult
-            .Results
-            .First()
-            .GeneratedSources
-            .Single(s => s.HintName == "Controllers_ApiController.g.cs");
-
-        var controllerExpectedResult = CSharpSyntaxTree.ParseText(ExpectedController);
-        Assert.True(controllerExpectedResult.IsEquivalentTo(generatedController.SyntaxTree));
+        driver.GetRunResult()
+            .Results.Should().ContainSingle()
+            .Which.GeneratedSources.Should()
+                .ContainEquivalentSyntaxTree("Controllers_ApiController.g.cs", ExpectedController);
     }
 
     [Fact]
@@ -38,9 +31,9 @@ public class Response201Tests : TestBase
             .Create(generator)
             .AddAdditionalTexts(ImmutableArray.Create(additionalText))
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
-
-        var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(DiagnosticIdentifiers.ApiSpecFeatureNotSupported, diagnostic.Id);
+        
+        diagnostics.Should().ContainSingle()
+            .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFeatureNotSupported);
     }
 
     private const string ApiSpec = @"openapi: 3.0.1

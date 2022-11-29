@@ -19,32 +19,15 @@ public class HelloWorldTests : TestBase
             .AddAdditionalTexts(ImmutableArray.Create(additionalText))
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
                 out var diagnostics);
+
+        diagnostics.Should().BeEmpty();
         
-        Assert.Empty(diagnostics);
-        
-        var runResult = driver.GetRunResult();
-        Assert.Single(runResult.Results);
-        
-        var generatedSources = runResult.Results.First().GeneratedSources;
-        Assert.Equal(3, generatedSources.Length);
-
-        var dtos = generatedSources.Where(g => g.HintName == "Dtos_HelloWorldDto.g.cs").ToList();
-        var dto = Assert.Single(dtos);
-
-        var mediatrRequests = generatedSources.Where(g => g.HintName == "MediatorRequests_GetHelloWorldQuery.g.cs").ToList();
-        var mediatrRequest = Assert.Single(mediatrRequests);
-
-        var controllers = generatedSources.Where(g => g.HintName == "Controllers_ApiController.g.cs").ToList();
-        var controller = Assert.Single(controllers);
-
-        var dtoExpectedResult = CSharpSyntaxTree.ParseText(ExpectedDto);
-        Assert.True(dtoExpectedResult.IsEquivalentTo(dto.SyntaxTree));
-
-        var mediatrExpectedResult = CSharpSyntaxTree.ParseText(ExpectedMediatorRequest);
-        Assert.True(mediatrExpectedResult.IsEquivalentTo(mediatrRequest.SyntaxTree));
-
-        var controllerExpectedResult = CSharpSyntaxTree.ParseText(ExpectedController);
-        Assert.True(controllerExpectedResult.IsEquivalentTo(controller.SyntaxTree));
+        driver.GetRunResult()
+            .Results.Should().ContainSingle()
+            .Which.GeneratedSources.Should().HaveCount(3)
+            .And.ContainEquivalentSyntaxTree("Dtos_HelloWorldDto.g.cs", ExpectedDto)
+            .And.ContainEquivalentSyntaxTree("MediatorRequests_GetHelloWorldQuery.g.cs", ExpectedMediatorRequest)
+            .And.ContainEquivalentSyntaxTree("Controllers_ApiController.g.cs", ExpectedController);
     }
     
     private const string Yaml3ApiSpec = @"openapi: 3.0.1

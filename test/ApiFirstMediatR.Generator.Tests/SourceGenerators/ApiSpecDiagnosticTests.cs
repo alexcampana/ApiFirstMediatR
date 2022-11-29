@@ -13,9 +13,9 @@ public class ApiSpecDiagnosticTests : TestBase
             .Create(generator)
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
                 out var diagnostics);
-        
-        var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal("AFM001", diagnostic.Id);
+
+        diagnostics.Should().ContainSingle()
+            .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileNotFound);
     }
  
     [Fact]
@@ -32,9 +32,9 @@ public class ApiSpecDiagnosticTests : TestBase
             .AddAdditionalTexts(ImmutableArray.Create(additionalTexts))
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
                 out var diagnostics);
-        
-        var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal("AFM002", diagnostic.Id);
+
+        diagnostics.Should().ContainSingle()
+            .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileEmpty);
     }
  
     [Fact]
@@ -63,8 +63,8 @@ paths:
             .AddAdditionalTexts(ImmutableArray.Create(additionalTexts))
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
                 out var diagnostics);
-        
-        var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal("AFM003", diagnostic.Id);
+
+        diagnostics.Should().ContainSingle()
+            .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileParsingError);
     }
 }

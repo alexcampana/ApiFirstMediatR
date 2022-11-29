@@ -37,19 +37,20 @@ public class PropertyMapperTests
         };
 
         var response = _propertyMapper.Map(schema);
-        
-        Assert.NotNull(response);
-        
-        var properties = response.ToList();
-        Assert.Equal(2, properties.Count());
-        
-        var firstProperty = properties.First();
-        Assert.Equal("TestPropertyOne", firstProperty.Name);
-        Assert.Equal("TestPropertyOne", firstProperty.JsonName);
-        Assert.NotNull(firstProperty.Description);
-        Assert.Equal("Test Description", firstProperty.Description.FirstOrDefault());
-        Assert.Equal("int", firstProperty.DataType);
-        Assert.True(firstProperty.IsNullable);
+
+        response.Should().NotBeNull()
+            .And.HaveCount(2)
+            .And.ContainEquivalentOf(new
+            {
+                Name = "TestPropertyOne",
+                JsonName = "TestPropertyOne",
+                Description = new[]
+                {
+                    "Test Description"
+                },
+                DataType = "int",
+                IsNullable = true
+            });
     }
 
     [Fact]
@@ -80,19 +81,20 @@ public class PropertyMapperTests
         };
 
         var response = _propertyMapper.Map(schema);
-        
-        Assert.NotNull(response);
-        
-        var properties = response.ToList();
-        Assert.Equal(2, properties.Count());
-        
-        var firstProperty = properties.First();
-        Assert.Equal("TestPropertyOne", firstProperty.Name);
-        Assert.Equal("test_property_one", firstProperty.JsonName);
-        Assert.NotNull(firstProperty.Description);
-        Assert.Equal("Test Description", firstProperty.Description.FirstOrDefault());
-        Assert.Equal("int", firstProperty.DataType);
-        Assert.False(firstProperty.IsNullable);
+
+        response.Should().NotBeNull()
+            .And.HaveCount(2)
+            .And.ContainEquivalentOf(new
+            {
+                Name = "TestPropertyOne",
+                JsonName = "test_property_one",
+                Description = new[]
+                {
+                    "Test Description"
+                },
+                DataType = "int",
+                IsNullable = false
+            });
     }
 
     [Fact]
@@ -123,21 +125,29 @@ public class PropertyMapperTests
         };
 
         var response = _propertyMapper.Map(schema);
-        
-        Assert.NotNull(response);
-        
-        var properties = response.ToList();
-        Assert.Equal(2, properties.Count());
-        
-        var firstProperty = properties.First();
-        Assert.Equal("TestPropertyOne", firstProperty.Name);
-        Assert.Equal("TestPropertyOne", firstProperty.JsonName);
-        Assert.NotNull(firstProperty.Description);
-        Assert.Equal("Test Description", firstProperty.Description.FirstOrDefault());
-        Assert.Equal("int", firstProperty.DataType);
-        Assert.False(firstProperty.IsNullable);
 
-        var secondProperty = properties[1];
-        Assert.True(secondProperty.IsNullable);
+        response.Should().NotBeNull()
+            .And.HaveCount(2)
+            .And.ContainEquivalentOf(
+                new
+                {
+                    Name = "TestPropertyOne",
+                    JsonName = "TestPropertyOne",
+                    Description = new[]
+                    {
+                        "Test Description"
+                    },
+                    DataType = "int",
+                    IsNullable = false
+                })
+            .And.ContainEquivalentOf(
+                new
+                {
+                    Name = "TestPropertyTwo",
+                    JsonName = "TestPropertyTwo",
+                    DataType = "string",
+                    IsNullable = true
+                }
+            );
     }
 }

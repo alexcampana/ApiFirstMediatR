@@ -20,7 +20,7 @@ public class TypeMapperTests
         };
 
         var type = _typeMapper.Map(schema);
-        Assert.Equal("int", type);
+        type.Should().Be("int");
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class TypeMapperTests
         };
 
         var type = _typeMapper.Map(schema);
-        Assert.Equal("CustomType", type);
+        type.Should().Be("CustomType");
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class TypeMapperTests
     {
         var schema = new OpenApiSchema();
         var type = _typeMapper.Map(schema);
-        Assert.Equal("object", type);
+        type.Should().Be("object");
     }
 
     [Fact]
@@ -55,6 +55,6 @@ public class TypeMapperTests
         };
 
         var type = _typeMapper.Map(schema);
-        Assert.Equal("Test.Dtos.TestDto", type);
+        type.Should().Be("Test.Dtos.TestDto");
     }
 }

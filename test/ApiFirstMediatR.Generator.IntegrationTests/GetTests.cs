@@ -17,16 +17,21 @@ public class GetTests : IClassFixture<WebApplicationFactory<Program>>
 
         var categories = JsonConvert.DeserializeObject<List<Category>>(await response.Content.ReadAsStringAsync());
 
-        categories.Should().NotBeNull();
-        categories.Should().HaveCount(2);
-
-        var firstCategory = categories.First();
-        firstCategory.Id.Should().Be(1);
-        firstCategory.Name.Should().Be("Dog");
-
-        var secondCategory = categories[1];
-        secondCategory.Id.Should().Be(2);
-        secondCategory.Name.Should().Be("Cat");
+        categories.Should().NotBeNull()
+            .And.HaveCount(2)
+            .And.BeEquivalentTo(new []
+            {
+                new
+                {
+                    Id = 1,
+                    Name = "Dog"
+                },
+                new
+                {
+                    Id = 2,
+                    Name = "Cat"
+                }
+            });
     }
 
     [Fact]
@@ -36,19 +41,27 @@ public class GetTests : IClassFixture<WebApplicationFactory<Program>>
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var pet = JsonConvert.DeserializeObject<Pet>(await response.Content.ReadAsStringAsync());
-        
-        pet.Should().NotBeNull();
-        pet.Id.Should().Be(1);
-        pet.Name.Should().Be("Pet1");
-        pet.Category.Should().NotBeNull();
-        pet.Category!.Id.Should().Be(1);
-        pet.Category.Name.Should().Be("Dog");
-        pet.Tags.Should().NotBeNull();
-        pet.Tags.Should().HaveCount(1);
-        pet.Tags.Should().ContainSingle();
-        pet.Tags!.First().Id.Should().Be(1);
-        pet.Tags!.First().Name.Should().Be("Friendly");
-        pet.Status.Should().Be("available");
+
+        pet.Should().NotBeNull()
+            .And.BeEquivalentTo(new
+            {
+                Id = 1,
+                Name = "Pet1",
+                Category = new
+                {
+                    Id = 1,
+                    Name = "Dog"
+                },
+                Tags = new[]
+                {
+                    new
+                    {
+                        Id = 1,
+                        Name = "Friendly"
+                    }
+                },
+                Status = "available"
+            });
     }
 
     [Fact]

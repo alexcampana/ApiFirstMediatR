@@ -37,10 +37,14 @@ public class OperationNamingRepositoryTests
         
         const string expectedControllerName = "Api";
         const string expectedOperationName = "GetHelloWorld";
-        
-        Assert.Equal(expectedControllerName, operationNamingRepository.GetControllerNameByPath("/api/HelloWorld"));
-        Assert.Equal(expectedOperationName, operationNamingRepository.GetOperationNameByPathAndOperationType("/api/HelloWorld", OperationType.Get));
-        Assert.Equal(expectedControllerName, operationNamingRepository.GetControllerNameByOperationId("GetHelloWorld"));
-        Assert.Equal(expectedOperationName, operationNamingRepository.GetOperationNameByOperationId("GetHelloWorld"));
+
+        operationNamingRepository.GetControllerNameByPath("/api/HelloWorld")
+            .Should().Be(expectedControllerName);
+        operationNamingRepository.GetOperationNameByPathAndOperationType("/api/HelloWorld", OperationType.Get)
+            .Should().Be(expectedOperationName);
+        operationNamingRepository.GetControllerNameByOperationId("GetHelloWorld")
+            .Should().Be(expectedControllerName);
+        operationNamingRepository.GetOperationNameByOperationId("GetHelloWorld")
+            .Should().Be(expectedOperationName);
     }
 }

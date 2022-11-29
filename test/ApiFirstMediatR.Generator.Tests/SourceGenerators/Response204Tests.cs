@@ -13,20 +13,13 @@ public class Response204Tests : TestBase
             .Create(generator)
             .AddAdditionalTexts(ImmutableArray.Create(additionalText))
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
-        
-        Assert.Empty(diagnostics);
 
-        var runResult = driver.GetRunResult();
-        Assert.Single(runResult.Results);
+        diagnostics.Should().BeEmpty();
 
-        var generatedController = runResult
-            .Results
-            .First()
-            .GeneratedSources
-            .Single(s => s.HintName == "Controllers_PetsController.g.cs");
-
-        var controllerExpectedResult = CSharpSyntaxTree.ParseText(ExpectedController);
-        Assert.True(controllerExpectedResult.IsEquivalentTo(generatedController.SyntaxTree));
+        driver.GetRunResult()
+            .Results.Should().ContainSingle()
+            .Which.GeneratedSources.Should()
+                .ContainEquivalentSyntaxTree("Controllers_PetsController.g.cs", ExpectedController);
     }
 
     private const string ApiSpec = @"openapi: 3.0.3

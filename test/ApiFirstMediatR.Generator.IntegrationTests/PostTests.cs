@@ -29,13 +29,18 @@ public class PostTests : IClassFixture<WebApplicationFactory<Program>>
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var responsePet = JsonConvert.DeserializeObject<Pet>(await response.Content.ReadAsStringAsync());
-        responsePet.Id.Should().Be(3);
-        responsePet.Name.Should().Be("Pet Name");
-        responsePet.Category.Should().NotBeNull();
-        responsePet.Category!.Id.Should().Be(1);
-        responsePet.Category.Name.Should().Be("Dog");
-        responsePet.Status.Should().BeNull();
-        responsePet.Tags.Should().BeNullOrEmpty();
+
+        responsePet.Should().NotBeNull()
+            .And.BeEquivalentTo(new
+            {
+                Id = 3,
+                Name = "Pet Name",
+                Category = new
+                {
+                    Id = 1,
+                    Name = "Dog"
+                }
+            });
     }
 
     [Fact]
@@ -53,8 +58,8 @@ public class PostTests : IClassFixture<WebApplicationFactory<Program>>
 
         var response = await _client.PostAsync("/store/order", content);
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-        response.Headers.Location.Should().NotBeNull();
-        response.Headers.Location.Should().Be("http://localhost/store/order/1");
+        response.Headers.Location.Should().NotBeNull()
+            .And.Be("http://localhost/store/order/1");
 
         var orderPlaced = JsonConvert.DeserializeObject<OrderPlaced>(await response.Content.ReadAsStringAsync());
         orderPlaced.Id.Should().Be(1);

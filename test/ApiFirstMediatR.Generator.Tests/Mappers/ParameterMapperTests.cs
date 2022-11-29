@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+
 namespace ApiFirstMediatR.Generator.Tests.Mappers;
 
 public class ParameterMapperTests
@@ -30,17 +32,21 @@ public class ParameterMapperTests
         };
 
         var response = _parameterMapper.Map(openApiParameters);
-        
-        Assert.NotNull(response);
-        var parameter = Assert.Single(response);
-        
-        Assert.Equal("testName", parameter.ParameterName);
-        Assert.Equal("TestName", parameter.Name);
-        Assert.Equal("testName", parameter.JsonName);
-        Assert.Equal("string", parameter.DataType);
-        Assert.False(parameter.IsNullable);
-        Assert.NotNull(parameter.Description);
-        Assert.Equal("Test Description", parameter.Description.FirstOrDefault());
+
+        response.Should().NotBeNull()
+            .And.ContainSingle()
+            .Which.Should().BeEquivalentTo(new
+            {
+                ParameterName = "testName",
+                Name = "TestName",
+                JsonName = "testName",
+                DataType = "string",
+                IsNullable = false,
+                Description = new[]
+                {
+                    "Test Description"
+                }
+            });
     }
 
     [Fact]
@@ -61,16 +67,20 @@ public class ParameterMapperTests
         };
 
         var response = _parameterMapper.Map(openApiParameters);
-        
-        Assert.NotNull(response);
-        var parameter = Assert.Single(response);
-        
-        Assert.Equal("testName", parameter.ParameterName);
-        Assert.Equal("TestName", parameter.Name);
-        Assert.Equal("test_name", parameter.JsonName);
-        Assert.Equal("string", parameter.DataType);
-        Assert.False(parameter.IsNullable);
-        Assert.NotNull(parameter.Description);
-        Assert.Equal("Test Description", parameter.Description.FirstOrDefault());
+
+        response.Should().NotBeNull()
+            .And.ContainSingle()
+            .Which.Should().BeEquivalentTo(new
+            {
+                ParameterName = "testName",
+                Name = "TestName",
+                JsonName = "test_name",
+                DataType = "string",
+                IsNullable = false,
+                Description = new[]
+                {
+                    "Test Description"
+                }
+            });
     }
 }
