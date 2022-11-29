@@ -6,6 +6,7 @@ global using ApiFirstMediatR.Generator.Interfaces;
 global using ApiFirstMediatR.Generator.Mappers;
 global using ApiFirstMediatR.Generator.Models;
 global using ApiFirstMediatR.Generator.Repositories;
+global using ApiFirstMediatR.Generator.Services;
 global using ApiFirstMediatR.Generator.Tests.Assertions;
 global using ApiFirstMediatR.Generator.Tests.Utils;
 global using FluentAssertions;

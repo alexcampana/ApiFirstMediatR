@@ -1,3 +1,4 @@
+
 namespace ApiFirstMediatR.Generator.Repositories;
 
 internal sealed class OperationNamingRepository : IOperationNamingRepository

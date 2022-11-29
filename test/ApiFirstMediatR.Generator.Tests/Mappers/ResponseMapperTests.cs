@@ -2,8 +2,6 @@ namespace ApiFirstMediatR.Generator.Tests.Mappers;
 
 public class ResponseMapperTests
 {
-    private readonly ITypeMapper _typeMapper;
-    private readonly IOperationNamingRepository _operationNamingRepository;
     private readonly IResponseMapper _responseMapper;
     
     public ResponseMapperTests()
@@ -18,9 +16,10 @@ public class ResponseMapperTests
             .Setup(mock => mock.GetOperationNameByOperationId("TestOperation"))
             .Returns("TestOperation");
 
-        _typeMapper = new TypeMapper(mockApiConfigRepo);
-        _operationNamingRepository = mockOperationNamingRepository.Object;
-        _responseMapper = new ResponseMapper(_typeMapper, _operationNamingRepository);
+        var typeMapper = new TypeMapper(mockApiConfigRepo);
+        var operationNamingRepository = mockOperationNamingRepository.Object;
+        
+        _responseMapper = new ResponseMapper(typeMapper, operationNamingRepository);
     }
 
     [Fact]
