@@ -1,4 +1,4 @@
-namespace ApiFirstMediatR.Generator.Tests;
+namespace ApiFirstMediatR.Generator.Tests.SourceGenerators;
 
 public class Response204Tests : TestBase
 {
@@ -10,23 +10,16 @@ public class Response204Tests : TestBase
         var additionalText = new AdditionalTextYml("api_spec.yml", ApiSpec) as AdditionalText;
         var generator = new SourceGenerator();
         var driver = CSharpGeneratorDriver
-          .Create(generator)
-          .AddAdditionalTexts(ImmutableArray.Create(additionalText))
-          .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
-        
-        Assert.Empty(diagnostics);
+            .Create(generator)
+            .AddAdditionalTexts(ImmutableArray.Create(additionalText))
+            .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
 
-        var runResult = driver.GetRunResult();
-        Assert.Single(runResult.Results);
+        diagnostics.Should().BeEmpty();
 
-        var generatedController = runResult
-            .Results
-            .First()
-            .GeneratedSources
-            .Single(s => s.HintName == "Controllers_PetsController.g.cs");
-
-        var controllerExpectedResult = CSharpSyntaxTree.ParseText(ExpectedController);
-        Assert.True(controllerExpectedResult.IsEquivalentTo(generatedController.SyntaxTree));
+        driver.GetRunResult()
+            .Results.Should().ContainSingle()
+            .Which.GeneratedSources.Should()
+                .ContainEquivalentSyntaxTree("Controllers_PetsController.g.cs", ExpectedController);
     }
 
     private const string ApiSpec = @"openapi: 3.0.3

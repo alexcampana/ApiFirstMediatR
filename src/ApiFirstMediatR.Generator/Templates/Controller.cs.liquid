@@ -38,7 +38,17 @@ namespace {{ controller_namespace }}
                 {%- unless forloop.last  %}, {% endunless -%}
                 {% endfor %});
             var response = await _mediator.Send(request, cancellationToken);
-            return {{ endpoint.response.http_status_code.response_method }}({% if endpoint.response.body_type != null %}response{% endif %});
+            return {{ endpoint.response.http_status_code.response_method }}(
+                {%- if endpoint.response.endpoint_name != null -%}"{{ endpoint.response.endpoint_name }}", {% endif -%}
+                {%- if endpoint.response.controller_name != null -%}"{{ endpoint.response.controller_name }}", {% endif -%}
+                {%- if endpoint.response.route_maps != null -%}new {
+                    {%- for route_map in endpoint.response.route_maps -%}
+                        {{ route_map.key }} = {{ route_map.value }}
+                    {%- unless forloop.last  %}, {% endunless -%}
+                    {%- endfor -%}
+                }, {% endif -%}
+                {%- if endpoint.response.body_type != null %}response{% endif -%}
+            );
         }
         {%- endfor %}
     }

@@ -1,12 +1,12 @@
 using System.Collections.Concurrent;
-using System.Collections.Immutable;
+using ApiFirstMediatR.Generator.Services;
 
 namespace ApiFirstMediatR.Generator;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class ApiAnalyzer : DiagnosticAnalyzer
 {
-    private static readonly IMutableContainer GeneratorContainer = Container.Create().Using<Glue>();
+    private static readonly IMutableContainer AnalyzerContainer = Container.Create().Using<Glue>();
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(DiagnosticCatalog.ApiMissingImplementationDescriptor);
     
     public override void Initialize(AnalysisContext context)
@@ -21,13 +21,16 @@ public sealed class ApiAnalyzer : DiagnosticAnalyzer
         var handlerBag = new ConcurrentBag<string>();
         var endpointBag = new ConcurrentBag<RequestLocation>();
 
-        using var container = GeneratorContainer
-            .Create();
-
-        var endpointMapper = container.Resolve<IEndpointMapper>();
-
         context.RegisterAdditionalFileAction(fileContext =>
         {
+            using var container = AnalyzerContainer
+                .Create()
+                .Bind<IDiagnosticReporter>().To<AnalyzerDiagnosticReporter>()
+                .Bind<AdditionalFileAnalysisContextWrapper, ICompilation>().As(Lifetime.ScopeRoot).To(ctx => new AdditionalFileAnalysisContextWrapper(fileContext))
+                .Create();
+            
+            var endpointMapper = container.Resolve<IEndpointMapper>();
+            
             var fileContent = fileContext.AdditionalFile.GetText(fileContext.CancellationToken);
 
             if (fileContent is null || fileContent.Length == 0)

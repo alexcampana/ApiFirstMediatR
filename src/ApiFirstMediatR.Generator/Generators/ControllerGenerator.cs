@@ -2,13 +2,13 @@ namespace ApiFirstMediatR.Generator.Generators;
 
 internal sealed class ControllerGenerator : IApiGenerator
 {
-    private readonly GeneratorExecutionContext _context;
+    private readonly ISources _sources;
     private readonly IRepository<Controller> _controllerRepository;
     private readonly IApiConfigRepository _apiConfigRepository;
 
-    public ControllerGenerator(GeneratorExecutionContext context, IRepository<Controller> controllerRepository, IApiConfigRepository apiConfigRepository)
+    public ControllerGenerator(ISources sources, IRepository<Controller> controllerRepository, IApiConfigRepository apiConfigRepository)
     {
-        _context = context;
+        _sources = sources;
         _controllerRepository = controllerRepository;
         _apiConfigRepository = apiConfigRepository;
     }
@@ -21,7 +21,7 @@ internal sealed class ControllerGenerator : IApiGenerator
         foreach (var controller in controllers)
         {
             var controllerSourceText = ApiTemplate.Controller.Generate(controller, projectConfig);
-            _context.AddSource($"Controllers_{controller.Name}.g.cs", controllerSourceText);
+            _sources.AddSource($"Controllers_{controller.Name}.g.cs", controllerSourceText);
         }
     }
 }

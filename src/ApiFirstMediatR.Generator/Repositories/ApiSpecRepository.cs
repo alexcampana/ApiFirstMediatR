@@ -2,12 +2,14 @@ namespace ApiFirstMediatR.Generator.Repositories;
 
 internal sealed class ApiSpecRepository : IApiSpecRepository
 {
-    private readonly GeneratorExecutionContext _context;
+    private readonly ICompilation _compilation;
+    private readonly IDiagnosticReporter _diagnosticReporter;
     private readonly Lazy<OpenApiDocument?> _openApiDocument;
 
-    public ApiSpecRepository(GeneratorExecutionContext context)
+    public ApiSpecRepository(ICompilation compilation, IDiagnosticReporter diagnosticReporter)
     {
-        _context = context;
+        _compilation = compilation;
+        _diagnosticReporter = diagnosticReporter;
         _openApiDocument = new Lazy<OpenApiDocument?>(Parse);
     }
 
@@ -18,7 +20,7 @@ internal sealed class ApiSpecRepository : IApiSpecRepository
 
     private OpenApiDocument? Parse()
     {
-        var specFiles = _context
+        var specFiles = _compilation
             .AdditionalFiles
             .Where(f => f.Path.EndsWith(".yaml", StringComparison.InvariantCultureIgnoreCase) ||
                         f.Path.EndsWith(".yml", StringComparison.InvariantCultureIgnoreCase) ||
@@ -27,18 +29,18 @@ internal sealed class ApiSpecRepository : IApiSpecRepository
 
         if (specFiles.Count == 0)
         {
-            _context.ReportDiagnostic(DiagnosticCatalog.ApiSpecFileNotFound());
+            _diagnosticReporter.ReportDiagnostic(DiagnosticCatalog.ApiSpecFileNotFound());
             return null;
         }
 
         foreach (var specFile in specFiles)
         {
-            var fileContent = specFile.GetText(_context.CancellationToken);
+            var fileContent = specFile.GetText(_compilation.CancellationToken);
 
             if (fileContent is null || fileContent.Length == 0)
             {
                 var diagnostic = DiagnosticCatalog.ApiSpecFileEmpty(specFile.GetLocation());
-                _context.ReportDiagnostic(diagnostic);
+                _diagnosticReporter.ReportDiagnostic(diagnostic);
                 continue;
             }
 
@@ -49,7 +51,7 @@ internal sealed class ApiSpecRepository : IApiSpecRepository
                 var diagnostic =
                     DiagnosticCatalog.ApiSpecFileParsingError(specFile.GetLocation(),
                         apiDiagnostic.Errors.First().Message);
-                _context.ReportDiagnostic(diagnostic);
+                _diagnosticReporter.ReportDiagnostic(diagnostic);
                 continue;
             }
 

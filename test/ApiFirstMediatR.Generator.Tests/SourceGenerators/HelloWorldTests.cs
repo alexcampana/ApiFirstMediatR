@@ -1,39 +1,17 @@
-namespace ApiFirstMediatR.Generator.Tests;
+namespace ApiFirstMediatR.Generator.Tests.SourceGenerators;
 
 public class HelloWorldTests : TestBase
 {
-    [Fact]
-    public void ValidYaml3APISpec_GeneratesValidCode()
-    {
-        var additionalText = new AdditionalTextYml("api_spec.yml", Yaml3ApiSpec) as AdditionalText;
-        ValidateSpec(additionalText);
-    }
-    
-    [Fact]
-    public void ValidJson3APISpec_GeneratesValidCode()
-    {
-        var additionalText = new AdditionalTextYml("api_spec.json", Json3ApiSpec) as AdditionalText;
-        ValidateSpec(additionalText);
-    }
-    
-    [Fact]
-    public void ValidYaml2APISpec_GeneratesValidCode()
-    {
-        var additionalText = new AdditionalTextYml("api_spec.yml", Yaml2ApiSpec) as AdditionalText;
-        ValidateSpec(additionalText);
-    }
-
-    [Fact]
-    public void ValidJson2APISpec_GeneratesValidCode()
-    {
-        var additionalText = new AdditionalTextYml("api_spec.json", Json2ApiSpec) as AdditionalText;
-        ValidateSpec(additionalText);
-    }
-
-    private void ValidateSpec(AdditionalText additionalText)
+    [Theory]
+    [InlineData("api_spec3.yml", Yaml3ApiSpec)]
+    [InlineData("api_spec3.json", Json3ApiSpec)]
+    [InlineData("api_spec2.yml", Yaml2ApiSpec)]
+    [InlineData("api_spec3.json", Json2ApiSpec)]
+    public void ValidateSpec(string fileName, string fileContents)
     {
         var code = "namespace HelloWorld;";
         var inputCompilation = CreateCompilation("HelloWorld", code);
+        var additionalText = new AdditionalTextYml(fileName, fileContents) as AdditionalText;
 
         var generator = new SourceGenerator();
         var driver = CSharpGeneratorDriver
@@ -41,32 +19,15 @@ public class HelloWorldTests : TestBase
             .AddAdditionalTexts(ImmutableArray.Create(additionalText))
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
                 out var diagnostics);
+
+        diagnostics.Should().BeEmpty();
         
-        Assert.Empty(diagnostics);
-        
-        var runResult = driver.GetRunResult();
-        Assert.Single(runResult.Results);
-        
-        var generatedSources = runResult.Results.First().GeneratedSources;
-        Assert.Equal(3, generatedSources.Length);
-
-        var dtos = generatedSources.Where(g => g.HintName == "Dtos_HelloWorldDto.g.cs").ToList();
-        Assert.Single(dtos);
-
-        var mediatrRequests = generatedSources.Where(g => g.HintName == "MediatorRequests_GetHelloWorldQuery.g.cs").ToList();
-        Assert.Single(mediatrRequests);
-
-        var controllers = generatedSources.Where(g => g.HintName == "Controllers_ApiController.g.cs").ToList();
-        Assert.Single(controllers);
-
-        var dtoExpectedResult = CSharpSyntaxTree.ParseText(ExpectedDto);
-        Assert.True(dtoExpectedResult.IsEquivalentTo(dtos.First().SyntaxTree));
-
-        var mediatrExpectedResult = CSharpSyntaxTree.ParseText(ExpectedMediatorRequest);
-        Assert.True(mediatrExpectedResult.IsEquivalentTo(mediatrRequests.First().SyntaxTree));
-
-        var controllerExpectedResult = CSharpSyntaxTree.ParseText(ExpectedController);
-        Assert.True(controllerExpectedResult.IsEquivalentTo(controllers.First().SyntaxTree));
+        driver.GetRunResult()
+            .Results.Should().ContainSingle()
+            .Which.GeneratedSources.Should().HaveCount(3)
+            .And.ContainEquivalentSyntaxTree("Dtos_HelloWorldDto.g.cs", ExpectedDto)
+            .And.ContainEquivalentSyntaxTree("MediatorRequests_GetHelloWorldQuery.g.cs", ExpectedMediatorRequest)
+            .And.ContainEquivalentSyntaxTree("Controllers_ApiController.g.cs", ExpectedController);
     }
     
     private const string Yaml3ApiSpec = @"openapi: 3.0.1

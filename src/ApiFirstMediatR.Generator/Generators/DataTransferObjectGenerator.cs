@@ -2,13 +2,13 @@ namespace ApiFirstMediatR.Generator.Generators;
 
 internal sealed class DataTransferObjectGenerator : IApiGenerator
 {
-    private readonly GeneratorExecutionContext _context;
+    private readonly ISources _sources;
     private readonly IRepository<DataTransferObject> _dtoRepository;
     private readonly IApiConfigRepository _apiConfigRepository;
 
-    public DataTransferObjectGenerator(GeneratorExecutionContext context, IRepository<DataTransferObject> dtoRepository, IApiConfigRepository apiConfigRepository)
+    public DataTransferObjectGenerator(ISources sources, IRepository<DataTransferObject> dtoRepository, IApiConfigRepository apiConfigRepository)
     {
-        _context = context;
+        _sources = sources;
         _dtoRepository = dtoRepository;
         _apiConfigRepository = apiConfigRepository;
     }
@@ -21,7 +21,7 @@ internal sealed class DataTransferObjectGenerator : IApiGenerator
         foreach (var dto in dtos)
         {
             var sourceText = ApiTemplate.DataTransferObject.Generate(dto, projectConfig);
-            _context.AddSource($"Dtos_{dto.Name}.g.cs", sourceText);
+            _sources.AddSource($"Dtos_{dto.Name}.g.cs", sourceText);
         }
     }
 }

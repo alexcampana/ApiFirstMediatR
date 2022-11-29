@@ -6,4 +6,6 @@ internal static class DiagnosticIdentifiers
     public const string ApiSpecFileEmpty = "AFM002";
     public const string ApiSpecFileParsingError = "AFM003";
     public const string ApiMissingImplementation = "AFM004";
+    public const string ApiSpecFeatureNotSupported = "AFM005";
+    public const string ApiFirstMediatRUnexpectedError = "AFM006";
 }

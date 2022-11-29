@@ -2,12 +2,12 @@ namespace ApiFirstMediatR.Generator.Repositories;
 
 internal sealed class ApiConfigRepository : IApiConfigRepository
 {
-    private readonly GeneratorExecutionContext _context;
+    private readonly ICompilation _compilation;
     private readonly Lazy<ApiConfig> _scriptObject;
 
-    public ApiConfigRepository(GeneratorExecutionContext context)
+    public ApiConfigRepository(ICompilation compilation)
     {
-        _context = context;
+        _compilation = compilation;
         _scriptObject = new Lazy<ApiConfig>(GetLazyConfig);
     }
 
@@ -20,7 +20,7 @@ internal sealed class ApiConfigRepository : IApiConfigRepository
     {
         return new ApiConfig
         {
-            Namespace = _context.Compilation.AssemblyName,
+            Namespace = _compilation.Compilation.AssemblyName,
         };
     }
 }

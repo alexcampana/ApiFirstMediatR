@@ -1,4 +1,6 @@
-﻿namespace ApiFirstMediatR.Generator;
+﻿using ApiFirstMediatR.Generator.Services;
+
+namespace ApiFirstMediatR.Generator;
 
 [Generator]
 public sealed class SourceGenerator : ISourceGenerator
@@ -9,7 +11,7 @@ public sealed class SourceGenerator : ISourceGenerator
     {
         using var container = GeneratorContainer
             .Create()
-            .Bind<GeneratorExecutionContext>().As(Lifetime.ScopeRoot).To(ctx => context)
+            .Bind<GeneratorExecutionContextWrapper, ISources, IDiagnosticReporter, ICompilation>().As(Lifetime.ScopeRoot).To(ctx => new GeneratorExecutionContextWrapper(context))
             .Create();
 
         // Entrypoint

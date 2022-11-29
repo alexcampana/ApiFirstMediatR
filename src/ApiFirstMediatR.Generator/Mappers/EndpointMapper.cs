@@ -5,12 +5,16 @@ internal sealed class EndpointMapper : IEndpointMapper
     private readonly IParameterMapper _parameterMapper;
     private readonly IResponseMapper _responseMapper;
     private readonly ITypeMapper _typeMapper;
+    private readonly IOperationNamingRepository _operationNamingRepository;
+    private readonly IDiagnosticReporter _diagnosticReporter;
 
-    public EndpointMapper(IParameterMapper parameterMapper, IResponseMapper responseMapper, ITypeMapper typeMapper)
+    public EndpointMapper(IParameterMapper parameterMapper, IResponseMapper responseMapper, ITypeMapper typeMapper, IOperationNamingRepository operationNamingRepository, IDiagnosticReporter diagnosticReporter)
     {
         _parameterMapper = parameterMapper;
         _responseMapper = responseMapper;
         _typeMapper = typeMapper;
+        _operationNamingRepository = operationNamingRepository;
+        _diagnosticReporter = diagnosticReporter;
     }
 
     public IEnumerable<Endpoint> Map(OpenApiPaths paths)
@@ -22,18 +26,18 @@ internal sealed class EndpointMapper : IEndpointMapper
             {
                 try
                 {
-                    var endpointName = operation.Value.OperationId ?? $"{operation.Key.GetDisplayName()}{PathToEndpointName(path.Key)}";
+                    var endpointName = _operationNamingRepository.GetOperationNameByPathAndOperationType(path.Key, operation.Key);
 
                     var queryParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Query));
                     var pathParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Path));
                     // TODO: Add support for Cookie, Header params
-                    
+
                     var endpoint = new Endpoint
                     {
-                        Name = endpointName.ToCleanName().ToPascalCase(),
+                        Name = endpointName,
                         Path = path.Key,
                         OperationName = operation.Key.GetDisplayName().ToPascalCase(),
-                        MediatorRequestName = endpointName.ToCleanName().ToPascalCase() + (operation.Key == OperationType.Get ? "Query" : "Command"),
+                        MediatorRequestName = $"{endpointName}{(operation.Key == OperationType.Get ? "Query" : "Command")}",
                         Description = operation.Value.Description?.SplitOnNewLine(),
                         QueryParameters = queryParams,
                         PathParameters = pathParams
@@ -55,7 +59,7 @@ internal sealed class EndpointMapper : IEndpointMapper
                     }
                     else if (operation.Value.RequestBody is not null)
                     {
-                        throw new NotImplementedException($"Only application/json request body supported. Endpoint: {operation.Key.GetDisplayName()} {path.Key}");
+                        throw new NotImplementedException($"Only application/json request body supported.");
                     }
 
                     // TODO: Throw Unsupported Diagnostic if more than one success response is registered
@@ -63,22 +67,18 @@ internal sealed class EndpointMapper : IEndpointMapper
 
                     endpoints.Add(endpoint);
                 }
+                catch (Exception e) when (e is NotSupportedException or NotImplementedException)
+                {
+                    // TODO: Implement location finder so we can point to the exact location in the api spec file
+                    _diagnosticReporter.ReportDiagnostic(DiagnosticCatalog.ApiSpecFeatureNotSupported(Location.None, $"{e.Message} Endpoint: {operation.Key.GetDisplayName().ToUpper()} {path.Key}"));
+                }
                 catch (Exception e)
                 {
-                    // TODO: Throw diagnostic
+                    _diagnosticReporter.ReportDiagnostic(DiagnosticCatalog.ApiFirstMediatRUnexpectedError(Location.None, $"{e.Message} Endpoint: {operation.Key.GetDisplayName().ToUpper()} {path.Key}"));
                 }
             }
         }
 
         return endpoints;
-    }
-
-    private static string PathToEndpointName(string path)
-    {
-        var pathParts  = path
-            .Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
-            .Select(ps => ps.Replace("{", "").Replace("}", "").ToPascalCase());
-
-        return string.Join("", pathParts);
     }
 }

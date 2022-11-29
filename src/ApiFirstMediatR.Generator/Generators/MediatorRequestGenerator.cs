@@ -2,13 +2,13 @@ namespace ApiFirstMediatR.Generator.Generators;
 
 internal sealed class MediatorRequestGenerator : IApiGenerator
 {
-    private readonly GeneratorExecutionContext _context;
+    private readonly ISources _sources;
     private readonly IRepository<Controller> _controllerRepository;
     private readonly IApiConfigRepository _apiConfigRepository;
 
-    public MediatorRequestGenerator(GeneratorExecutionContext context, IRepository<Controller> controllerRepository, IApiConfigRepository apiConfigRepository)
+    public MediatorRequestGenerator(ISources sources, IRepository<Controller> controllerRepository, IApiConfigRepository apiConfigRepository)
     {
-        _context = context;
+        _sources = sources;
         _controllerRepository = controllerRepository;
         _apiConfigRepository = apiConfigRepository;
     }
@@ -25,7 +25,7 @@ internal sealed class MediatorRequestGenerator : IApiGenerator
                 foreach (var endpoint in controller.Endpoints)
                 {
                     var endpointSourceText = ApiTemplate.MediatorRequest.Generate(endpoint, projectConfig);
-                    _context.AddSource($"MediatorRequests_{endpoint.MediatorRequestName}.g.cs", endpointSourceText);
+                    _sources.AddSource($"MediatorRequests_{endpoint.MediatorRequestName}.g.cs", endpointSourceText);
                 }
             }
         }

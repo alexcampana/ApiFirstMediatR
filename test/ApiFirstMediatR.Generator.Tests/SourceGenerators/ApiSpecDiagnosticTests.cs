@@ -1,6 +1,6 @@
-namespace ApiFirstMediatR.Generator.Tests;
+namespace ApiFirstMediatR.Generator.Tests.SourceGenerators;
 
-public class GeneratorDiagnosticTests : TestBase
+public class ApiSpecDiagnosticTests : TestBase
 {
     [Fact]
     public void MissingAPISpecFile_ThrowsDiagnostic()
@@ -9,13 +9,13 @@ public class GeneratorDiagnosticTests : TestBase
         var inputCompilation = CreateCompilation(code);
 
         var generator = new SourceGenerator();
-        GeneratorDriver driver = CSharpGeneratorDriver
+        CSharpGeneratorDriver
             .Create(generator)
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
                 out var diagnostics);
-        
-        Assert.Single(diagnostics);
-        Assert.Equal("AFM001", diagnostics.First().Id);
+
+        diagnostics.Should().ContainSingle()
+            .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileNotFound);
     }
  
     [Fact]
@@ -27,14 +27,14 @@ public class GeneratorDiagnosticTests : TestBase
         var additionalTexts = new AdditionalTextYml("api_spec.yml", "") as AdditionalText;
 
         var generator = new SourceGenerator();
-        GeneratorDriver driver = CSharpGeneratorDriver
+        CSharpGeneratorDriver
             .Create(generator)
             .AddAdditionalTexts(ImmutableArray.Create(additionalTexts))
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
                 out var diagnostics);
-        
-        Assert.Single(diagnostics);
-        Assert.Equal("AFM002", diagnostics.First().Id);
+
+        diagnostics.Should().ContainSingle()
+            .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileEmpty);
     }
  
     [Fact]
@@ -58,13 +58,13 @@ paths:
         200:") as AdditionalText;
 
         var generator = new SourceGenerator();
-        GeneratorDriver driver = CSharpGeneratorDriver
+        CSharpGeneratorDriver
             .Create(generator)
             .AddAdditionalTexts(ImmutableArray.Create(additionalTexts))
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
                 out var diagnostics);
-        
-        Assert.Single(diagnostics);
-        Assert.Equal("AFM003", diagnostics.First().Id);
+
+        diagnostics.Should().ContainSingle()
+            .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileParsingError);
     }
 }
