@@ -9,16 +9,8 @@ public class ControllerMapperTests
         var mockApiConfigRepo = MockApiConfig.Create();
         var mockOperationNamingRepository = new Mock<IOperationNamingRepository>();
         mockOperationNamingRepository
-            .Setup(mock => mock.GetControllerNameByOperationId("TestOperation"))
-            .Returns("TestController");
-
-        mockOperationNamingRepository
-            .Setup(mock => mock.GetOperationNameByOperationId("TestOperation"))
-            .Returns("TestOperation");
-
-        mockOperationNamingRepository
-            .Setup(mock => mock.GetOperationNameByPathAndOperationType("/test", OperationType.Get))
-            .Returns("TestOperation");
+            .Setup(mock => mock.GetControllerNameByPath("/test"))
+            .Returns("Test");
 
         var mockDiagnosticReporter = new Mock<IDiagnosticReporter>();
         var typeMapper = new TypeMapper(mockApiConfigRepo);
