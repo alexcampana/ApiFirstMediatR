@@ -16,6 +16,7 @@ internal sealed class ResponseMapper : IResponseMapper
     public Response Map(OpenApiResponses responses)
     {
         // TODO: check if there is more than one 2xx response and register an unsupported warning diagnostic
+        // TODO: refactor this so it's more extensible
         if (responses.TryGetValue("200", out var successResponse))
         {
             return Map200(successResponse);
@@ -30,7 +31,7 @@ internal sealed class ResponseMapper : IResponseMapper
         }
         else
         {
-            throw new NotSupportedException($"Response Status not supported");
+            throw new NotSupportedException($"Supported response status not found.");
         }
     }
 

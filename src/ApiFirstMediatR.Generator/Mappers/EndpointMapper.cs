@@ -59,7 +59,7 @@ internal sealed class EndpointMapper : IEndpointMapper
                     }
                     else if (operation.Value.RequestBody is not null)
                     {
-                        throw new NotImplementedException($"Only application/json request body supported. Endpoint: {operation.Key.GetDisplayName()} {path.Key}");
+                        throw new NotImplementedException($"Only application/json request body supported.");
                     }
 
                     // TODO: Throw Unsupported Diagnostic if more than one success response is registered
@@ -69,11 +69,12 @@ internal sealed class EndpointMapper : IEndpointMapper
                 }
                 catch (Exception e) when (e is NotSupportedException or NotImplementedException)
                 {
-                    _diagnosticReporter.ReportDiagnostic(DiagnosticCatalog.ApiSpecFeatureNotSupported(Location.None, e.Message));
+                    // TODO: Implement location finder so we can point to the exact location in the api spec file
+                    _diagnosticReporter.ReportDiagnostic(DiagnosticCatalog.ApiSpecFeatureNotSupported(Location.None, $"{e.Message} Endpoint: {operation.Key.GetDisplayName().ToUpper()} {path.Key}"));
                 }
                 catch (Exception e)
                 {
-                    _diagnosticReporter.ReportDiagnostic(DiagnosticCatalog.ApiFirstMediatRUnexpectedError(Location.None, e.Message));
+                    _diagnosticReporter.ReportDiagnostic(DiagnosticCatalog.ApiFirstMediatRUnexpectedError(Location.None, $"{e.Message} Endpoint: {operation.Key.GetDisplayName().ToUpper()} {path.Key}"));
                 }
             }
         }

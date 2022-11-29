@@ -12,7 +12,7 @@ public class DeleteTests : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task Delete_NoContent()
     {
-        var response = await _client.DeleteAsync("pets/1");
+        var response = await _client.DeleteAsync("pet/1");
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 }

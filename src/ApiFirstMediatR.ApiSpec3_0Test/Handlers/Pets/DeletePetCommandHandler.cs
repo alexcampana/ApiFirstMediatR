@@ -1,4 +1,4 @@
-namespace ApiFirstMediatR.ApiSpec3_0Test.Handlers;
+namespace ApiFirstMediatR.ApiSpec3_0Test.Handlers.Pets;
 
 public sealed class DeletePetCommandHandler : IRequestHandler<DeletePetCommand, Unit>
 {

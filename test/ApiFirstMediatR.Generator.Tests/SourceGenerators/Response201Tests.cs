@@ -216,7 +216,7 @@ namespace With201Response.Controllers
         {
             var request = new With201Response.Requests.PostHelloWorldCommand(body);
             var response = await _mediator.Send(request, cancellationToken);
-            return Created(""GetHelloWorld"", ""Api"", new {helloWorldId = response.Id}, response);
+            return CreatedAtAction(""GetHelloWorld"", ""Api"", new {helloWorldId = response.Id}, response);
         }
     }
 }";

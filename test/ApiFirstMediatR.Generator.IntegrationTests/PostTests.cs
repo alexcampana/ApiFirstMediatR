@@ -12,23 +12,51 @@ public class PostTests : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task Post_Success()
     {
-        var pet = new NewPet
+        var pet = new Pet
         {
             Name = "Pet Name",
-            Tag = "Pet Tag"
+            Category = new Category
+            {
+                Id = 1,
+                Name = "Dog"
+            },
         };
 
         var json = JsonConvert.SerializeObject(pet);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         
-        var response = await _client.PostAsync("/pets", content);
+        var response = await _client.PostAsync("/pet", content);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var responsePet = JsonConvert.DeserializeObject<Pet>(await response.Content.ReadAsStringAsync());
-        responsePet.Id.Should().Be(1);
+        responsePet.Id.Should().Be(3);
         responsePet.Name.Should().Be("Pet Name");
-        responsePet.Tag.Should().Be("Pet Tag");
+        responsePet.Category.Should().NotBeNull();
+        responsePet.Category!.Id.Should().Be(1);
+        responsePet.Category.Name.Should().Be("Dog");
+        responsePet.Status.Should().BeNull();
+        responsePet.Tags.Should().BeNullOrEmpty();
     }
-    
-    // TODO: Test 201 Created
+
+    [Fact]
+    public async Task Post_Created()
+    {
+        var order = new Order
+        {
+            PetId = 1,
+            Quantity = 1,
+            Status = "placed"
+        };
+
+        var json = JsonConvert.SerializeObject(order);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var response = await _client.PostAsync("/store/order", content);
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        response.Headers.Location.Should().NotBeNull();
+        response.Headers.Location.Should().Be("http://localhost/store/order/1");
+
+        var orderPlaced = JsonConvert.DeserializeObject<OrderPlaced>(await response.Content.ReadAsStringAsync());
+        orderPlaced.Id.Should().Be(1);
+    }
 }
