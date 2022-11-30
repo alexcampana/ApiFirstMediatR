@@ -9,22 +9,14 @@ public class HelloWorldTests : TestBase
     [InlineData("api_spec3.json", Json2ApiSpec)]
     public void ValidateSpec(string fileName, string fileContents)
     {
-        var code = "namespace HelloWorld;";
-        var inputCompilation = CreateCompilation("HelloWorld", code);
-        var additionalText = new AdditionalTextYml(fileName, fileContents) as AdditionalText;
+        var result = RunGenerators(
+            "HelloWorld",
+            "namespace HelloWorld;",
+            fileName, 
+            fileContents);
 
-        var generator = new SourceGenerator();
-        var driver = CSharpGeneratorDriver
-            .Create(generator)
-            .AddAdditionalTexts(ImmutableArray.Create(additionalText))
-            .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
-                out var diagnostics);
-
-        diagnostics.Should().BeEmpty();
-        
-        driver.GetRunResult()
-            .Results.Should().ContainSingle()
-            .Which.GeneratedSources.Should().HaveCount(3)
+        result.Diagnostics.Should().BeEmpty();
+        result.GeneratedSources.Should().HaveCount(3)
             .And.ContainEquivalentSyntaxTree("Dtos_HelloWorldDto.g.cs", ExpectedDto)
             .And.ContainEquivalentSyntaxTree("MediatorRequests_GetHelloWorldQuery.g.cs", ExpectedMediatorRequest)
             .And.ContainEquivalentSyntaxTree("Controllers_ApiController.g.cs", ExpectedController);

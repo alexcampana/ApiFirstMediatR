@@ -5,34 +5,19 @@ public class Response201Tests : TestBase
     [Fact]
     public void ValidAPISpec_With201Response_GeneratesValidCode()
     {
-        var inputCompilation = CreateCompilation("With201Response", "");
-        var additionalText = new AdditionalTextYml("api_spec.yml", ApiSpec) as AdditionalText;
-        var generator = new SourceGenerator();
-        var driver = CSharpGeneratorDriver
-            .Create(generator)
-            .AddAdditionalTexts(ImmutableArray.Create(additionalText))
-            .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
+        var result = RunGenerators("With201Response", ApiSpec);
         
-        diagnostics.Should().BeEmpty();
-
-        driver.GetRunResult()
-            .Results.Should().ContainSingle()
-            .Which.GeneratedSources.Should()
+        result.Diagnostics.Should().BeEmpty();
+        result.GeneratedSources.Should()
                 .ContainEquivalentSyntaxTree("Controllers_ApiController.g.cs", ExpectedController);
     }
 
     [Fact]
     public void ValidAPISpec_WithUnsupportedLink_ThrowsDiagnostic()
     {
-        var inputCompilation = CreateCompilation("With201Response", "");
-        var additionalText = new AdditionalTextYml("api_spec.yml", ApiSpecInvalidLink) as AdditionalText;
-        var generator = new SourceGenerator();
-        CSharpGeneratorDriver
-            .Create(generator)
-            .AddAdditionalTexts(ImmutableArray.Create(additionalText))
-            .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
+        var result = RunGenerators("With201Response", ApiSpecInvalidLink);
         
-        diagnostics.Should().ContainSingle()
+        result.Diagnostics.Should().ContainSingle()
             .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFeatureNotSupported);
     }
 

@@ -21,29 +21,21 @@ public class ApiSpecDiagnosticTests : TestBase
     [Fact]
     public void EmptyAPISpecFile_ThrowsDiagnostic()
     {
-        var code = "namespace Test;";
-        var inputCompilation = CreateCompilation(code);
-        
-        var additionalTexts = new AdditionalTextYml("api_spec.yml", "") as AdditionalText;
+        var result = RunGenerators("Test", "");
 
-        var generator = new SourceGenerator();
-        CSharpGeneratorDriver
-            .Create(generator)
-            .AddAdditionalTexts(ImmutableArray.Create(additionalTexts))
-            .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
-                out var diagnostics);
-
-        diagnostics.Should().ContainSingle()
+        result.Diagnostics.Should().ContainSingle()
             .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileEmpty);
     }
  
     [Fact]
     public void BadAPISpecFile_ThrowsDiagnostic()
     {
-        var code = "namespace Test;";
-        var inputCompilation = CreateCompilation(code);
-        
-        var additionalTexts = new AdditionalTextYml("api_spec.yml", @"openapi: 3.0.1
+        var result = RunGenerators("Test", BadApiSpec);
+        result.Diagnostics.Should().ContainSingle()
+            .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileParsingError);
+    }
+    
+    private const string BadApiSpec = @"openapi: 3.0.1
 info:
   title: HelloWorld API
   version: v1
@@ -55,16 +47,5 @@ paths:
       operationId: GetHelloWorld
       parameters: []
       responses:
-        200:") as AdditionalText;
-
-        var generator = new SourceGenerator();
-        CSharpGeneratorDriver
-            .Create(generator)
-            .AddAdditionalTexts(ImmutableArray.Create(additionalTexts))
-            .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
-                out var diagnostics);
-
-        diagnostics.Should().ContainSingle()
-            .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileParsingError);
-    }
+        200:";
 }
