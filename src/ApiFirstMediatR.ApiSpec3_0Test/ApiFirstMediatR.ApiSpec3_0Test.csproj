@@ -22,7 +22,7 @@
     <!-- End VSCode Compatibility -->
 
     <ItemGroup>
-        <ProjectReference Include="..\ApiFirstMediatR.Generator\ApiFirstMediatR.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\ApiFirstMediatR.Generator\ApiFirstMediatR.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
     </ItemGroup>
     
     <ItemGroup>

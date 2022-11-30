@@ -60,8 +60,19 @@ public class GetTests : IClassFixture<WebApplicationFactory<Program>>
                         Name = "Friendly"
                     }
                 },
-                Status = "available"
+                Status = PetStatus.Available
             });
+    }
+
+    [Fact]
+    public async Task Get_WithSerializedEnum_CorrectSerialization()
+    {
+        var response = await _client.GetAsync("/pet/1");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var rawJson = await response.Content.ReadAsStringAsync();
+
+        rawJson.Should().Be("{\"id\":1,\"name\":\"Pet1\",\"category\":{\"id\":1,\"name\":\"Dog\"},\"photoUrls\":null,\"tags\":[{\"id\":1,\"name\":\"Friendly\"}],\"status\":\"available\"}");
     }
 
     [Fact]

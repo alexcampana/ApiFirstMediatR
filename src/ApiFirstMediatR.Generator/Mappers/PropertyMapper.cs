@@ -24,12 +24,20 @@ internal sealed class PropertyMapper : IPropertyMapper
                 name = name.ToCleanName().ToCamelCase();
             }
 
+            var dataType = _typeMapper.Map(property.Value);
+
+            // overriding TypeMapper for enums as it doesn't have the context of the dto
+            if (property.Value.Enum.Any())
+            {
+                dataType = $"{referenceName}{property.Key.ToPascalCase()}";// TODO: Refactor to use the same logic as the DataTransferObjectEnumMapper 
+            }
+
             yield return new Property
             {
                 Name = name,
                 JsonName = property.Key,
                 Description = property.Value.Description?.SplitOnNewLine(),
-                DataType = _typeMapper.Map(property.Value),
+                DataType = dataType,
                 IsNullable = property.Value.Nullable || !schema.Required.Contains(property.Key) // TODO: Switch logic here based on spec version (version 3 checks nullable, version 2 checks required
             };
         }

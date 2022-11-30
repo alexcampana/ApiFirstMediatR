@@ -50,7 +50,7 @@ public class PostTests : IClassFixture<WebApplicationFactory<Program>>
         {
             PetId = 1,
             Quantity = 1,
-            Status = "placed"
+            Status = OrderStatus.Placed
         };
 
         var json = JsonConvert.SerializeObject(order);
