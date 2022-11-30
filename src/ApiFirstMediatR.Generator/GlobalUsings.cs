@@ -6,6 +6,8 @@ global using ApiFirstMediatR.Generator.Diagnostics;
 global using ApiFirstMediatR.Generator.Extensions;
 global using ApiFirstMediatR.Generator.Generators;
 global using ApiFirstMediatR.Generator.Interfaces;
+global using ApiFirstMediatR.Generator.Interfaces.Mappers;
+global using ApiFirstMediatR.Generator.Interfaces.Repositories;
 global using ApiFirstMediatR.Generator.Mappers;
 global using ApiFirstMediatR.Generator.Models;
 global using ApiFirstMediatR.Generator.Repositories;

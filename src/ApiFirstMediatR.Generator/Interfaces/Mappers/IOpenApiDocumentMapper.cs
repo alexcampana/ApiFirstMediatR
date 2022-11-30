@@ -1,4 +1,4 @@
-namespace ApiFirstMediatR.Generator.Interfaces;
+namespace ApiFirstMediatR.Generator.Interfaces.Mappers;
 
 public interface IOpenApiDocumentMapper<out T>
 {

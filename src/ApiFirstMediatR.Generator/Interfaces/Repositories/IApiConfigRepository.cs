@@ -1,4 +1,4 @@
-namespace ApiFirstMediatR.Generator.Interfaces;
+namespace ApiFirstMediatR.Generator.Interfaces.Repositories;
 
 internal interface IApiConfigRepository
 {
