@@ -61,7 +61,7 @@ public class GeneratedSourceResultsAssertions : GenericCollectionAssertions<IEnu
                 Execute.Assertion
                     .BecauseOf(because, becauseArgs)
                     .ForCondition(CSharpSyntaxTree.ParseText(sourceText).IsEquivalentTo(match.Value.SyntaxTree))
-                    .FailWith("Expected source with given hintName {0} to be equivalent to the provided source, but they were not", hintName);
+                    .FailWith($"Expected source with given hintName {0} to be equivalent to the provided source, but it was not.{Environment.NewLine}{Environment.NewLine}Provided Source:{Environment.NewLine}{{1}}{Environment.NewLine}{Environment.NewLine}Expected Source:{Environment.NewLine}{{2}}", hintName, match.Value.SourceText, sourceText);
             }
         }
 

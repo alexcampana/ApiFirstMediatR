@@ -35,7 +35,7 @@ public class TestData
         {
             FriendlyTag
         },
-        Status = "available"
+        Status = PetStatus.Available
     };
 
     private static readonly Pet Pet2 = new Pet
@@ -47,7 +47,7 @@ public class TestData
         {
             DeviousTag
         },
-        Status = "available"
+        Status = PetStatus.Available
     };
 
     private static readonly Order Order1 = new Order
@@ -57,7 +57,7 @@ public class TestData
         Quantity = 1,
         Complete = true,
         ShipDate = DateTimeOffset.Now,
-        Status = "delivered"
+        Status = OrderStatus.Delivered
     };
     
     public static readonly ImmutableArray<Category> Categories = ImmutableArray.Create(DogCategory, CatCategory);

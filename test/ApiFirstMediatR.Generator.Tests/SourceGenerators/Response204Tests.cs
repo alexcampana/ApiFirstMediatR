@@ -5,20 +5,10 @@ public class Response204Tests : TestBase
     [Fact]
     public void ValidAPISpec_With204Response_GeneratesValidCode()
     {
-        var inputCompilation = CreateCompilation("With201Response", "");
+        var result = RunGenerators("With201Response", ApiSpec);
 
-        var additionalText = new AdditionalTextYml("api_spec.yml", ApiSpec) as AdditionalText;
-        var generator = new SourceGenerator();
-        var driver = CSharpGeneratorDriver
-            .Create(generator)
-            .AddAdditionalTexts(ImmutableArray.Create(additionalText))
-            .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
-
-        diagnostics.Should().BeEmpty();
-
-        driver.GetRunResult()
-            .Results.Should().ContainSingle()
-            .Which.GeneratedSources.Should()
+        result.Diagnostics.Should().BeEmpty();
+        result.GeneratedSources.Should()
                 .ContainEquivalentSyntaxTree("Controllers_PetsController.g.cs", ExpectedController);
     }
 
