@@ -6,7 +6,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsRoslynComponent>true</IsRoslynComponent>
-        <DevelopmentDependency>true</DevelopmentDependency>
         <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
         <MinVerTagPrefix>v</MinVerTagPrefix>
         <Authors>Alex Campana</Authors>
@@ -20,7 +19,6 @@
         <Deterministic>true</Deterministic>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
-        <IncludeBuildOutput>false</IncludeBuildOutput>
     </PropertyGroup>
     
     <ItemGroup>
