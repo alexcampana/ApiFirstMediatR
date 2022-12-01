@@ -20,6 +20,7 @@
         <Deterministic>true</Deterministic>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
     </PropertyGroup>
     
     <ItemGroup>
