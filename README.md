@@ -8,7 +8,7 @@ Business logic implementation is handled by MediatR handlers that implement the 
 
 Code is generated using a Roslyn based Source Generator. To find out more about Roslyn Source Generators go here: https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/source-generators-overview
 
-Currently supports ASP.NET Core 6.0 and OpenAPI Spec version 3 and 2 in both yaml and json formats.
+Currently supports ASP.NET Core 6.0 and 7.0 and OpenAPI Spec version 3 and 2 in both yaml and json formats.
 
 ## Installation
 ```sh
