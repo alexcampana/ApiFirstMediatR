@@ -19,8 +19,6 @@ public sealed class SourceGenerator : ISourceGenerator
         
         foreach (var generator in generators)
             generator.Generate();
-        
-        container.Dispose();
     }
     
     public void Initialize(GeneratorInitializationContext context)
