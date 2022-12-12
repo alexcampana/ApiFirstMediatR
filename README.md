@@ -100,7 +100,6 @@ using compilation.Requests;
 
 namespace compilation.Controllers
 {
-    [Route("[controller]")]
     public sealed class ApiController : Controller
     {
         private readonly IMediator _mediator;

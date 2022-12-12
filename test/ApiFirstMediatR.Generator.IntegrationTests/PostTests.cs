@@ -62,6 +62,6 @@ public class PostTests : IClassFixture<WebApplicationFactory<Program>>
             .And.Be("http://localhost/store/order/1");
 
         var orderPlaced = JsonConvert.DeserializeObject<OrderPlaced>(await response.Content.ReadAsStringAsync());
-        orderPlaced.Id.Should().Be(1);
+        orderPlaced!.Id.Should().Be(1);
     }
 }
