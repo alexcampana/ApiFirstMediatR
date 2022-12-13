@@ -7,7 +7,7 @@ namespace {{ dto_namespace }}
     public class {{ name }}{% if inherited_dto != null %} : {{ dto_namespace }}.{{ inherited_dto }}{% endif %} 
     {
         {%- for property in properties %}
-        [System.Text.Json.Serialization.JsonPropertyName("{{ property.json_name }}")]
+        [{{ serialization_library.property_name_attribute }}("{{ property.json_name }}")]
         public {{ property.data_type }}{% if property.is_nullable %}?{% endif %} {{ property.name }} { get; set; }
         {%- unless forloop.last %}
         {% endunless -%}

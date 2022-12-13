@@ -22,4 +22,5 @@ internal sealed class GeneratorExecutionContextWrapper : IDiagnosticReporter, IS
     public ImmutableArray<AdditionalText> AdditionalFiles => _context.AdditionalFiles;
     public CancellationToken CancellationToken => _context.CancellationToken;
     public Compilation Compilation => _context.Compilation;
+    public AnalyzerConfigOptionsProvider AnalyzerConfigOptions => _context.AnalyzerConfigOptions;
 }
