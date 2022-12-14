@@ -1,10 +1,10 @@
 namespace ApiFirstMediatR.Generator.IntegrationTests;
 
-public class DeleteTests : IClassFixture<WebApplicationFactory<Program>>
+public class DeleteTests : IClassFixture<WebApplicationFactory<ApiSpec3_0Test.Program>>
 {
     private readonly HttpClient _client;
 
-    public DeleteTests(WebApplicationFactory<Program> application)
+    public DeleteTests(WebApplicationFactory<ApiSpec3_0Test.Program> application)
     {
         _client = application.CreateClient();
     }

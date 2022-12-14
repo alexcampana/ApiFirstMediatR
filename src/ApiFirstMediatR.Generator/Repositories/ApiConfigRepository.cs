@@ -22,7 +22,8 @@ internal sealed class ApiConfigRepository : IApiConfigRepository
     {
         SerializationLibrary? serializationLibrary = null;
         
-        if (_compilation.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.ApiFirstMediatR_SerializationLibrary", out var serializationLibraryName))
+        if (_compilation.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.ApiFirstMediatR_SerializationLibrary", out var serializationLibraryName) &&
+            !String.IsNullOrEmpty(serializationLibraryName))
         {
             if (!SerializationLibrary.TryGetSerializationLibrary(serializationLibraryName, out serializationLibrary))
             {

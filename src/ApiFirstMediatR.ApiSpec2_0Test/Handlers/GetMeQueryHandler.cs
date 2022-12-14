@@ -11,6 +11,13 @@ public sealed class GetMeQueryHandler : IRequestHandler<GetMeQuery, Profile>
 {
     public Task<Profile> Handle(GetMeQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var profile = new Profile
+        {
+            FirstName = "First",
+            LastName = "Last",
+            Email = "test@test.com"
+        };
+
+        return Task.FromResult(profile);
     }
 }
