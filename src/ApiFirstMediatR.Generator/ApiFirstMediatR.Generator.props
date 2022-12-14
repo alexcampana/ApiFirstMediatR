@@ -1,6 +1,5 @@
 ﻿<Project>
     <ItemGroup>
         <CompilerVisibleProperty Include="ApiFirstMediatR_SerializationLibrary" />
-        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="ApiFirstMediatR_SerializationLibrary" />
     </ItemGroup>
 </Project>
