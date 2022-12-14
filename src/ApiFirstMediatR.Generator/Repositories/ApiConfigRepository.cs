@@ -3,11 +3,13 @@ namespace ApiFirstMediatR.Generator.Repositories;
 internal sealed class ApiConfigRepository : IApiConfigRepository
 {
     private readonly ICompilation _compilation;
+    private readonly IDiagnosticReporter _diagnosticReporter;
     private readonly Lazy<ApiConfig> _scriptObject;
 
-    public ApiConfigRepository(ICompilation compilation)
+    public ApiConfigRepository(ICompilation compilation, IDiagnosticReporter diagnosticReporter)
     {
         _compilation = compilation;
+        _diagnosticReporter = diagnosticReporter;
         _scriptObject = new Lazy<ApiConfig>(GetLazyConfig);
     }
 
@@ -22,9 +24,10 @@ internal sealed class ApiConfigRepository : IApiConfigRepository
         
         if (_compilation.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.ApiFirstMediatR_SerializationLibrary", out var serializationLibraryName))
         {
-            SerializationLibrary.TryGetSerializationLibrary(serializationLibraryName, out serializationLibrary);
-            // TODO: Check to see if serialization library was found and throw diagnostic if it wasn't
-            // TODO: Check for setting on additional file or remove the option to do so
+            if (!SerializationLibrary.TryGetSerializationLibrary(serializationLibraryName, out serializationLibrary))
+            {
+                _diagnosticReporter.ReportDiagnostic(DiagnosticCatalog.InvalidSerializationLibrary(Location.None, serializationLibraryName));
+            }
         }
 
         return new ApiConfig

@@ -1,5 +1,3 @@
-using ApiFirstMediatR.Generator.Models.Config;
-
 namespace ApiFirstMediatR.Generator.Tests.Utils;
 
 internal static class MockApiConfig
