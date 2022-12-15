@@ -168,3 +168,20 @@ Add the following to your `.csproj`
 ```
 
 This will force the generators to output the generated files to the `Generated` directory, but notify the compiler to ignore the generated files and continue to use the normal Roslyn Source Generator compile process. Adding the Generated directory to your `.gitignore` is recommended.
+
+## Configuration
+### MSBuild Options
+Available MSBuild properties:
+
+| Property | Default | Available Options |
+| -------- | ------- | ----------------- |
+| ApiFirstMediatR_SerializationLibrary | System.Text.Json | System.Text.Json, Newtonsoft.Json |
+
+To set an MSBuild option you need to add the property and value to your csproj file.
+
+Example:
+```xml
+    <PropertyGroup>
+        <ApiFirstMediatR_SerializationLibrary>Newtonsoft.Json</ApiFirstMediatR_SerializationLibrary>
+    </PropertyGroup>
+```

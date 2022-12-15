@@ -64,6 +64,16 @@ internal static class DiagnosticCatalog
         isEnabledByDefault: true
     );
 
+    private static readonly DiagnosticDescriptor InvalidSerializationLibraryDescriptor = new
+    (
+        id: DiagnosticIdentifiers.InvalidSerializationLibrary,
+        title: "Unsupported JSON Serialization Library Selected",
+        messageFormat: "Unsupported JSON Serialization Library Selected: {0}",
+        category: Category,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
     public static Diagnostic ApiSpecFileNotFound()
         => Diagnostic.Create(ApiSpecFileNotFoundDescriptor, Location.None);
     
@@ -81,4 +91,7 @@ internal static class DiagnosticCatalog
 
     public static Diagnostic ApiFirstMediatRUnexpectedError(Location location, string errorMessage)
         => Diagnostic.Create(ApiFirstMediatRUnexpectedErrorDescriptor, location, errorMessage);
+    
+    public static Diagnostic InvalidSerializationLibrary(Location location, string serializationLibrary)
+        => Diagnostic.Create(InvalidSerializationLibraryDescriptor, location, serializationLibrary);
 }

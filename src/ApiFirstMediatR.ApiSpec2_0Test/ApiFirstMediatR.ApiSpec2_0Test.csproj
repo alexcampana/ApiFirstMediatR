@@ -1,10 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
         <Nullable>enable</Nullable>
         <ImplicitUsings>disable</ImplicitUsings>
+        <LangVersion>11</LangVersion>
         <RootNamespace>ApiFirstMediatR.ApiSpec2_0Test</RootNamespace>
+        <ApiFirstMediatR_SerializationLibrary>Newtonsoft.Json</ApiFirstMediatR_SerializationLibrary>
     </PropertyGroup>
 
     <!-- Begin VSCode Compatibility -->
@@ -32,5 +34,15 @@
     <ItemGroup>
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.12" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.1" />
+    </ItemGroup>
+    
+    <Import Project="..\ApiFirstMediatR.Generator\ApiFirstMediatR.Generator.props" />
 
 </Project>

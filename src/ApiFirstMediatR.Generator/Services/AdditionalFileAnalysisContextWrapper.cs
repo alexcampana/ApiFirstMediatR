@@ -12,4 +12,5 @@ internal sealed class AdditionalFileAnalysisContextWrapper : ICompilation
     public ImmutableArray<AdditionalText> AdditionalFiles => ImmutableArray.Create(_context.AdditionalFile);
     public CancellationToken CancellationToken => _context.CancellationToken;
     public Compilation Compilation => _context.Compilation;
+    public AnalyzerConfigOptionsProvider AnalyzerConfigOptions => _context.Options.AnalyzerConfigOptionsProvider;
 }
