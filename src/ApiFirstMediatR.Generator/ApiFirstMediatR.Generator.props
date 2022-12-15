@@ -2,4 +2,10 @@
     <ItemGroup>
         <CompilerVisibleProperty Include="ApiFirstMediatR_SerializationLibrary" />
     </ItemGroup>
+    <PropertyGroup>
+        <ApiFirstMediatR_SerializationLibrary Condition="'$(ApiFirstMediatR_SerializationLibrary)' == ''">System.Text.Json</ApiFirstMediatR_SerializationLibrary>
+    </PropertyGroup>
+    <ItemGroup Condition="'$(ApiFirstMediatR_SerializationLibrary)' == 'System.Text.Json'">
+        <PackageReference Include="Macross.Json.Extensions" Version="3.0.0" />
+    </ItemGroup>
 </Project>
