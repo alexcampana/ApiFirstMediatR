@@ -4,7 +4,7 @@
 
 namespace {{ dto_namespace }}
 {
-    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumMemberConverter))]
+    [{{ serialization_library.json_converter_class }}(typeof({{ serialization_library.enum_member_converter_class }}))]
     public enum {{ name }}
     {
         {%- for enum_value in enum_values %}

@@ -10,6 +10,7 @@ global using ApiFirstMediatR.Generator.Interfaces.Mappers;
 global using ApiFirstMediatR.Generator.Interfaces.Repositories;
 global using ApiFirstMediatR.Generator.Mappers;
 global using ApiFirstMediatR.Generator.Models;
+global using ApiFirstMediatR.Generator.Models.Config;
 global using ApiFirstMediatR.Generator.Repositories;
 global using ApiFirstMediatR.Generator.Templates;
 global using ApiFirstMediatR.Generator.Utils;

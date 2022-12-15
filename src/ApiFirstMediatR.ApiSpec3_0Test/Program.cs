@@ -7,4 +7,7 @@ app.MapControllers();
 
 app.Run();
 
-public partial class Program { }
+namespace ApiFirstMediatR.ApiSpec3_0Test
+{
+    public partial class Program { }
+}

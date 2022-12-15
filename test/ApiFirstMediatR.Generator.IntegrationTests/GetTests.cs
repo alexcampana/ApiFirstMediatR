@@ -1,10 +1,10 @@
 namespace ApiFirstMediatR.Generator.IntegrationTests;
 
-public class GetTests : IClassFixture<WebApplicationFactory<Program>>
+public class GetTests : IClassFixture<WebApplicationFactory<ApiSpec3_0Test.Program>>
 {
     private readonly HttpClient _client;
 
-    public GetTests(WebApplicationFactory<Program> application)
+    public GetTests(WebApplicationFactory<ApiSpec3_0Test.Program> application)
     {
         _client = application.CreateClient();
     }

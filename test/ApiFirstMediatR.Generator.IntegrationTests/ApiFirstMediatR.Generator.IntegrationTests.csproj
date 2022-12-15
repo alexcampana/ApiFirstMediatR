@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\ApiFirstMediatR.ApiSpec2_0Test\ApiFirstMediatR.ApiSpec2_0Test.csproj" />
     <ProjectReference Include="..\..\src\ApiFirstMediatR.ApiSpec3_0Test\ApiFirstMediatR.ApiSpec3_0Test.csproj" />
   </ItemGroup>
 

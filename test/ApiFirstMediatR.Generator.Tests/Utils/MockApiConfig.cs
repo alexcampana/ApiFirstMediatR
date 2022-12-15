@@ -9,7 +9,8 @@ internal static class MockApiConfig
             .Setup(mock => mock.Get())
             .Returns(new ApiConfig
             {
-                Namespace = namespaceName
+                Namespace = namespaceName,
+                SerializationLibrary = SerializationLibrary.SystemTextJson
             });
 
         return mockApiConfigRepo.Object;

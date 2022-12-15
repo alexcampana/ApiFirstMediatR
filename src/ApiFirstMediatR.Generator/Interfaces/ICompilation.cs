@@ -5,4 +5,5 @@ public interface ICompilation
     ImmutableArray<AdditionalText> AdditionalFiles { get; }
     CancellationToken CancellationToken { get; }
     Compilation Compilation { get; }
+    AnalyzerConfigOptionsProvider AnalyzerConfigOptions { get; }
 }
