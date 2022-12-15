@@ -1,11 +1,11 @@
-using System;
+using ApiFirstMediatR.ApiSpec2_0Test.Handlers;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddNewtonsoftJson();
-builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddMediatR(typeof(GetMeQueryHandler));
 var app = builder.Build();
 
 app.MapControllers();
