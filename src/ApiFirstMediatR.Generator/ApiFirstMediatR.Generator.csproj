@@ -35,7 +35,7 @@
         <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.4.5" GeneratePathProperty="true" PrivateAssets="all" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
         <PackageReference Include="MinVer" Version="4.2.0" PrivateAssets="all" />
-        <PackageReference Include="Scriban" Version="5.5.1" GeneratePathProperty="true" PrivateAssets="all" IncludeAssets="Build" />
+        <PackageReference Include="Scriban" Version="5.5.2" GeneratePathProperty="true" PrivateAssets="all" IncludeAssets="Build" />
         <PackageReference Include="SharpYaml" Version="2.1.0" GeneratePathProperty="true" PrivateAssets="all" />
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" PrivateAssets="all" />
     </ItemGroup>
