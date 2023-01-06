@@ -6,20 +6,30 @@ internal sealed class EndpointMapper : IEndpointMapper
     private readonly IResponseMapper _responseMapper;
     private readonly ITypeMapper _typeMapper;
     private readonly IOperationNamingRepository _operationNamingRepository;
+    private readonly IApiConfigRepository _apiConfigRepository;
     private readonly IDiagnosticReporter _diagnosticReporter;
 
-    public EndpointMapper(IParameterMapper parameterMapper, IResponseMapper responseMapper, ITypeMapper typeMapper, IOperationNamingRepository operationNamingRepository, IDiagnosticReporter diagnosticReporter)
+    public EndpointMapper(
+        IParameterMapper parameterMapper,
+        IResponseMapper responseMapper,
+        ITypeMapper typeMapper,
+        IOperationNamingRepository operationNamingRepository,
+        IApiConfigRepository apiConfigRepository,
+        IDiagnosticReporter diagnosticReporter)
     {
         _parameterMapper = parameterMapper;
         _responseMapper = responseMapper;
         _typeMapper = typeMapper;
         _operationNamingRepository = operationNamingRepository;
+        _apiConfigRepository = apiConfigRepository;
         _diagnosticReporter = diagnosticReporter;
     }
 
     public IEnumerable<Endpoint> Map(OpenApiPaths paths)
     {
+        var apiConfig = _apiConfigRepository.Get();
         var endpoints = new List<Endpoint>();
+        
         foreach (var path in paths)
         {
             foreach (var operation in path.Value.Operations)
@@ -48,9 +58,9 @@ internal sealed class EndpointMapper : IEndpointMapper
                     {
                         endpoint.RequestBody = new Parameter
                         {
-                            ParameterName = "body", // TODO: Make this configurable by end user
-                            Name = "Body",
-                            JsonName = "body",
+                            ParameterName = apiConfig.RequestBodyName.ToCamelCase(),
+                            Name = apiConfig.RequestBodyName.ToPascalCase(),
+                            JsonName = apiConfig.RequestBodyName.ToCamelCase(),
                             Description = operation.Value.RequestBody.Description?.SplitOnNewLine(),
                             DataType = _typeMapper.Map(requestBody.Schema),
                             IsNullable = !operation.Value.RequestBody.Required,
@@ -62,9 +72,7 @@ internal sealed class EndpointMapper : IEndpointMapper
                         throw new NotImplementedException($"Only application/json request body supported.");
                     }
 
-                    // TODO: Throw Unsupported Diagnostic if more than one success response is registered
                     endpoint.Response = _responseMapper.Map(operation.Value.Responses);
-
                     endpoints.Add(endpoint);
                 }
                 catch (Exception e) when (e is NotSupportedException or NotImplementedException)

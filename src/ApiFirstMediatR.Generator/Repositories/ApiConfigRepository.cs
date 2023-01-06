@@ -30,11 +30,14 @@ internal sealed class ApiConfigRepository : IApiConfigRepository
                 _diagnosticReporter.ReportDiagnostic(DiagnosticCatalog.InvalidSerializationLibrary(Location.None, serializationLibraryName));
             }
         }
+        
+        _compilation.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.ApiFirstMediatR_RequestBodyName", out var requestBodyName);
 
         return new ApiConfig
         {
             Namespace = _compilation.Compilation.AssemblyName ?? "ApiFirst",
-            SerializationLibrary = serializationLibrary ?? SerializationLibrary.SystemTextJson
+            SerializationLibrary = serializationLibrary ?? SerializationLibrary.SystemTextJson,
+            RequestBodyName = requestBodyName ?? "Body"
         };
     }
 }
