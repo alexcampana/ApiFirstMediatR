@@ -1,9 +1,11 @@
 ﻿<Project>
     <ItemGroup>
         <CompilerVisibleProperty Include="ApiFirstMediatR_SerializationLibrary" />
+        <CompilerVisibleProperty Include="ApiFirstMediatR_RequestBodyName" />
     </ItemGroup>
     <PropertyGroup>
         <ApiFirstMediatR_SerializationLibrary Condition="'$(ApiFirstMediatR_SerializationLibrary)' == ''">System.Text.Json</ApiFirstMediatR_SerializationLibrary>
+        <ApiFirstMediatR_RequestBodyName Condition="'$(ApiFirstMediatR_RequestBodyName)' == ''">Body</ApiFirstMediatR_RequestBodyName>
     </PropertyGroup>
     <ItemGroup Condition="'$(ApiFirstMediatR_SerializationLibrary)' == 'System.Text.Json'">
         <PackageReference Include="Macross.Json.Extensions" Version="3.0.0" />

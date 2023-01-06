@@ -173,9 +173,10 @@ This will force the generators to output the generated files to the `Generated` 
 ### MSBuild Options
 Available MSBuild properties:
 
-| Property | Default | Available Options |
-| -------- | ------- | ----------------- |
-| ApiFirstMediatR_SerializationLibrary | System.Text.Json | System.Text.Json, Newtonsoft.Json |
+| Property                             | Default          | Available Options                 | Description                                                  |
+|--------------------------------------|------------------|-----------------------------------|--------------------------------------------------------------|
+| ApiFirstMediatR_SerializationLibrary | System.Text.Json | System.Text.Json, Newtonsoft.Json | Serialization Library that the generated code should use.    |
+| ApiFirstMediatR_RequestBodyName      | Body             | string                            | The name that's used for request bodies in mediatr requests. |
 
 To set an MSBuild option you need to add the property and value to your csproj file.
 
