@@ -5,6 +5,7 @@ internal sealed class EndpointMapper : IEndpointMapper
     private readonly IParameterMapper _parameterMapper;
     private readonly IResponseMapper _responseMapper;
     private readonly ITypeMapper _typeMapper;
+    private readonly ISecurityMapper _securityMapper;
     private readonly IOperationNamingRepository _operationNamingRepository;
     private readonly IApiConfigRepository _apiConfigRepository;
     private readonly IDiagnosticReporter _diagnosticReporter;
@@ -13,6 +14,7 @@ internal sealed class EndpointMapper : IEndpointMapper
         IParameterMapper parameterMapper,
         IResponseMapper responseMapper,
         ITypeMapper typeMapper,
+        ISecurityMapper securityMapper,
         IOperationNamingRepository operationNamingRepository,
         IApiConfigRepository apiConfigRepository,
         IDiagnosticReporter diagnosticReporter)
@@ -20,6 +22,7 @@ internal sealed class EndpointMapper : IEndpointMapper
         _parameterMapper = parameterMapper;
         _responseMapper = responseMapper;
         _typeMapper = typeMapper;
+        _securityMapper = securityMapper;
         _operationNamingRepository = operationNamingRepository;
         _apiConfigRepository = apiConfigRepository;
         _diagnosticReporter = diagnosticReporter;
@@ -73,6 +76,7 @@ internal sealed class EndpointMapper : IEndpointMapper
                     }
 
                     endpoint.Response = _responseMapper.Map(operation.Value.Responses);
+                    endpoint.Securities = _securityMapper.Map(operation.Value.Security);
                     endpoints.Add(endpoint);
                 }
                 catch (Exception e) when (e is NotSupportedException or NotImplementedException)
