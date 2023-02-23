@@ -29,6 +29,7 @@ public class Glue : IConfiguration
             .Bind<IParameterMapper>().To<ParameterMapper>()
             .Bind<IPropertyMapper>().To<PropertyMapper>()
             .Bind<IResponseMapper>().To<ResponseMapper>()
-            .Bind<ITypeMapper>().To<TypeMapper>();
+            .Bind<ITypeMapper>().To<TypeMapper>()
+            .Bind<ISecurityMapper>().To<SecurityMapper>();
     }
 }
