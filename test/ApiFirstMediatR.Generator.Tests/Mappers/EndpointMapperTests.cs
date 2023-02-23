@@ -25,9 +25,10 @@ public class EndpointMapperTests
         var typeMapper = new TypeMapper(mockApiConfigRepo);
         var parameterMapper = new ParameterMapper(typeMapper);
         var responseMapper = new ResponseMapper(typeMapper, mockOperationNamingRepository.Object);
+        var securityMapper = new SecurityMapper();
         var mockApiConfigRepository = new Mock<IApiConfigRepository>();
 
-        _endpointMapper = new EndpointMapper(parameterMapper, responseMapper, typeMapper,
+        _endpointMapper = new EndpointMapper(parameterMapper, responseMapper, typeMapper, securityMapper,
             mockOperationNamingRepository.Object, mockApiConfigRepository.Object, _mockDiagnosticReporter.Object);
     }
 
