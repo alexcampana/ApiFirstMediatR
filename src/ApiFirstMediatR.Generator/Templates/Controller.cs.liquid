@@ -23,8 +23,8 @@ namespace {{ controller_namespace }}
         /// <param name="{{ parameter.parameter_name }}">{{ parameter.description | join: "<br/>" }}</param>
         {%- endfor %}
         /// <returns>{{ endpoint.response.description | join: "<br/>" }}</returns>
-        {%- for security in endpoint.securities %}
-        {% if security.type == "Http" %}[Microsoft.AspNetCore.Authorization.Authorize{% if security.scopes.size != 0 %}(Policy = "{{ security.scopes | first }}"){% endif %}]{% endif %}
+        {%- for policy in endpoint.security.policies %}
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "{{ policy }}")]
         {%- endfor %}
         [Microsoft.AspNetCore.Mvc.Http{{ endpoint.operation_name }}("{{ endpoint.path }}")]
         [Microsoft.AspNetCore.Mvc.ProducesResponseType({% if endpoint.response.body_type != null %}typeof({{ endpoint.response.body_type }}), {% endif %}Microsoft.AspNetCore.Http.StatusCodes.{{ endpoint.response.http_status_code.status_code_reference }})]

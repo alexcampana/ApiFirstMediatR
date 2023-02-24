@@ -2,25 +2,23 @@
 
 internal sealed class SecurityMapper : ISecurityMapper
 {
-    public IEnumerable<Security> Map(IList<OpenApiSecurityRequirement>? security)
+    public Security Map(IList<OpenApiSecurityRequirement>? security)
     {
         if (security is null || !security.Any())
-            return Array.Empty<Security>();
-        
-        var securities = new List<Security>();
-        foreach(var securityRequirement in security)
+            return new Security();
+
+        var policies = new List<string>();
+        foreach (var securityRequirement in security)
         {
-            foreach(var kv in securityRequirement)
+            foreach (var kv in securityRequirement.Where(kv => kv.Key.Type == SecuritySchemeType.Http))
             {
-                securities.Add(new Security
-                {
-                    Type = kv.Key.Type,
-                    Schema = kv.Key.Scheme,
-                    BearerFormat= kv.Key.BearerFormat,
-                    Scopes = kv.Value
-                });
+                policies.AddRange(kv.Value);
             }
         }
-        return securities;
+        
+        return new Security
+        {
+            Policies = policies
+        };
     }
 }

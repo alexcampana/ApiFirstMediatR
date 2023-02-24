@@ -76,7 +76,7 @@ internal sealed class EndpointMapper : IEndpointMapper
                     }
 
                     endpoint.Response = _responseMapper.Map(operation.Value.Responses);
-                    endpoint.Securities = _securityMapper.Map(operation.Value.Security);
+                    endpoint.Security = _securityMapper.Map(operation.Value.Security);
                     endpoints.Add(endpoint);
                 }
                 catch (Exception e) when (e is NotSupportedException or NotImplementedException)

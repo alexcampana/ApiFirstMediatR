@@ -2,5 +2,5 @@
 
 internal interface ISecurityMapper
 {
-    IEnumerable<Security> Map(IList<OpenApiSecurityRequirement>? security);
+    Security Map(IList<OpenApiSecurityRequirement>? security);
 }

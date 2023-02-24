@@ -25,5 +25,5 @@ internal sealed class Endpoint
             return props;
         }
     }
-    public IEnumerable<Security>? Securities { get; set; }
+    public Security? Security { get; set; }
 }

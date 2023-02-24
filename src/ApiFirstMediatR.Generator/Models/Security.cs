@@ -2,8 +2,10 @@
 
 internal sealed class Security
 {
-    public SecuritySchemeType Type { get; set; }
-    public string? Schema { get; set; }
-    public string? BearerFormat { get; set; }
-    public IEnumerable<string>? Scopes { get; set; }
+    public Security()
+    {
+        Policies = new List<string>();
+    }
+
+    public IEnumerable<string>? Policies { get; set; }
 }
