@@ -2,6 +2,13 @@
 
 internal sealed class SecurityMapper : ISecurityMapper
 {
+    private readonly IDiagnosticReporter _diagnosticReporter;
+
+    public SecurityMapper(IDiagnosticReporter diagnosticReporter)
+    {
+        _diagnosticReporter = diagnosticReporter;
+    }
+    
     public Security Map(IList<OpenApiSecurityRequirement>? security)
     {
         if (security is null || !security.Any())
@@ -10,9 +17,17 @@ internal sealed class SecurityMapper : ISecurityMapper
         var policies = new List<string>();
         foreach (var securityRequirement in security)
         {
-            foreach (var kv in securityRequirement.Where(kv => kv.Key.Type == SecuritySchemeType.Http))
+            foreach (var kv in securityRequirement)
             {
-                policies.AddRange(kv.Value);
+                if (kv.Key.Type == SecuritySchemeType.Http)
+                {
+                    policies.AddRange(kv.Value);
+                }
+                else
+                {
+                    // TODO: Implement location finder so we can point to the exact location in the api spec file
+                    _diagnosticReporter.ReportDiagnostic(DiagnosticCatalog.ApiSpecFeatureNotSupported(Location.None, $"Security: {kv.Key.Name} {string.Join(", ", kv.Value)}"));
+                }
             }
         }
         
