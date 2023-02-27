@@ -75,6 +75,24 @@ public class EndpointMapperTests
                                     }
                                 }
                             }
+                        },
+                        Security = new List<OpenApiSecurityRequirement>
+                        {
+                            new()
+                            {
+                                {
+                                    new OpenApiSecurityScheme
+                                    {
+                                        Type = SecuritySchemeType.Http,
+                                        Scheme = "bearer",
+                                        BearerFormat = "JWT"
+                                    },
+                                    new List<string>
+                                    {
+                                        "GetResource"
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -93,6 +111,13 @@ public class EndpointMapperTests
                 Description = new []
                 {
                     "Test Description"
+                },
+                Security = new Security
+                {
+                    Policies = new []
+                    {
+                        "GetResource"
+                    }
                 }
             }, options => options.ExcludingMissingMembers());
 
@@ -104,6 +129,8 @@ public class EndpointMapperTests
         endpoint.QueryParameters.Should().ContainSingle()
             .Which.Name.Should().Be("TestParameter");
         endpoint.PathParameters.Should().BeNullOrEmpty();
+        endpoint.Security.Should().NotBeNull();
+        endpoint.Security!.Policies.Should().ContainSingle();
     }
 
     [Fact]
