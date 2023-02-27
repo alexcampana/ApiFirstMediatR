@@ -114,9 +114,8 @@ paths:
         405:
           description: Invalid input
       security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
+        - bearer_auth:
+            - CreateWorkflow
   /pet/categories:
     get:
       summary: Gets all Pet Categories
@@ -851,3 +850,7 @@ components:
       type: apiKey
       name: api_key
       in: header
+    bearer_auth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
