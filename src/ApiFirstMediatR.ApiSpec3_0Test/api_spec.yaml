@@ -79,9 +79,8 @@ paths:
         405:
           description: Validation exception
       security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
+        - bearer_auth:
+            - CreateWorkflow
     post:
       tags:
         - pet
@@ -114,8 +113,9 @@ paths:
         405:
           description: Invalid input
       security:
-        - bearer_auth:
-            - CreateWorkflow
+        - petstore_auth:
+            - write:pets
+            - read:pets
   /pet/categories:
     get:
       summary: Gets all Pet Categories
