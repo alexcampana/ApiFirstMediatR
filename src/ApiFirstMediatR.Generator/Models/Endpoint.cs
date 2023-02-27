@@ -25,4 +25,5 @@ internal sealed class Endpoint
             return props;
         }
     }
+    public Security? Security { get; set; }
 }

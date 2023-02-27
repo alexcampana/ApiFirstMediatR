@@ -23,6 +23,9 @@ namespace {{ controller_namespace }}
         /// <param name="{{ parameter.parameter_name }}">{{ parameter.description | join: "<br/>" }}</param>
         {%- endfor %}
         /// <returns>{{ endpoint.response.description | join: "<br/>" }}</returns>
+        {%- for policy in endpoint.security.policies %}
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "{{ policy }}")]
+        {%- endfor %}
         [Microsoft.AspNetCore.Mvc.Http{{ endpoint.operation_name }}("{{ endpoint.path }}")]
         [Microsoft.AspNetCore.Mvc.ProducesResponseType({% if endpoint.response.body_type != null %}typeof({{ endpoint.response.body_type }}), {% endif %}Microsoft.AspNetCore.Http.StatusCodes.{{ endpoint.response.http_status_code.status_code_reference }})]
         public async System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult{% if endpoint.response.body_type != null %}<{{ endpoint.response.body_type }}>{% endif %}> {{ endpoint.name }}(
