@@ -83,4 +83,15 @@ public class ParameterMapperTests
                 }
             });
     }
+
+    [Fact]
+    public void NoParameters_EmptyCollectionReturned()
+    {
+        var openApiParameters = Enumerable.Empty<OpenApiParameter>();
+        
+        var response = _parameterMapper.Map(openApiParameters);
+
+        response.Should().NotBeNull()
+            .And.BeEmpty();
+    }
 }
