@@ -35,14 +35,22 @@ internal sealed class EndpointMapper : IEndpointMapper
         
         foreach (var path in paths)
         {
+            var queryParams = _parameterMapper
+                .Map(path.Value.Parameters.Where(p => p.In == ParameterLocation.Query))
+                .ToList();
+            
+            var pathParams = _parameterMapper
+                .Map(path.Value.Parameters.Where(p => p.In == ParameterLocation.Path))
+                .ToList();
+            
             foreach (var operation in path.Value.Operations)
             {
                 try
                 {
                     var endpointName = _operationNamingRepository.GetOperationNameByPathAndOperationType(path.Key, operation.Key);
 
-                    var queryParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Query));
-                    var pathParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Path));
+                    var operationQueryParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Query));
+                    var operationPathParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Path));
                     // TODO: Add support for Cookie, Header params
 
                     var endpoint = new Endpoint
@@ -52,8 +60,8 @@ internal sealed class EndpointMapper : IEndpointMapper
                         OperationName = operation.Key.GetDisplayName().ToPascalCase(),
                         MediatorRequestName = $"{endpointName}{(operation.Key == OperationType.Get ? "Query" : "Command")}",
                         Description = operation.Value.Description?.SplitOnNewLine(),
-                        QueryParameters = queryParams,
-                        PathParameters = pathParams
+                        QueryParameters = operationQueryParams.Union(queryParams),
+                        PathParameters = operationPathParams.Union(pathParams)
                     };
 
                     if (operation.Value.RequestBody is not null &&
