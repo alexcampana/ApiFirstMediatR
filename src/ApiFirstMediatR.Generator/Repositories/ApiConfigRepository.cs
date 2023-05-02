@@ -31,13 +31,23 @@ internal sealed class ApiConfigRepository : IApiConfigRepository
             }
         }
         
+        if (!Enum.TryParse<OperationGenerationMode>("build_property.ApiFirstMediatR_OperationGenerationMode", out var operationGenerationMode))
+        {
+            _diagnosticReporter.ReportDiagnostic(DiagnosticCatalog.InvalidOperationGenerationMode(Location.None, operationGenerationMode.ToString()));
+        }
+        else
+        {
+            operationGenerationMode = OperationGenerationMode.MultipleClientsFromPathSegmentAndOperationId;
+        }
+        
         _compilation.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.ApiFirstMediatR_RequestBodyName", out var requestBodyName);
 
         return new ApiConfig
         {
             Namespace = _compilation.Compilation.AssemblyName ?? "ApiFirst",
             SerializationLibrary = serializationLibrary ?? SerializationLibrary.SystemTextJson,
-            RequestBodyName = requestBodyName ?? "Body"
+            RequestBodyName = requestBodyName ?? "Body",
+            OperationGenerationMode = operationGenerationMode
         };
     }
 }

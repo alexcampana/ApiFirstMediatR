@@ -2,10 +2,12 @@
     <ItemGroup>
         <CompilerVisibleProperty Include="ApiFirstMediatR_SerializationLibrary" />
         <CompilerVisibleProperty Include="ApiFirstMediatR_RequestBodyName" />
+        <CompilerVisibleProperty Include="ApiFirstMediatR_OperationGenerationMode" />
     </ItemGroup>
     <PropertyGroup>
         <ApiFirstMediatR_SerializationLibrary Condition="'$(ApiFirstMediatR_SerializationLibrary)' == ''">System.Text.Json</ApiFirstMediatR_SerializationLibrary>
         <ApiFirstMediatR_RequestBodyName Condition="'$(ApiFirstMediatR_RequestBodyName)' == ''">Body</ApiFirstMediatR_RequestBodyName>
+        <ApiFirstMediatR_OperationGenerationMode Condition="'$(ApiFirstMediatR_OperationGenerationMode)' == ''">MultipleClientsFromPathSegmentAndOperationId</ApiFirstMediatR_OperationGenerationMode>
     </PropertyGroup>
     <ItemGroup Condition="'$(ApiFirstMediatR_SerializationLibrary)' == 'System.Text.Json'">
         <PackageReference Include="Macross.Json.Extensions" Version="3.0.0" />
