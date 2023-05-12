@@ -2,7 +2,8 @@ namespace ApiFirstMediatR.Generator.Tests.Utils;
 
 internal static class MockApiConfig
 {
-    public static IApiConfigRepository Create(string namespaceName = "Test")
+    public static IApiConfigRepository Create(string namespaceName = "Test",
+        OperationGenerationMode operationGenerationMode = OperationGenerationMode.MultipleClientsFromPathSegmentAndOperationId)
     {
         var mockApiConfigRepo = new Mock<IApiConfigRepository>();
         mockApiConfigRepo
@@ -11,7 +12,8 @@ internal static class MockApiConfig
             {
                 Namespace = namespaceName,
                 SerializationLibrary = SerializationLibrary.SystemTextJson,
-                RequestBodyName = "Body"
+                RequestBodyName = "Body",
+                OperationGenerationMode = operationGenerationMode,
             });
 
         return mockApiConfigRepo.Object;

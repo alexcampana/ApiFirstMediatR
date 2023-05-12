@@ -9,4 +9,5 @@ internal static class DiagnosticIdentifiers
     public const string ApiSpecFeatureNotSupported = "AFM005";
     public const string ApiFirstMediatRUnexpectedError = "AFM006";
     public const string InvalidSerializationLibrary = "AFM007";
+    public const string InvalidOperationGenerationMode = "AFM008";
 }

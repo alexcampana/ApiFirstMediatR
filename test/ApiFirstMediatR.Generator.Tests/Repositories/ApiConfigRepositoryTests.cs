@@ -57,6 +57,11 @@ public class ApiConfigRepositoryTests
         _mockICompilation
             .Setup(m => m.Compilation)
             .Returns(compilation);
+        
+        var operationGenerationMode = "MultipleClientsFromPathSegmentAndOperationId";
+        _mockAnalyzerConfigOptions
+            .Setup(m => m.TryGetValue("build_property.ApiFirstMediatR_OperationGenerationMode", out operationGenerationMode))
+            .Returns(true);
 
         var apiConfig = _apiConfigRepository.Get();
 
@@ -65,6 +70,9 @@ public class ApiConfigRepositoryTests
         
         apiConfig.SerializationLibrary
             .Should().Be(SerializationLibrary.NewtonsoftJson);
+
+        apiConfig.OperationGenerationMode
+            .Should().Be(OperationGenerationMode.MultipleClientsFromPathSegmentAndOperationId);
     }
 
     [Fact]
@@ -87,6 +95,39 @@ public class ApiConfigRepositoryTests
         
         apiConfig.SerializationLibrary
             .Should().Be(SerializationLibrary.SystemTextJson);
+        
+        _mockDiagnosticReporter.Verify(m => m.ReportDiagnostic(It.IsAny<Diagnostic>()));
+        _mockDiagnosticReporter.VerifyNoOtherCalls();
+    }
+    
+    [Fact]
+    public void InvalidOperationGenerationMode_ThrowsDiagnostic()
+    {
+        var jsonLibrary = "Newtonsoft.Json";
+        _mockAnalyzerConfigOptions
+            .Setup(m => m.TryGetValue("build_property.ApiFirstMediatR_SerializationLibrary", out jsonLibrary))
+            .Returns(true);
+        
+        var compilation = CSharpCompilation.Create(null);
+        _mockICompilation
+            .Setup(m => m.Compilation)
+            .Returns(compilation);
+
+        var operationGenerationMode = "BadOperationGenerationMode";
+        _mockAnalyzerConfigOptions
+            .Setup(m => m.TryGetValue("build_property.ApiFirstMediatR_OperationGenerationMode", out operationGenerationMode))
+            .Returns(true);
+
+        var apiConfig = _apiConfigRepository.Get();
+
+        apiConfig.Namespace
+            .Should().Be("ApiFirst");
+        
+        apiConfig.SerializationLibrary
+            .Should().Be(SerializationLibrary.NewtonsoftJson);
+        
+        apiConfig.OperationGenerationMode
+            .Should().Be(OperationGenerationMode.MultipleClientsFromPathSegmentAndOperationId);
         
         _mockDiagnosticReporter.Verify(m => m.ReportDiagnostic(It.IsAny<Diagnostic>()));
         _mockDiagnosticReporter.VerifyNoOtherCalls();

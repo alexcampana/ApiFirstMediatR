@@ -4,11 +4,13 @@ namespace ApiFirstMediatR.Generator.Repositories;
 internal sealed class OperationNamingRepository : IOperationNamingRepository
 {
     private readonly IApiSpecRepository _apiSpecRepository;
+    private readonly IApiConfigRepository _apiConfigRepository;
     private readonly Lazy<OperationNamingDictionaries> _operationNamingDictionaries;
 
-    public OperationNamingRepository(IApiSpecRepository apiSpecRepository)
+    public OperationNamingRepository(IApiSpecRepository apiSpecRepository, IApiConfigRepository apiConfigRepository)
     {
         _apiSpecRepository = apiSpecRepository;
+        _apiConfigRepository = apiConfigRepository;
         _operationNamingDictionaries = new Lazy<OperationNamingDictionaries>(ParseApiSpec);
     }
 
@@ -46,6 +48,7 @@ internal sealed class OperationNamingRepository : IOperationNamingRepository
     private OperationNamingDictionaries ParseApiSpec()
     {
         var apiSpec = _apiSpecRepository.Get();
+        var apiConfig = _apiConfigRepository.Get();
         var pathDictionary = new Dictionary<string, PathNaming>();
         var operationIdDictionary = new Dictionary<string, OperationNaming>();
 
@@ -58,10 +61,7 @@ internal sealed class OperationNamingRepository : IOperationNamingRepository
             };
         }
 
-        var controllerSpecs = apiSpec
-            .Paths
-            .GroupBy(p => GetControllerName(p.Key))
-            .ToList();
+        var controllerSpecs = GroupControllers(apiConfig.OperationGenerationMode, apiSpec.Paths);
 
         foreach (var controllerSpec in controllerSpecs)
         {
@@ -102,12 +102,31 @@ internal sealed class OperationNamingRepository : IOperationNamingRepository
         };
     }
 
-    private static string GetControllerName(string path)
+    private static IEnumerable<IGrouping<string?, KeyValuePair<string, OpenApiPathItem>>> GroupControllers(OperationGenerationMode operationGenerationMode, OpenApiPaths paths)
     {
-        // TODO: Make this configurable
-        return path
-            .Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
-            .FirstOrDefault() ?? "Default";
+        return operationGenerationMode switch
+        {
+            OperationGenerationMode.MultipleClientsFromFirstTagAndOperationId =>
+                GroupControllersByFirstTagAndOperationId(paths),
+            _ => 
+                GroupControllersByPathSegmentAndOperationId(paths)
+        };
+    }
+
+    private static IEnumerable<IGrouping<string?, KeyValuePair<string, OpenApiPathItem>>> GroupControllersByFirstTagAndOperationId(OpenApiPaths paths)
+    {
+        return paths
+            .GroupBy(
+                k => k.Value.Operations.FirstOrDefault().Value.Tags.FirstOrDefault()?.Name
+            );
+    }
+    
+    private static IEnumerable<IGrouping<string?, KeyValuePair<string, OpenApiPathItem>>> GroupControllersByPathSegmentAndOperationId(OpenApiPaths paths)
+    {
+        return paths
+            .GroupBy(
+                k => k.Key.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "Default"
+            );
     }
     
     private static string PathToEndpointName(string path)

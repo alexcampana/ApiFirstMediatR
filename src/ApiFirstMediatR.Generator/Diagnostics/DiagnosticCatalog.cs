@@ -73,6 +73,16 @@ internal static class DiagnosticCatalog
         DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
+    
+    private static readonly DiagnosticDescriptor InvalidOperationGenerationModeDescriptor = new
+    (
+        id: DiagnosticIdentifiers.InvalidOperationGenerationMode,
+        title: "Unsupported Operation Generation Mode Selected",
+        messageFormat: "Unsupported Operation Generation Mode Selected: {0}",
+        category: Category,
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
 
     public static Diagnostic ApiSpecFileNotFound()
         => Diagnostic.Create(ApiSpecFileNotFoundDescriptor, Location.None);
@@ -94,4 +104,7 @@ internal static class DiagnosticCatalog
     
     public static Diagnostic InvalidSerializationLibrary(Location location, string serializationLibrary)
         => Diagnostic.Create(InvalidSerializationLibraryDescriptor, location, serializationLibrary);
+    
+    public static Diagnostic InvalidOperationGenerationMode(Location location, string operationGenerationMode)
+        => Diagnostic.Create(InvalidOperationGenerationModeDescriptor, location, operationGenerationMode);
 }
