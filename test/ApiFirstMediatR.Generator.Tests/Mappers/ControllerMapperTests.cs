@@ -7,22 +7,22 @@ public class ControllerMapperTests
     public ControllerMapperTests()
     {
         var mockApiConfigRepo = MockApiConfig.Create();
-        var mockOperationNamingRepository = new Mock<IOperationNamingRepository>();
+        var mockOperationNamingRepository = Substitute.For<IOperationNamingRepository>();
         mockOperationNamingRepository
-            .Setup(mock => mock.GetControllerNameByPath("/test"))
+            .GetControllerNameByPath("/test")
             .Returns("Test");
 
-        var mockDiagnosticReporter = new Mock<IDiagnosticReporter>();
+        var mockDiagnosticReporter = Substitute.For<IDiagnosticReporter>();
         var typeMapper = new TypeMapper(mockApiConfigRepo);
         var parameterMapper = new ParameterMapper(typeMapper);
-        var responseMapper = new ResponseMapper(typeMapper, mockOperationNamingRepository.Object);
-        var securityMapper = new SecurityMapper(mockDiagnosticReporter.Object);
-        var mockApiConfigRepository = new Mock<IApiConfigRepository>();
+        var responseMapper = new ResponseMapper(typeMapper, mockOperationNamingRepository);
+        var securityMapper = new SecurityMapper(mockDiagnosticReporter);
+        var mockApiConfigRepository = Substitute.For<IApiConfigRepository>();
 
         var endpointMapper = new EndpointMapper(parameterMapper, responseMapper, typeMapper, securityMapper,
-            mockOperationNamingRepository.Object, mockApiConfigRepository.Object, mockDiagnosticReporter.Object);
+            mockOperationNamingRepository, mockApiConfigRepository, mockDiagnosticReporter);
 
-        _controllerMapper = new ControllerMapper(endpointMapper, mockOperationNamingRepository.Object);
+        _controllerMapper = new ControllerMapper(endpointMapper, mockOperationNamingRepository);
     }
 
     [Fact]

@@ -3,33 +3,33 @@ namespace ApiFirstMediatR.Generator.Tests.Mappers;
 public class EndpointMapperTests
 {
     private readonly IEndpointMapper _endpointMapper;
-    private readonly Mock<IDiagnosticReporter> _mockDiagnosticReporter;
+    private readonly IDiagnosticReporter _mockDiagnosticReporter;
 
     public EndpointMapperTests()
     {
         var mockApiConfigRepo = MockApiConfig.Create();
-        var mockOperationNamingRepository = new Mock<IOperationNamingRepository>();
+        var mockOperationNamingRepository = Substitute.For<IOperationNamingRepository>();
         mockOperationNamingRepository
-            .Setup(mock => mock.GetControllerNameByOperationId("TestOperation"))
+            .GetControllerNameByOperationId("TestOperation")
             .Returns("TestController");
 
         mockOperationNamingRepository
-            .Setup(mock => mock.GetOperationNameByOperationId("TestOperation"))
+            .GetOperationNameByOperationId("TestOperation")
             .Returns("TestOperation");
 
         mockOperationNamingRepository
-            .Setup(mock => mock.GetOperationNameByPathAndOperationType("/test", OperationType.Get))
+            .GetOperationNameByPathAndOperationType("/test", OperationType.Get)
             .Returns("TestOperation");
 
-        _mockDiagnosticReporter = new Mock<IDiagnosticReporter>();
+        _mockDiagnosticReporter = Substitute.For<IDiagnosticReporter>();
         var typeMapper = new TypeMapper(mockApiConfigRepo);
         var parameterMapper = new ParameterMapper(typeMapper);
-        var responseMapper = new ResponseMapper(typeMapper, mockOperationNamingRepository.Object);
-        var securityMapper = new SecurityMapper(_mockDiagnosticReporter.Object);
-        var mockApiConfigRepository = new Mock<IApiConfigRepository>();
+        var responseMapper = new ResponseMapper(typeMapper, mockOperationNamingRepository);
+        var securityMapper = new SecurityMapper(_mockDiagnosticReporter);
+        var mockApiConfigRepository = Substitute.For<IApiConfigRepository>();
 
         _endpointMapper = new EndpointMapper(parameterMapper, responseMapper, typeMapper, securityMapper,
-            mockOperationNamingRepository.Object, mockApiConfigRepository.Object, _mockDiagnosticReporter.Object);
+            mockOperationNamingRepository, mockApiConfigRepository, _mockDiagnosticReporter);
     }
 
     [Fact]
@@ -195,8 +195,7 @@ public class EndpointMapperTests
         
         var endpoints = _endpointMapper.Map(paths);
         endpoints.Should().BeEmpty();
-        _mockDiagnosticReporter.Verify(m => m.ReportDiagnostic(It.IsAny<Diagnostic>()));
-        _mockDiagnosticReporter.VerifyNoOtherCalls();
+        _mockDiagnosticReporter.Received(1).ReportDiagnostic(Arg.Any<Diagnostic>());
     }
 
     [Fact]

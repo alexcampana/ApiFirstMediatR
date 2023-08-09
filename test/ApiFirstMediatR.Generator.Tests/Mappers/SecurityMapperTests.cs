@@ -3,13 +3,13 @@
 public class SecurityMapperTests
 {
     private readonly ISecurityMapper _securityMapper;
-    private readonly Mock<IDiagnosticReporter> _mockDiagnosticReporter;
+    private readonly IDiagnosticReporter _mockDiagnosticReporter;
     
     public SecurityMapperTests()
     {
-        _mockDiagnosticReporter = new Mock<IDiagnosticReporter>();
+        _mockDiagnosticReporter = Substitute.For<IDiagnosticReporter>();
 
-        _securityMapper = new SecurityMapper(_mockDiagnosticReporter.Object);
+        _securityMapper = new SecurityMapper(_mockDiagnosticReporter);
     }
 
     [Fact]
@@ -75,6 +75,6 @@ public class SecurityMapperTests
 
         security.Policies.Should().NotBeNull();
         security.Policies.Should().BeEmpty();
-        _mockDiagnosticReporter.Verify(m => m.ReportDiagnostic(It.IsAny<Diagnostic>()));
+        _mockDiagnosticReporter.Received(1).ReportDiagnostic(Arg.Any<Diagnostic>());
     }
 }
