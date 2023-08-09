@@ -4,9 +4,9 @@ internal static class MockApiConfig
 {
     public static IApiConfigRepository Create(string namespaceName = "Test")
     {
-        var mockApiConfigRepo = new Mock<IApiConfigRepository>();
+        var mockApiConfigRepo = Substitute.For<IApiConfigRepository>();
         mockApiConfigRepo
-            .Setup(mock => mock.Get())
+            .Get()
             .Returns(new ApiConfig
             {
                 Namespace = namespaceName,
@@ -14,6 +14,6 @@ internal static class MockApiConfig
                 RequestBodyName = "Body"
             });
 
-        return mockApiConfigRepo.Object;
+        return mockApiConfigRepo;
     }
 }

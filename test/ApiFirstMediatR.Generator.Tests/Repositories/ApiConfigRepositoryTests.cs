@@ -5,27 +5,27 @@ namespace ApiFirstMediatR.Generator.Tests.Repositories;
 public class ApiConfigRepositoryTests
 {
     private readonly ApiConfigRepository _apiConfigRepository;
-    private readonly Mock<AnalyzerConfigOptions> _mockAnalyzerConfigOptions;
-    private readonly Mock<ICompilation> _mockICompilation;
-    private readonly Mock<IDiagnosticReporter> _mockDiagnosticReporter;
+    private readonly AnalyzerConfigOptions _mockAnalyzerConfigOptions;
+    private readonly ICompilation _mockICompilation;
+    private readonly IDiagnosticReporter _mockDiagnosticReporter;
     
     public ApiConfigRepositoryTests()
     {
-        _mockAnalyzerConfigOptions = new Mock<AnalyzerConfigOptions>();
+        _mockAnalyzerConfigOptions = Substitute.For<AnalyzerConfigOptions>();
 
-        var mockAnalyzerConfigOptionsProvider = new Mock<AnalyzerConfigOptionsProvider>();
-        mockAnalyzerConfigOptionsProvider
-            .Setup(m => m.GlobalOptions)
-            .Returns(_mockAnalyzerConfigOptions.Object);
+        var analyzerConfigOptionsProvider = Substitute.For<AnalyzerConfigOptionsProvider>();
+        analyzerConfigOptionsProvider
+            .GlobalOptions
+            .Returns(_mockAnalyzerConfigOptions);
 
-        _mockICompilation = new Mock<ICompilation>();
+        _mockICompilation = Substitute.For<ICompilation>();
         _mockICompilation
-            .Setup(m => m.AnalyzerConfigOptions)
-            .Returns(mockAnalyzerConfigOptionsProvider.Object);
+            .AnalyzerConfigOptions
+            .Returns(analyzerConfigOptionsProvider);
         
-        _mockDiagnosticReporter = new Mock<IDiagnosticReporter>();
+        _mockDiagnosticReporter = Substitute.For<IDiagnosticReporter>();
         
-        _apiConfigRepository = new ApiConfigRepository(_mockICompilation.Object, _mockDiagnosticReporter.Object);
+        _apiConfigRepository = new ApiConfigRepository(_mockICompilation, _mockDiagnosticReporter);
     }
     
     [Fact]
@@ -33,7 +33,7 @@ public class ApiConfigRepositoryTests
     {
         var compilation = CSharpCompilation.Create(null);
         _mockICompilation
-            .Setup(m => m.Compilation)
+            .Compilation
             .Returns(compilation);
 
         var apiConfig = _apiConfigRepository.Get();
@@ -50,12 +50,16 @@ public class ApiConfigRepositoryTests
     {
         var jsonLibrary = "Newtonsoft.Json";
         _mockAnalyzerConfigOptions
-            .Setup(m => m.TryGetValue("build_property.ApiFirstMediatR_SerializationLibrary", out jsonLibrary))
-            .Returns(true);
+            .TryGetValue("build_property.ApiFirstMediatR_SerializationLibrary", out Arg.Any<string>()!)
+            .Returns(x =>
+            {
+                x[1] = jsonLibrary; // This is the out value
+                return true;
+            });
         
         var compilation = CSharpCompilation.Create("ApiFirstChanged");
         _mockICompilation
-            .Setup(m => m.Compilation)
+            .Compilation
             .Returns(compilation);
 
         var apiConfig = _apiConfigRepository.Get();
@@ -72,12 +76,16 @@ public class ApiConfigRepositoryTests
     {
         var jsonLibrary = "BadJsonSerializer";
         _mockAnalyzerConfigOptions
-            .Setup(m => m.TryGetValue("build_property.ApiFirstMediatR_SerializationLibrary", out jsonLibrary))
-            .Returns(true);
+            .TryGetValue("build_property.ApiFirstMediatR_SerializationLibrary", out Arg.Any<string>()!)
+            .Returns(x =>
+            {
+                x[1] = jsonLibrary; // This is the out value
+                return true;
+            });
         
         var compilation = CSharpCompilation.Create(null);
         _mockICompilation
-            .Setup(m => m.Compilation)
+            .Compilation
             .Returns(compilation);
 
         var apiConfig = _apiConfigRepository.Get();
@@ -87,8 +95,7 @@ public class ApiConfigRepositoryTests
         
         apiConfig.SerializationLibrary
             .Should().Be(SerializationLibrary.SystemTextJson);
-        
-        _mockDiagnosticReporter.Verify(m => m.ReportDiagnostic(It.IsAny<Diagnostic>()));
-        _mockDiagnosticReporter.VerifyNoOtherCalls();
+
+        _mockDiagnosticReporter.Received(1).ReportDiagnostic(Arg.Any<Diagnostic>());
     }
 }

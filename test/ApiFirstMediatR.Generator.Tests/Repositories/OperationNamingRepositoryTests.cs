@@ -5,9 +5,9 @@ public class OperationNamingRepositoryTests
     [Fact]
     public void ValidAPISpec_OperationId_HappyPath()
     {
-        var mockApiSpecRepository = new Mock<IApiSpecRepository>();
+        var mockApiSpecRepository = Substitute.For<IApiSpecRepository>();
         mockApiSpecRepository
-            .Setup(mock => mock.Get())
+            .Get()
             .Returns(new OpenApiDocument
             {
                 Paths = new OpenApiPaths
@@ -33,7 +33,7 @@ public class OperationNamingRepositoryTests
                 }
             });
 
-        var operationNamingRepository = new OperationNamingRepository(mockApiSpecRepository.Object);
+        var operationNamingRepository = new OperationNamingRepository(mockApiSpecRepository);
         
         const string expectedControllerName = "Api";
         const string expectedOperationName = "GetHelloWorld";

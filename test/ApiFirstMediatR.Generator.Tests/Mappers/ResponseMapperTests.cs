@@ -7,17 +7,17 @@ public class ResponseMapperTests
     public ResponseMapperTests()
     {
         var mockApiConfigRepo = MockApiConfig.Create();
-        var mockOperationNamingRepository = new Mock<IOperationNamingRepository>();
+        var mockOperationNamingRepository = Substitute.For<IOperationNamingRepository>();
         mockOperationNamingRepository
-            .Setup(mock => mock.GetControllerNameByOperationId("TestOperation"))
+            .GetControllerNameByOperationId("TestOperation")
             .Returns("TestController");
 
         mockOperationNamingRepository
-            .Setup(mock => mock.GetOperationNameByOperationId("TestOperation"))
+            .GetOperationNameByOperationId("TestOperation")
             .Returns("TestOperation");
 
         var typeMapper = new TypeMapper(mockApiConfigRepo);
-        var operationNamingRepository = mockOperationNamingRepository.Object;
+        var operationNamingRepository = mockOperationNamingRepository;
         
         _responseMapper = new ResponseMapper(typeMapper, operationNamingRepository);
     }
