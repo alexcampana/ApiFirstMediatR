@@ -19,6 +19,16 @@
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\ApiFirstMediatR.ApiSpec2_0Test\\ApiFirstMediatR.ApiSpec2_0Test.csproj",
       "targetFramework": "net7.0"
+    },
+    "Debug 3.0 Spec Generator (net8.0)": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\ApiFirstMediatR.ApiSpec3_0Test\\ApiFirstMediatR.ApiSpec3_0Test.csproj",
+      "targetFramework": "net8.0"
+    },
+    "Debug 2.0 Spec Generator (net8.0)": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\ApiFirstMediatR.ApiSpec2_0Test\\ApiFirstMediatR.ApiSpec2_0Test.csproj",
+      "targetFramework": "net8.0"
     }
   }
 }

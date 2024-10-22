@@ -28,6 +28,9 @@ namespace System.Runtime.CompilerServices
         public const string RefStructs      = nameof(RefStructs);
         public const string RequiredMembers = nameof(RequiredMembers);
     }
+    
+    [System.AttributeUsage(System.AttributeTargets.Constructor, AllowMultiple = false, Inherited = false)]
+    internal sealed class SetsRequiredMembersAttribute : Attribute {}
 
 #endif // !NET7_0_OR_GREATER
 }

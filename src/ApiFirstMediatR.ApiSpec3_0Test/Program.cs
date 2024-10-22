@@ -1,6 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-builder.Services.AddMediatR(typeof(AddPetCommandHandler));
+builder.Services.AddMediatR(config =>
+{
+    config.RegisterServicesFromAssemblyContaining<Program>();
+});
 var app = builder.Build();
 
 app.MapControllers();

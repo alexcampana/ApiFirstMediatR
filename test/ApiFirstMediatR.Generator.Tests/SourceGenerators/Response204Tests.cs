@@ -87,7 +87,7 @@ namespace With201Response.Controllers
         public async System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult> DeletePet(long id, System.Threading.CancellationToken cancellationToken)
         {
             var request = new With201Response.Requests.DeletePetCommand(id);
-            var response = await _mediator.Send(request, cancellationToken);
+
             return NoContent();
         }
     }

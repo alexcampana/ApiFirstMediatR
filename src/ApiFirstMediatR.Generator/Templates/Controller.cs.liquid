@@ -40,6 +40,8 @@ namespace {{ controller_namespace }}
                     {{ parameter.parameter_name }}
                 {%- unless forloop.last  %}, {% endunless -%}
                 {% endfor %});
+            
+            {% if endpoint.response.body_type != null -%}
             var response = await _mediator.Send(request, cancellationToken);
             return {{ endpoint.response.http_status_code.response_method }}(
                 {%- if endpoint.response.endpoint_name != null -%}"{{ endpoint.response.endpoint_name }}", {% endif -%}
@@ -52,6 +54,9 @@ namespace {{ controller_namespace }}
                 }, {% endif -%}
                 {%- if endpoint.response.body_type != null %}response{% endif -%}
             );
+            {%- else -%}
+            return {{ endpoint.response.http_status_code.response_method }}();
+            {%- endif %}
         }
         {%- endfor %}
     }
