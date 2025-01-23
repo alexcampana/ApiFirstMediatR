@@ -28,7 +28,7 @@ internal sealed class EndpointMapper : IEndpointMapper
         _diagnosticReporter = diagnosticReporter;
     }
 
-    public IEnumerable<Endpoint> Map(OpenApiPaths paths)
+    public IEnumerable<Endpoint> Map(OpenApiPaths paths, string? ns)
     {
         var apiConfig = _apiConfigRepository.Get();
         var endpoints = new List<Endpoint>();
@@ -36,11 +36,11 @@ internal sealed class EndpointMapper : IEndpointMapper
         foreach (var path in paths)
         {
             var queryParams = _parameterMapper
-                .Map(path.Value.Parameters.Where(p => p.In == ParameterLocation.Query))
+                .Map(path.Value.Parameters.Where(p => p.In == ParameterLocation.Query), ns)
                 .ToList();
             
             var pathParams = _parameterMapper
-                .Map(path.Value.Parameters.Where(p => p.In == ParameterLocation.Path))
+                .Map(path.Value.Parameters.Where(p => p.In == ParameterLocation.Path), ns)
                 .ToList();
             
             foreach (var operation in path.Value.Operations)
@@ -49,8 +49,8 @@ internal sealed class EndpointMapper : IEndpointMapper
                 {
                     var endpointName = _operationNamingRepository.GetOperationNameByPathAndOperationType(path.Key, operation.Key);
 
-                    var operationQueryParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Query));
-                    var operationPathParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Path));
+                    var operationQueryParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Query), ns);
+                    var operationPathParams = _parameterMapper.Map(operation.Value.Parameters.Where(p => p.In == ParameterLocation.Path), ns);
                     // TODO: Add support for Cookie, Header params
 
                     var endpoint = new Endpoint
@@ -73,7 +73,7 @@ internal sealed class EndpointMapper : IEndpointMapper
                             Name = apiConfig.RequestBodyName.ToPascalCase(),
                             JsonName = apiConfig.RequestBodyName.ToCamelCase(),
                             Description = operation.Value.RequestBody.Description?.SplitOnNewLine(),
-                            DataType = _typeMapper.Map(requestBody.Schema),
+                            DataType = _typeMapper.Map(requestBody.Schema, ns),
                             IsNullable = !operation.Value.RequestBody.Required,
                             Attribute = "[Microsoft.AspNetCore.Mvc.FromBody]"
                         };
@@ -83,7 +83,7 @@ internal sealed class EndpointMapper : IEndpointMapper
                         throw new NotImplementedException($"Only application/json request body supported.");
                     }
 
-                    endpoint.Response = _responseMapper.Map(operation.Value.Responses);
+                    endpoint.Response = _responseMapper.Map(operation.Value.Responses, ns);
                     endpoint.Security = _securityMapper.Map(operation.Value.Security);
                     endpoints.Add(endpoint);
                 }

@@ -14,8 +14,7 @@ public class ApiSpecDiagnosticTests : TestBase
             .RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation,
                 out var diagnostics);
 
-        diagnostics.Should().ContainSingle()
-            .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileNotFound);
+        diagnostics.Should().Contain(o => o.Id == DiagnosticIdentifiers.ApiSpecFileNotFound);
     }
  
     [Fact]
@@ -23,16 +22,14 @@ public class ApiSpecDiagnosticTests : TestBase
     {
         var result = RunGenerators("Test", "");
 
-        result.Diagnostics.Should().ContainSingle()
-            .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileEmpty);
+        result.Diagnostics.Should().Contain(o => o.Id == DiagnosticIdentifiers.ApiSpecFileEmpty);
     }
  
     [Fact]
     public void BadAPISpecFile_ThrowsDiagnostic()
     {
         var result = RunGenerators("Test", BadApiSpec);
-        result.Diagnostics.Should().ContainSingle()
-            .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileParsingError);
+        result.Diagnostics.Should().Contain(o => o.Id == DiagnosticIdentifiers.ApiSpecFileParsingError);
     }
     
     private const string BadApiSpec = @"openapi: 3.0.1

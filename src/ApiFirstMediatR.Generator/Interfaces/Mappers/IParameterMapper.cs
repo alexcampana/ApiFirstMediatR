@@ -2,5 +2,5 @@ namespace ApiFirstMediatR.Generator.Interfaces.Mappers;
 
 internal interface IParameterMapper
 {
-    IEnumerable<Parameter> Map(IEnumerable<OpenApiParameter> openApiParameters);
+    IEnumerable<Parameter> Map(IEnumerable<OpenApiParameter> openApiParameters, string? ns);
 }

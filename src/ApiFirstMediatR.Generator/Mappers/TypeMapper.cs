@@ -10,7 +10,7 @@ internal sealed class TypeMapper : ITypeMapper
         _apiConfigRepository = apiConfigRepository;
     }
 
-    public string Map(OpenApiSchema schema)
+    public string Map(OpenApiSchema schema, string? ns = null)
     {
         var apiConfig = _apiConfigRepository.Get();
         // TODO: Support non schema objects (through custom response objects)
@@ -18,8 +18,9 @@ internal sealed class TypeMapper : ITypeMapper
         //       are created for all endpoints
         
         // TODO: Add validation that this is the proper mapper for this schema
+        var nsToUse = !string.IsNullOrWhiteSpace(ns) && ns != "default" ? ns : apiConfig.Namespace;
         if (schema.Reference is not null)
-            return $"{apiConfig.DtoNamespace}.{schema.Reference.Id.ToPascalCase()}";
+            return $"{nsToUse}.Dtos.{schema.Reference.Id.ToPascalCase()}";
         
         return (schema.Type?.ToLower(), schema.Format?.ToLower()) switch
         {

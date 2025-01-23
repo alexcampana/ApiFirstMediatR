@@ -9,7 +9,7 @@ public class Response204Tests : TestBase
 
         result.Diagnostics.Should().BeEmpty();
         result.GeneratedSources.Should()
-                .ContainEquivalentSyntaxTree("Controllers_PetsController.g.cs", ExpectedController);
+                .ContainEquivalentSyntaxTree("default/Controllers_PetsController.g.cs", ExpectedController);
     }
 
     private const string ApiSpec = @"openapi: 3.0.3

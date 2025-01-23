@@ -40,7 +40,7 @@ public class DataTransferObjectMapperTests
             }
         };
 
-        var dtos = _dataTransferObjectMapper.Map(apiSpec);
+        var dtos = _dataTransferObjectMapper.Map(new[] { apiSpec});
         dtos.Should().ContainSingle()
             .Which.Should().BeEquivalentTo(new
             {
@@ -115,7 +115,7 @@ public class DataTransferObjectMapperTests
             }
         };
 
-        var dtos = _dataTransferObjectMapper.Map(apiSpec);
+        var dtos = _dataTransferObjectMapper.Map(new[] { apiSpec});
         dtos.Should().HaveCount(2)
             .And.ContainEquivalentOf(new
             {

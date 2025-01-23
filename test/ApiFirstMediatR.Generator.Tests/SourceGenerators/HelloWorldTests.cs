@@ -17,9 +17,9 @@ public class HelloWorldTests : TestBase
 
         result.Diagnostics.Should().BeEmpty();
         result.GeneratedSources.Should().HaveCount(3)
-            .And.ContainEquivalentSyntaxTree("Dtos_HelloWorldDto.g.cs", ExpectedDto)
-            .And.ContainEquivalentSyntaxTree("MediatorRequests_GetHelloWorldQuery.g.cs", ExpectedMediatorRequest)
-            .And.ContainEquivalentSyntaxTree("Controllers_ApiController.g.cs", ExpectedController);
+            .And.ContainEquivalentSyntaxTree("default/Dtos_HelloWorldDto.g.cs", ExpectedDto)
+            .And.ContainEquivalentSyntaxTree("default/MediatorRequests_GetHelloWorldQuery.g.cs", ExpectedMediatorRequest)
+            .And.ContainEquivalentSyntaxTree("default/Controllers_ApiController.g.cs", ExpectedController);
     }
     
     private const string Yaml3ApiSpec = @"openapi: 3.0.1

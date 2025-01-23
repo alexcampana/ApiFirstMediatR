@@ -22,7 +22,7 @@ internal sealed class ModelRepository<T> : IRepository<T>
     {
         var apiSpec = _apiSpecRepository.Get();
 
-        if (apiSpec is not null)
+        if (apiSpec is not null && apiSpec.Length > 0)
             return _mapper.Map(apiSpec).ToList();
         
         return Enumerable.Empty<T>().ToList();

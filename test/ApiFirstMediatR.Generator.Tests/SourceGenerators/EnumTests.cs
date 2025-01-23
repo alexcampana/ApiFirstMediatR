@@ -9,8 +9,8 @@ public class EnumTests : TestBase
         
         result.Diagnostics.Should().BeEmpty();
         result.GeneratedSources.Should().HaveCount(4)
-            .And.ContainEquivalentSyntaxTree("Dtos_Order.g.cs", ExpectedDto)
-            .And.ContainEquivalentSyntaxTree("Dtos_OrderStatus.g.cs", ExpectedEnum);
+            .And.ContainEquivalentSyntaxTree("default/Dtos_Order.g.cs", ExpectedDto)
+            .And.ContainEquivalentSyntaxTree("default/Dtos_OrderStatus.g.cs", ExpectedEnum);
     }
     
     private const string ApiSpec = @"openapi: 3.0.1

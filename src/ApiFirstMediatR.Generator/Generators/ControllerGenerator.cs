@@ -20,8 +20,14 @@ internal sealed class ControllerGenerator : IApiGenerator
         
         foreach (var controller in controllers)
         {
+            var baseNamespace = projectConfig.Namespace;
+            if (!string.IsNullOrWhiteSpace(controller.Namespace) && controller.Namespace != "default")
+            {
+                projectConfig.Namespace = controller.Namespace;
+            }
             var controllerSourceText = ApiTemplate.Controller.Generate(controller, projectConfig);
-            _sources.AddSource($"Controllers_{controller.Name}.g.cs", controllerSourceText);
+            _sources.AddSource($"{controller.Namespace}/Controllers_{controller.Name}.g.cs", controllerSourceText);
+            projectConfig.Namespace = baseNamespace;
         }
     }
 }

@@ -31,7 +31,7 @@ public class ParameterMapperTests
             }
         };
 
-        var response = _parameterMapper.Map(openApiParameters);
+        var response = _parameterMapper.Map(openApiParameters, "default");
 
         response.Should().NotBeNull()
             .And.ContainSingle()
@@ -66,7 +66,7 @@ public class ParameterMapperTests
             }
         };
 
-        var response = _parameterMapper.Map(openApiParameters);
+        var response = _parameterMapper.Map(openApiParameters, "default");
 
         response.Should().NotBeNull()
             .And.ContainSingle()
@@ -89,7 +89,7 @@ public class ParameterMapperTests
     {
         var openApiParameters = Enumerable.Empty<OpenApiParameter>();
         
-        var response = _parameterMapper.Map(openApiParameters);
+        var response = _parameterMapper.Map(openApiParameters, "default");
 
         response.Should().NotBeNull()
             .And.BeEmpty();

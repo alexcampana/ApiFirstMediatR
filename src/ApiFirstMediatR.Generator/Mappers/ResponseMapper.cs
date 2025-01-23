@@ -13,17 +13,17 @@ internal sealed class ResponseMapper : IResponseMapper
         _operationNamingRepository = operationNamingRepository;
     }
 
-    public Response Map(OpenApiResponses responses)
+    public Response Map(OpenApiResponses responses, string? ns)
     {
         // TODO: check if there is more than one 2xx response and register an unsupported warning diagnostic
         // TODO: refactor this so it's more extensible
         if (responses.TryGetValue("200", out var successResponse))
         {
-            return Map200(successResponse);
+            return Map200(successResponse, ns);
         }
         else if (responses.TryGetValue("201", out successResponse))
         {
-            return Map201(successResponse);
+            return Map201(successResponse, ns);
         }
         else if (responses.TryGetValue("204", out successResponse))
         {
@@ -35,13 +35,13 @@ internal sealed class ResponseMapper : IResponseMapper
         }
     }
 
-    private Response Map200(OpenApiResponse successResponse)
+    private Response Map200(OpenApiResponse successResponse, string? ns)
     {
         if (successResponse.Content.TryGetValue("application/json", out var responseBody))
         {
             return new Response
             {
-                BodyType = _typeMapper.Map(responseBody.Schema),
+                BodyType = _typeMapper.Map(responseBody.Schema, ns),
                 Description = successResponse.Description.SplitOnNewLine(),
                 HttpStatusCode = HttpStatusCodes.Status200
             };
@@ -52,7 +52,7 @@ internal sealed class ResponseMapper : IResponseMapper
         }
     }
 
-    private Response Map201(OpenApiResponse successResponse)
+    private Response Map201(OpenApiResponse successResponse, string? ns)
     {
         if (successResponse.Links.Any() && successResponse.Links.Count == 1)
         {
@@ -82,7 +82,7 @@ internal sealed class ResponseMapper : IResponseMapper
                 
                 return new CreatedResponse
                 {
-                    BodyType = _typeMapper.Map(responseBody.Schema),
+                    BodyType = _typeMapper.Map(responseBody.Schema, ns),
                     Description = successResponse.Description.SplitOnNewLine(),
                     HttpStatusCode = HttpStatusCodes.Status201,
                     EndpointName = _operationNamingRepository.GetOperationNameByOperationId(link.Value.OperationId) ?? throw new NotSupportedException("OperationId must reference a valid operation"),

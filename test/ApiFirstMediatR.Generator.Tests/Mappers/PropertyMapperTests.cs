@@ -36,7 +36,7 @@ public class PropertyMapperTests
             }
         };
 
-        var response = _propertyMapper.Map(schema);
+        var response = _propertyMapper.Map(schema, "default");
 
         response.Should().NotBeNull()
             .And.HaveCount(2)
@@ -80,7 +80,7 @@ public class PropertyMapperTests
             }
         };
 
-        var response = _propertyMapper.Map(schema);
+        var response = _propertyMapper.Map(schema, "default");
 
         response.Should().NotBeNull()
             .And.HaveCount(2)
@@ -124,7 +124,7 @@ public class PropertyMapperTests
             }
         };
 
-        var response = _propertyMapper.Map(schema);
+        var response = _propertyMapper.Map(schema, "default");
 
         response.Should().NotBeNull()
             .And.HaveCount(2)

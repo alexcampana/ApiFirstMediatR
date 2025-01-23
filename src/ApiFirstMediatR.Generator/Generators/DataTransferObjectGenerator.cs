@@ -20,8 +20,14 @@ internal sealed class DataTransferObjectGenerator : IApiGenerator
         
         foreach (var dto in dtos)
         {
+            var baseNamespace = projectConfig.Namespace;
+            if (!string.IsNullOrWhiteSpace(dto.Namespace) && dto.Namespace != "default")
+            {
+                projectConfig.Namespace = dto.Namespace;
+            }
             var sourceText = ApiTemplate.DataTransferObject.Generate(dto, projectConfig);
-            _sources.AddSource($"Dtos_{dto.Name}.g.cs", sourceText);
+            _sources.AddSource($"{dto.Namespace}/Dtos_{dto.Name}.g.cs", sourceText);
+            projectConfig.Namespace = baseNamespace;
         }
     }
 }

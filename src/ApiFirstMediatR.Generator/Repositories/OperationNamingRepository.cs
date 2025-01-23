@@ -45,11 +45,11 @@ internal sealed class OperationNamingRepository : IOperationNamingRepository
 
     private OperationNamingDictionaries ParseApiSpec()
     {
-        var apiSpec = _apiSpecRepository.Get();
+        var apiSpecs = _apiSpecRepository.Get();
         var pathDictionary = new Dictionary<string, PathNaming>();
         var operationIdDictionary = new Dictionary<string, OperationNaming>();
 
-        if (apiSpec is null)
+        if (apiSpecs is null || apiSpecs.Length == 0)
         {
             return new OperationNamingDictionaries
             {
@@ -58,40 +58,43 @@ internal sealed class OperationNamingRepository : IOperationNamingRepository
             };
         }
 
-        var controllerSpecs = apiSpec
-            .Paths
-            .GroupBy(p => GetControllerName(p.Key))
-            .ToList();
-
-        foreach (var controllerSpec in controllerSpecs)
+        foreach (var apiSpec in apiSpecs)
         {
-            var paths = controllerSpec.ToOpenApiPaths();
+            var controllerSpecs = apiSpec
+                .Paths
+            .GroupBy(p => GetControllerName(p.Key))
+                .ToList();
 
-            foreach (var path in paths)
+            foreach (var controllerSpec in controllerSpecs)
             {
-                var pathNaming = new PathNaming
-                {
-                    ControllerName = controllerSpec.Key.ToPascalCase()
-                };
-                
-                foreach (var operation in path.Value.Operations)
-                {
-                    var endpointName = operation.Value.OperationId ?? $"{operation.Key.GetDisplayName()}{PathToEndpointName(path.Key)}";
-                    var operationNaming = new OperationNaming
-                    {
-                        ControllerName = pathNaming.ControllerName,
-                        OperationName = endpointName.ToCleanName().ToPascalCase()
-                    };
-                    
-                    pathNaming.OperationDictionary.Add(operation.Key, operationNaming);
+                var paths = controllerSpec.ToOpenApiPaths();
 
-                    if (operation.Value.OperationId is not null)
+                foreach (var path in paths)
+                {
+                    var pathNaming = new PathNaming
                     {
-                        operationIdDictionary.Add(operation.Value.OperationId, operationNaming);
+                        ControllerName = controllerSpec.Key.ToPascalCase()
+                    };
+
+                    foreach (var operation in path.Value.Operations)
+                    {
+                        var endpointName = operation.Value.OperationId ?? $"{operation.Key.GetDisplayName()}{PathToEndpointName(path.Key)}";
+                        var operationNaming = new OperationNaming
+                        {
+                            ControllerName = pathNaming.ControllerName,
+                            OperationName = endpointName.ToCleanName().ToPascalCase()
+                        };
+
+                        pathNaming.OperationDictionary.Add(operation.Key, operationNaming);
+
+                        if (operation.Value.OperationId is not null)
+                        {
+                            operationIdDictionary.Add(operation.Value.OperationId, operationNaming);
+                        }
                     }
+
+                    pathDictionary.Add(path.Key, pathNaming);
                 }
-                
-                pathDictionary.Add(path.Key, pathNaming);
             }
         }
 

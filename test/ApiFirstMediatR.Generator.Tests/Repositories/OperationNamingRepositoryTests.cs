@@ -8,7 +8,7 @@ public class OperationNamingRepositoryTests
         var mockApiSpecRepository = Substitute.For<IApiSpecRepository>();
         mockApiSpecRepository
             .Get()
-            .Returns(new OpenApiDocument
+            .Returns(new[]{ new OpenApiDocument
             {
                 Paths = new OpenApiPaths
                 {
@@ -31,10 +31,10 @@ public class OperationNamingRepositoryTests
                         }
                     }
                 }
-            });
+            }});
 
         var operationNamingRepository = new OperationNamingRepository(mockApiSpecRepository);
-        
+
         const string expectedControllerName = "Api";
         const string expectedOperationName = "GetHelloWorld";
 

@@ -1,3 +1,5 @@
+using Microsoft.OpenApi.Any;
+
 namespace ApiFirstMediatR.Generator.Mappers;
 
 internal sealed class ControllerMapper : IControllerMapper, IOpenApiDocumentMapper<Controller>
@@ -11,23 +13,29 @@ internal sealed class ControllerMapper : IControllerMapper, IOpenApiDocumentMapp
         _operationNamingRepository = operationNamingRepository;
     }
 
-    public IEnumerable<Controller> Map(OpenApiDocument apiSpec)
+    public IEnumerable<Controller> Map(OpenApiDocument[] apiSpecs)
     {
-        var controllerSpecs = apiSpec
-            .Paths
-            .GroupBy(p => _operationNamingRepository.GetControllerNameByPath(p.Key))
-            .ToList();
-
-        foreach (var controllerSpec in controllerSpecs)
+        foreach (var apiSpec in apiSpecs)
         {
-            var paths = controllerSpec.ToOpenApiPaths();
-            var endpoints = _endpointMapper.Map(paths);
+            var ns = apiSpec.Extensions.TryGetValue("x-namespace", out var documentNamespace) ? ((OpenApiString)documentNamespace).Value : "default";
 
-            yield return new Controller
+            var controllerSpecs = apiSpec
+                .Paths
+                .GroupBy(p => _operationNamingRepository.GetControllerNameByPath(p.Key))
+                .ToList();
+
+            foreach (var controllerSpec in controllerSpecs)
             {
-                Name = $"{controllerSpec.Key}Controller".ToPascalCase(), // TODO: Make this configurable
-                Endpoints = endpoints
-            };
+                var paths = controllerSpec.ToOpenApiPaths();
+                var endpoints = _endpointMapper.Map(paths, ns);
+
+                yield return new Controller
+                {
+                    Name = $"{controllerSpec.Key}Controller".ToPascalCase(), // TODO: Make this configurable
+                    Endpoints = endpoints,
+                    Namespace = ns,
+                };
+            }
         }
     }
 }

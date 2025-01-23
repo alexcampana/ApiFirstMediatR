@@ -1,3 +1,5 @@
+using Microsoft.OpenApi.Any;
+
 namespace ApiFirstMediatR.Generator.Mappers;
 
 internal sealed class DataTransferObjectMapper : IDataTransferObjectMapper, IOpenApiDocumentMapper<DataTransferObject>
@@ -9,44 +11,50 @@ internal sealed class DataTransferObjectMapper : IDataTransferObjectMapper, IOpe
         _propertyMapper = propertyMapper;
     }
 
-    public IEnumerable<DataTransferObject> Map(OpenApiDocument apiSpec)
+    public IEnumerable<DataTransferObject> Map(OpenApiDocument[] apiSpecs)
     {
-        foreach (var schema in apiSpec.Components.Schemas)
+        foreach (var apiSpec in apiSpecs)
         {
-            var properties = _propertyMapper.Map(schema.Value);
-
-            var dto = new DataTransferObject
+            var ns = apiSpec.Extensions.TryGetValue("x-namespace", out var documentNamespace) ? ((OpenApiString)documentNamespace).Value : "default";
+            foreach (var schema in apiSpec.Components.Schemas)
             {
-                Name = schema.Key.ToCleanName().ToPascalCase(),
-                Properties = properties
-            };
+                var properties = _propertyMapper.Map(schema.Value, ns);
 
-            if (schema.Value.AllOf.Any())
-            {
-                var inheritedSchemas = schema
-                    .Value
-                    .AllOf
-                    .Where(s => s.Reference?.Id is not null)
-                    .ToList();
+                var dto = new DataTransferObject
+                {
+                    Name = schema.Key.ToCleanName().ToPascalCase(),
+                    Properties = properties,
+                    Namespace = ns
+                };
 
-                if (inheritedSchemas.Count() > 1)
-                    throw new NotImplementedException("Only allowing one inherited schema for now");
+                if (schema.Value.AllOf.Any())
+                {
+                    var inheritedSchemas = schema
+                        .Value
+                        .AllOf
+                        .Where(s => s.Reference?.Id is not null)
+                        .ToList();
 
-                dto.InheritedDto = inheritedSchemas
-                    .FirstOrDefault(s => s.Reference.Id is not null)?
-                    .Reference
-                    .Id;
+                    if (inheritedSchemas.Count() > 1)
+                        throw new NotImplementedException("Only allowing one inherited schema for now");
 
-                var allOfProperties = schema
-                    .Value
-                    .AllOf
-                    .Where(s => s.Type == "object" && s.Reference is null)
-                    .SelectMany(_propertyMapper.Map);
+                    dto.InheritedDto = inheritedSchemas
+                        .FirstOrDefault(s => s.Reference.Id is not null)?
+                        .Reference
+                        .Id;
 
-                dto.Properties = dto.Properties.Union(allOfProperties);
+                    var allOfProperties = schema
+                        .Value
+                        .AllOf
+                        .Where(s => s.Type == "object" && s.Reference is null)
+                        .SelectMany(o => _propertyMapper.Map(o, ns));
+
+                    dto.Properties = dto.Properties.Union(allOfProperties);
+                }
+
+                yield return dto;
             }
 
-            yield return dto;
         }
     }
 }

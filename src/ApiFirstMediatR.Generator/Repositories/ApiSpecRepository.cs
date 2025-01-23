@@ -4,21 +4,21 @@ internal sealed class ApiSpecRepository : IApiSpecRepository
 {
     private readonly ICompilation _compilation;
     private readonly IDiagnosticReporter _diagnosticReporter;
-    private readonly Lazy<OpenApiDocument?> _openApiDocument;
+    private readonly Lazy<IEnumerable<OpenApiDocument>?> _openApiDocument;
 
     public ApiSpecRepository(ICompilation compilation, IDiagnosticReporter diagnosticReporter)
     {
         _compilation = compilation;
         _diagnosticReporter = diagnosticReporter;
-        _openApiDocument = new Lazy<OpenApiDocument?>(Parse);
+        _openApiDocument = new Lazy<IEnumerable<OpenApiDocument>?>(Parse);
     }
 
-    public OpenApiDocument? Get()
+    public OpenApiDocument[]? Get()
     {
-        return _openApiDocument.Value;
+        return _openApiDocument.Value?.ToArray();
     }
 
-    private OpenApiDocument? Parse()
+    private IEnumerable<OpenApiDocument>? Parse()
     {
         var specFiles = _compilation
             .AdditionalFiles
@@ -30,7 +30,7 @@ internal sealed class ApiSpecRepository : IApiSpecRepository
         if (specFiles.Count == 0)
         {
             _diagnosticReporter.ReportDiagnostic(DiagnosticCatalog.ApiSpecFileNotFound());
-            return null;
+            yield break;
         }
 
         foreach (var specFile in specFiles)
@@ -55,10 +55,7 @@ internal sealed class ApiSpecRepository : IApiSpecRepository
                 continue;
             }
 
-            return apiSpec; // Only processing the first valid API Spec file that we find
-            // TODO: Throw diagnostic if we find multiple valid API Spec files
+            yield return apiSpec; // Only processing the first valid API Spec file that we find
         }
-
-        return null;
     }
 }

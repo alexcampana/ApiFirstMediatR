@@ -9,7 +9,7 @@ internal sealed class ParameterMapper : IParameterMapper
         _typeMapper = typeMapper;
     }
 
-    public IEnumerable<Parameter> Map(IEnumerable<OpenApiParameter> openApiParameters)
+    public IEnumerable<Parameter> Map(IEnumerable<OpenApiParameter> openApiParameters, string? ns)
     {
         foreach (var parameter in openApiParameters)
         {
@@ -17,7 +17,7 @@ internal sealed class ParameterMapper : IParameterMapper
 
             if (parameter.Schema.OneOf.Any())
             {
-                dataType = _typeMapper.Map(parameter.Schema.OneOf.First());
+                dataType = _typeMapper.Map(parameter.Schema.OneOf.First(), ns);
                 // TODO: Throw warning diagnostic here
             }
             
@@ -27,7 +27,7 @@ internal sealed class ParameterMapper : IParameterMapper
                 Name = parameter.Name.ToPascalCase(),
                 JsonName = parameter.Name,
                 Description = parameter.Description.SplitOnNewLine(),
-                DataType = dataType ?? _typeMapper.Map(parameter.Schema),
+                DataType = dataType ?? _typeMapper.Map(parameter.Schema, ns),
                 IsNullable = !parameter.Required
             };
         }
