@@ -4,18 +4,18 @@ internal sealed class ApiSpecRepository : IApiSpecRepository
 {
     private readonly ICompilation _compilation;
     private readonly IDiagnosticReporter _diagnosticReporter;
-    private readonly Lazy<IEnumerable<OpenApiDocument>?> _openApiDocument;
+    private readonly Lazy<OpenApiDocument[]?> _openApiDocument;
 
     public ApiSpecRepository(ICompilation compilation, IDiagnosticReporter diagnosticReporter)
     {
         _compilation = compilation;
         _diagnosticReporter = diagnosticReporter;
-        _openApiDocument = new Lazy<IEnumerable<OpenApiDocument>?>(Parse);
+        _openApiDocument = new Lazy<OpenApiDocument[]?>(() => Parse()?.ToArray());
     }
 
     public OpenApiDocument[]? Get()
     {
-        return _openApiDocument.Value?.ToArray();
+        return _openApiDocument.Value;
     }
 
     private IEnumerable<OpenApiDocument>? Parse()
