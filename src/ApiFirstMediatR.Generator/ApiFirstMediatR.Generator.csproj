@@ -31,7 +31,7 @@
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.OpenApi" Version="1.6.22" GeneratePathProperty="true" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.OpenApi" Version="1.6.23" GeneratePathProperty="true" PrivateAssets="all" />
         <PackageReference Include="Microsoft.OpenApi.Readers" Version="1.6.22" GeneratePathProperty="true" PrivateAssets="all" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
         <PackageReference Include="MinVer" Version="6.0.0" PrivateAssets="all" />
