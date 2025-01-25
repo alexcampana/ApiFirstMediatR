@@ -20,8 +20,14 @@ internal sealed class DataTransferObjectEnumGenerator : IApiGenerator
 
         foreach (var dtoEnum in dtoEnums)
         {
+            var baseNamespace = projectConfig.Namespace;
+            if (!string.IsNullOrWhiteSpace(dtoEnum.Namespace) && dtoEnum.Namespace != "default")
+            {
+                projectConfig.Namespace = dtoEnum.Namespace;
+            }
             var sourceText = ApiTemplate.DataTransferObjectEnum.Generate(dtoEnum, projectConfig);
-            _sources.AddSource($"Dtos_{dtoEnum.Name}.g.cs", sourceText);
+            _sources.AddSource($"{dtoEnum.Namespace}/Dtos_{dtoEnum.Name}.g.cs", sourceText);
+            projectConfig.Namespace = baseNamespace;
         }
     }
 }

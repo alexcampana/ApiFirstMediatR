@@ -19,7 +19,7 @@ public class TypeMapperTests
             Type = "integer"
         };
 
-        var type = _typeMapper.Map(schema);
+        var type = _typeMapper.Map(schema, "default");
         type.Should().Be("int");
     }
 
@@ -31,7 +31,7 @@ public class TypeMapperTests
             Type = "CustomType"
         };
 
-        var type = _typeMapper.Map(schema);
+        var type = _typeMapper.Map(schema, "default");
         type.Should().Be("CustomType");
     }
 
@@ -39,7 +39,7 @@ public class TypeMapperTests
     public void ValidType_NothingDefined_HappyPath()
     {
         var schema = new OpenApiSchema();
-        var type = _typeMapper.Map(schema);
+        var type = _typeMapper.Map(schema, "default");
         type.Should().Be("object");
     }
 
@@ -54,7 +54,7 @@ public class TypeMapperTests
             }
         };
 
-        var type = _typeMapper.Map(schema);
+        var type = _typeMapper.Map(schema, "default");
         type.Should().Be("Test.Dtos.TestDto");
     }
 }

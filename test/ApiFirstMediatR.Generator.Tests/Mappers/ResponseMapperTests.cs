@@ -43,7 +43,7 @@ public class ResponseMapperTests
             }
         };
 
-        var result = _responseMapper.Map(responses);
+        var result = _responseMapper.Map(responses, "default");
 
         result.Should().NotBeNull()
             .And.BeEquivalentTo(new
@@ -89,7 +89,7 @@ public class ResponseMapperTests
             }
         };
 
-        var result = _responseMapper.Map(responses);
+        var result = _responseMapper.Map(responses, "default");
 
         result.Should().NotBeNull()
             .And.BeOfType<CreatedResponse>()
@@ -121,7 +121,7 @@ public class ResponseMapperTests
             }
         };
 
-        var result = _responseMapper.Map(responses);
+        var result = _responseMapper.Map(responses, "default");
 
         result.Should().NotBeNull();
         result.BodyType.Should().BeNull();
@@ -132,7 +132,7 @@ public class ResponseMapperTests
     public void NoResponses_ThrowsNotSupported()
     {
         var responses = new OpenApiResponses();
-        _responseMapper.Invoking(m => m.Map(responses))
+        _responseMapper.Invoking(m => m.Map(responses, "default"))
             .Should().Throw<NotSupportedException>();
     }
 
@@ -146,7 +146,7 @@ public class ResponseMapperTests
                 Description = "I'm a little teapot"
             }
         };
-        _responseMapper.Invoking(m => m.Map(responses))
+        _responseMapper.Invoking(m => m.Map(responses, "default"))
             .Should().Throw<NotSupportedException>();
     }
 
@@ -196,7 +196,7 @@ public class ResponseMapperTests
             }
         };
 
-        _responseMapper.Invoking(m => m.Map(responses))
+        _responseMapper.Invoking(m => m.Map(responses, "default"))
             .Should().Throw<NotSupportedException>();
     }
     
@@ -222,7 +222,7 @@ public class ResponseMapperTests
             }
         };
 
-        _responseMapper.Invoking(m => m.Map(responses))
+        _responseMapper.Invoking(m => m.Map(responses, "default"))
             .Should().Throw<NotSupportedException>();
     }
 
@@ -247,7 +247,7 @@ public class ResponseMapperTests
             }
         };
 
-        _responseMapper.Invoking(m => m.Map(responses))
+        _responseMapper.Invoking(m => m.Map(responses, "default"))
             .Should().Throw<NotSupportedException>();
     }
 }

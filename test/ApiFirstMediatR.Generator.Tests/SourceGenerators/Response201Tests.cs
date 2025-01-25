@@ -9,7 +9,7 @@ public class Response201Tests : TestBase
         
         result.Diagnostics.Should().BeEmpty();
         result.GeneratedSources.Should()
-                .ContainEquivalentSyntaxTree("Controllers_ApiController.g.cs", ExpectedController);
+                .ContainEquivalentSyntaxTree("default/Controllers_ApiController.g.cs", ExpectedController);
     }
 
     [Fact]

@@ -77,7 +77,7 @@ public class ControllerMapperTests
             }
         };
 
-        var controllers = _controllerMapper.Map(apiSpec).ToList();
+        var controllers = _controllerMapper.Map(new []{ apiSpec }).ToList();
         controllers.Should().ContainSingle();
         
         var controller = controllers.Single();

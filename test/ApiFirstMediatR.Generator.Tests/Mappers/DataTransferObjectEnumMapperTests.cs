@@ -10,7 +10,7 @@ public class DataTransferObjectEnumMapperTests
     {
         _dtoEnumMapper = new DataTransferObjectEnumMapper();
     }
-    
+
     [Fact]
     public void ValidSchema_HappyPath()
     {
@@ -46,12 +46,12 @@ public class DataTransferObjectEnumMapperTests
             }
         };
 
-        var enums = _dtoEnumMapper.Map(apiSpec);
+        var enums = _dtoEnumMapper.Map(new[] { apiSpec });
         enums.Should().ContainSingle()
             .Which.Should().BeEquivalentTo(new
             {
                 Name = "TestStatus",
-                EnumValues = new []
+                EnumValues = new[]
                 {
                     new
                     {

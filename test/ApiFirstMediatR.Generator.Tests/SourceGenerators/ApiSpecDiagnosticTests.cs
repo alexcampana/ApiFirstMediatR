@@ -17,7 +17,7 @@ public class ApiSpecDiagnosticTests : TestBase
         diagnostics.Should().ContainSingle()
             .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileNotFound);
     }
- 
+
     [Fact]
     public void EmptyAPISpecFile_ThrowsDiagnostic()
     {
@@ -26,7 +26,7 @@ public class ApiSpecDiagnosticTests : TestBase
         result.Diagnostics.Should().ContainSingle()
             .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileEmpty);
     }
- 
+
     [Fact]
     public void BadAPISpecFile_ThrowsDiagnostic()
     {
@@ -34,7 +34,7 @@ public class ApiSpecDiagnosticTests : TestBase
         result.Diagnostics.Should().ContainSingle()
             .Which.Id.Should().Be(DiagnosticIdentifiers.ApiSpecFileParsingError);
     }
-    
+
     private const string BadApiSpec = @"openapi: 3.0.1
 info:
   title: HelloWorld API

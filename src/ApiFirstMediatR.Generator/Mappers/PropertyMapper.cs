@@ -9,7 +9,7 @@ internal sealed class PropertyMapper : IPropertyMapper
         _typeMapper = typeMapper;
     }
 
-    public IEnumerable<Property> Map(OpenApiSchema schema)
+    public IEnumerable<Property> Map(OpenApiSchema schema, string? ns)
     {
         // TODO: Add validation that this is the proper mapper for this schema
         var referenceName = schema.Reference?.Id?.ToCleanName().ToPascalCase();
@@ -24,7 +24,7 @@ internal sealed class PropertyMapper : IPropertyMapper
                 name = name.ToCleanName().ToCamelCase();
             }
 
-            var dataType = _typeMapper.Map(property.Value);
+            var dataType = _typeMapper.Map(property.Value, ns);
 
             // overriding TypeMapper for enums as it doesn't have the context of the dto
             if (property.Value.Enum.Any())

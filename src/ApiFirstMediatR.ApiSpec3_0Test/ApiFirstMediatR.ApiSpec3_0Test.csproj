@@ -27,7 +27,8 @@
     </ItemGroup>
     
     <ItemGroup>
-        <AdditionalFiles Include="api_spec.yaml" />
+		<AdditionalFiles Include="api_spec.yaml" />
+		<AdditionalFiles Include="spec_two.yaml" />
     </ItemGroup>
     
     <ItemGroup>

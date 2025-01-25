@@ -20,14 +20,20 @@ internal sealed class MediatorRequestGenerator : IApiGenerator
 
         foreach (var controller in controllers)
         {
+            var baseNamespace = projectConfig.Namespace;
+            if (!string.IsNullOrWhiteSpace(controller.Namespace) && controller.Namespace != "default")
+            {
+                projectConfig.Namespace = controller.Namespace;
+            }
             if (controller.Endpoints != null)
             {
                 foreach (var endpoint in controller.Endpoints)
                 {
                     var endpointSourceText = ApiTemplate.MediatorRequest.Generate(endpoint, projectConfig);
-                    _sources.AddSource($"MediatorRequests_{endpoint.MediatorRequestName}.g.cs", endpointSourceText);
+                    _sources.AddSource($"{controller.Namespace}/MediatorRequests_{endpoint.MediatorRequestName}.g.cs", endpointSourceText);
                 }
             }
+            projectConfig.Namespace = baseNamespace;
         }
     }
 }
