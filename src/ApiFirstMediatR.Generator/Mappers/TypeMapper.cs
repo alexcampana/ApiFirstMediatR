@@ -10,7 +10,7 @@ internal sealed class TypeMapper : ITypeMapper
         _apiConfigRepository = apiConfigRepository;
     }
 
-    public string Map(OpenApiSchema schema, string? ns = null)
+    public string Map(OpenApiSchema schema, string? ns)
     {
         var apiConfig = _apiConfigRepository.Get();
         // TODO: Support non schema objects (through custom response objects)
@@ -33,7 +33,7 @@ internal sealed class TypeMapper : ITypeMapper
             ("string", "date") => "System.DateOnly",
             ("string", "date-time") => "System.DateTimeOffset",
             ("string", _) => "string",
-            ("array", _) => $"System.Collections.Generic.IEnumerable<{Map(schema.Items)}>",
+            ("array", _) => $"System.Collections.Generic.IEnumerable<{Map(schema.Items, ns)}>",
             (_, _) => schema.Type ?? "object" // TODO: Add support for multiple response types
         };
     }
