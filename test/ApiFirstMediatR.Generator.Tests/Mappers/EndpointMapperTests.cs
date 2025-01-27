@@ -99,7 +99,7 @@ public class EndpointMapperTests
             }
         };
 
-        var endpoints = _endpointMapper.Map(paths).ToList();
+        var endpoints = _endpointMapper.Map(paths, "default").ToList();
 
         endpoints.Should().ContainSingle()
             .Which.Should().BeEquivalentTo(new
@@ -193,7 +193,7 @@ public class EndpointMapperTests
             }
         };
         
-        var endpoints = _endpointMapper.Map(paths);
+        var endpoints = _endpointMapper.Map(paths, "default");
         endpoints.Should().BeEmpty();
         _mockDiagnosticReporter.Received(1).ReportDiagnostic(Arg.Any<Diagnostic>());
     }
@@ -266,7 +266,7 @@ public class EndpointMapperTests
             }
         };
 
-        var endpoints = _endpointMapper.Map(paths).ToList();
+        var endpoints = _endpointMapper.Map(paths, "default").ToList();
 
         endpoints.Should().ContainSingle()
             .Which.Should().BeEquivalentTo(new

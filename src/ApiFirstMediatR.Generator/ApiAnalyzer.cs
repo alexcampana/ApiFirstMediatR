@@ -1,5 +1,6 @@
-using System.Collections.Concurrent;
 using ApiFirstMediatR.Generator.Services;
+using Microsoft.OpenApi.Any;
+using System.Collections.Concurrent;
 
 namespace ApiFirstMediatR.Generator;
 
@@ -8,7 +9,7 @@ public sealed class ApiAnalyzer : DiagnosticAnalyzer
 {
     private static readonly IMutableContainer AnalyzerContainer = Container.Create().Using<Glue>();
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(DiagnosticCatalog.ApiMissingImplementationDescriptor);
-    
+
     public override void Initialize(AnalysisContext context)
     {
         context.EnableConcurrentExecution();
@@ -28,9 +29,9 @@ public sealed class ApiAnalyzer : DiagnosticAnalyzer
                 .Bind<IDiagnosticReporter>().To<AnalyzerDiagnosticReporter>()
                 .Bind<AdditionalFileAnalysisContextWrapper, ICompilation>().As(Lifetime.ScopeRoot).To(ctx => new AdditionalFileAnalysisContextWrapper(fileContext))
                 .Create();
-            
+
             var endpointMapper = container.Resolve<IEndpointMapper>();
-            
+
             var fileContent = fileContext.AdditionalFile.GetText(fileContext.CancellationToken);
 
             if (fileContent is null || fileContent.Length == 0)
@@ -41,7 +42,9 @@ public sealed class ApiAnalyzer : DiagnosticAnalyzer
             if (diagnostic.Errors.Any() || apiSpec is null)
                 return;
 
-            var endpoints = endpointMapper.Map(apiSpec.Paths);
+            var ns = apiSpec.Extensions.TryGetValue("x-namespace", out var documentNamespace) ? ((OpenApiString)documentNamespace).Value : "default";
+
+            var endpoints = endpointMapper.Map(apiSpec.Paths, ns);
 
             foreach (var endpoint in endpoints)
             {
@@ -54,7 +57,7 @@ public sealed class ApiAnalyzer : DiagnosticAnalyzer
         context.RegisterSymbolStartAction(analysisContext =>
         {
             var type = (INamedTypeSymbol)analysisContext.Symbol;
-            
+
             if (type.TypeKind != TypeKind.Class || type.IsAbstract || type.IsStatic)
                 return;
 
